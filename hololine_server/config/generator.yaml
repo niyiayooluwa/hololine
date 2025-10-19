@@ -1,0 +1,8 @@
+type: server
+
+modules:
+  serverpod_auth:
+    nickname: auth
+
+client_package_path: ../hololine_client
+server_test_tools_path: test/integration/test_tools

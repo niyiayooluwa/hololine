@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "hololine_client",
+            "cwd": "hololine_client",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "hololine_flutter",
+            "cwd": "hololine_flutter",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "hololine_flutter (profile mode)",
+            "cwd": "hololine_flutter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "hololine_flutter (release mode)",
+            "cwd": "hololine_flutter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "hololine_server",
+            "cwd": "hololine_server",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}
