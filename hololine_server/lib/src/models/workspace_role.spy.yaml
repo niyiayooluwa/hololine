@@ -1,0 +1,7 @@
+enum: WorkspaceRole
+values:
+    - owner
+    - admin
+    - superadmin
+    - member
+    - viewer
