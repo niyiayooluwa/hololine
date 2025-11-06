@@ -10,13 +10,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'workspace_role.dart' as _i2;
+import 'workspace.dart' as _i2;
+import 'workspace_role.dart' as _i3;
 
 abstract class WorkspaceMember implements _i1.SerializableModel {
   WorkspaceMember._({
     this.id,
     required this.userInfoId,
     required this.workspaceId,
+    this.workspace,
     required this.role,
     this.invitedById,
     required this.joinedAt,
@@ -27,7 +29,8 @@ abstract class WorkspaceMember implements _i1.SerializableModel {
     int? id,
     required int userInfoId,
     required int workspaceId,
-    required _i2.WorkspaceRole role,
+    _i2.Workspace? workspace,
+    required _i3.WorkspaceRole role,
     int? invitedById,
     required DateTime joinedAt,
     bool? isActive,
@@ -38,7 +41,11 @@ abstract class WorkspaceMember implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       userInfoId: jsonSerialization['userInfoId'] as int,
       workspaceId: jsonSerialization['workspaceId'] as int,
-      role: _i2.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
+      workspace: jsonSerialization['workspace'] == null
+          ? null
+          : _i2.Workspace.fromJson(
+              (jsonSerialization['workspace'] as Map<String, dynamic>)),
+      role: _i3.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
       invitedById: jsonSerialization['invitedById'] as int?,
       joinedAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['joinedAt']),
@@ -55,7 +62,9 @@ abstract class WorkspaceMember implements _i1.SerializableModel {
 
   int workspaceId;
 
-  _i2.WorkspaceRole role;
+  _i2.Workspace? workspace;
+
+  _i3.WorkspaceRole role;
 
   int? invitedById;
 
@@ -70,7 +79,8 @@ abstract class WorkspaceMember implements _i1.SerializableModel {
     int? id,
     int? userInfoId,
     int? workspaceId,
-    _i2.WorkspaceRole? role,
+    _i2.Workspace? workspace,
+    _i3.WorkspaceRole? role,
     int? invitedById,
     DateTime? joinedAt,
     bool? isActive,
@@ -81,6 +91,7 @@ abstract class WorkspaceMember implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'workspaceId': workspaceId,
+      if (workspace != null) 'workspace': workspace?.toJson(),
       'role': role.toJson(),
       if (invitedById != null) 'invitedById': invitedById,
       'joinedAt': joinedAt.toJson(),
@@ -101,7 +112,8 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
     int? id,
     required int userInfoId,
     required int workspaceId,
-    required _i2.WorkspaceRole role,
+    _i2.Workspace? workspace,
+    required _i3.WorkspaceRole role,
     int? invitedById,
     required DateTime joinedAt,
     bool? isActive,
@@ -109,6 +121,7 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
           id: id,
           userInfoId: userInfoId,
           workspaceId: workspaceId,
+          workspace: workspace,
           role: role,
           invitedById: invitedById,
           joinedAt: joinedAt,
@@ -123,7 +136,8 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
     Object? id = _Undefined,
     int? userInfoId,
     int? workspaceId,
-    _i2.WorkspaceRole? role,
+    Object? workspace = _Undefined,
+    _i3.WorkspaceRole? role,
     Object? invitedById = _Undefined,
     DateTime? joinedAt,
     bool? isActive,
@@ -132,6 +146,8 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
       id: id is int? ? id : this.id,
       userInfoId: userInfoId ?? this.userInfoId,
       workspaceId: workspaceId ?? this.workspaceId,
+      workspace:
+          workspace is _i2.Workspace? ? workspace : this.workspace?.copyWith(),
       role: role ?? this.role,
       invitedById: invitedById is int? ? invitedById : this.invitedById,
       joinedAt: joinedAt ?? this.joinedAt,

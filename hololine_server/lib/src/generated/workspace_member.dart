@@ -8,9 +8,12 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'workspace_role.dart' as _i2;
+import 'workspace.dart' as _i2;
+import 'workspace_role.dart' as _i3;
 
 abstract class WorkspaceMember
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -18,6 +21,7 @@ abstract class WorkspaceMember
     this.id,
     required this.userInfoId,
     required this.workspaceId,
+    this.workspace,
     required this.role,
     this.invitedById,
     required this.joinedAt,
@@ -28,7 +32,8 @@ abstract class WorkspaceMember
     int? id,
     required int userInfoId,
     required int workspaceId,
-    required _i2.WorkspaceRole role,
+    _i2.Workspace? workspace,
+    required _i3.WorkspaceRole role,
     int? invitedById,
     required DateTime joinedAt,
     bool? isActive,
@@ -39,7 +44,11 @@ abstract class WorkspaceMember
       id: jsonSerialization['id'] as int?,
       userInfoId: jsonSerialization['userInfoId'] as int,
       workspaceId: jsonSerialization['workspaceId'] as int,
-      role: _i2.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
+      workspace: jsonSerialization['workspace'] == null
+          ? null
+          : _i2.Workspace.fromJson(
+              (jsonSerialization['workspace'] as Map<String, dynamic>)),
+      role: _i3.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
       invitedById: jsonSerialization['invitedById'] as int?,
       joinedAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['joinedAt']),
@@ -58,7 +67,9 @@ abstract class WorkspaceMember
 
   int workspaceId;
 
-  _i2.WorkspaceRole role;
+  _i2.Workspace? workspace;
+
+  _i3.WorkspaceRole role;
 
   int? invitedById;
 
@@ -76,7 +87,8 @@ abstract class WorkspaceMember
     int? id,
     int? userInfoId,
     int? workspaceId,
-    _i2.WorkspaceRole? role,
+    _i2.Workspace? workspace,
+    _i3.WorkspaceRole? role,
     int? invitedById,
     DateTime? joinedAt,
     bool? isActive,
@@ -87,6 +99,7 @@ abstract class WorkspaceMember
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'workspaceId': workspaceId,
+      if (workspace != null) 'workspace': workspace?.toJson(),
       'role': role.toJson(),
       if (invitedById != null) 'invitedById': invitedById,
       'joinedAt': joinedAt.toJson(),
@@ -100,6 +113,7 @@ abstract class WorkspaceMember
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'workspaceId': workspaceId,
+      if (workspace != null) 'workspace': workspace?.toJsonForProtocol(),
       'role': role.toJson(),
       if (invitedById != null) 'invitedById': invitedById,
       'joinedAt': joinedAt.toJson(),
@@ -107,8 +121,8 @@ abstract class WorkspaceMember
     };
   }
 
-  static WorkspaceMemberInclude include() {
-    return WorkspaceMemberInclude._();
+  static WorkspaceMemberInclude include({_i2.WorkspaceInclude? workspace}) {
+    return WorkspaceMemberInclude._(workspace: workspace);
   }
 
   static WorkspaceMemberIncludeList includeList({
@@ -144,7 +158,8 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
     int? id,
     required int userInfoId,
     required int workspaceId,
-    required _i2.WorkspaceRole role,
+    _i2.Workspace? workspace,
+    required _i3.WorkspaceRole role,
     int? invitedById,
     required DateTime joinedAt,
     bool? isActive,
@@ -152,6 +167,7 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
           id: id,
           userInfoId: userInfoId,
           workspaceId: workspaceId,
+          workspace: workspace,
           role: role,
           invitedById: invitedById,
           joinedAt: joinedAt,
@@ -166,7 +182,8 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
     Object? id = _Undefined,
     int? userInfoId,
     int? workspaceId,
-    _i2.WorkspaceRole? role,
+    Object? workspace = _Undefined,
+    _i3.WorkspaceRole? role,
     Object? invitedById = _Undefined,
     DateTime? joinedAt,
     bool? isActive,
@@ -175,6 +192,8 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
       id: id is int? ? id : this.id,
       userInfoId: userInfoId ?? this.userInfoId,
       workspaceId: workspaceId ?? this.workspaceId,
+      workspace:
+          workspace is _i2.Workspace? ? workspace : this.workspace?.copyWith(),
       role: role ?? this.role,
       invitedById: invitedById is int? ? invitedById : this.invitedById,
       joinedAt: joinedAt ?? this.joinedAt,
@@ -218,13 +237,28 @@ class WorkspaceMemberTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt workspaceId;
 
-  late final _i1.ColumnEnum<_i2.WorkspaceRole> role;
+  _i2.WorkspaceTable? _workspace;
+
+  late final _i1.ColumnEnum<_i3.WorkspaceRole> role;
 
   late final _i1.ColumnInt invitedById;
 
   late final _i1.ColumnDateTime joinedAt;
 
   late final _i1.ColumnBool isActive;
+
+  _i2.WorkspaceTable get workspace {
+    if (_workspace != null) return _workspace!;
+    _workspace = _i1.createRelationTable(
+      relationFieldName: 'workspace',
+      field: WorkspaceMember.t.workspaceId,
+      foreignField: _i2.Workspace.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.WorkspaceTable(tableRelation: foreignTableRelation),
+    );
+    return _workspace!;
+  }
 
   @override
   List<_i1.Column> get columns => [
@@ -236,13 +270,25 @@ class WorkspaceMemberTable extends _i1.Table<int?> {
         joinedAt,
         isActive,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'workspace') {
+      return workspace;
+    }
+    return null;
+  }
 }
 
 class WorkspaceMemberInclude extends _i1.IncludeObject {
-  WorkspaceMemberInclude._();
+  WorkspaceMemberInclude._({_i2.WorkspaceInclude? workspace}) {
+    _workspace = workspace;
+  }
+
+  _i2.WorkspaceInclude? _workspace;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'workspace': _workspace};
 
   @override
   _i1.Table<int?> get table => WorkspaceMember.t;
@@ -270,6 +316,8 @@ class WorkspaceMemberIncludeList extends _i1.IncludeList {
 
 class WorkspaceMemberRepository {
   const WorkspaceMemberRepository._();
+
+  final attachRow = const WorkspaceMemberAttachRowRepository._();
 
   /// Returns a list of [WorkspaceMember]s matching the given query parameters.
   ///
@@ -302,6 +350,7 @@ class WorkspaceMemberRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<WorkspaceMemberTable>? orderByList,
     _i1.Transaction? transaction,
+    WorkspaceMemberInclude? include,
   }) async {
     return session.db.find<WorkspaceMember>(
       where: where?.call(WorkspaceMember.t),
@@ -311,6 +360,7 @@ class WorkspaceMemberRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -339,6 +389,7 @@ class WorkspaceMemberRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<WorkspaceMemberTable>? orderByList,
     _i1.Transaction? transaction,
+    WorkspaceMemberInclude? include,
   }) async {
     return session.db.findFirstRow<WorkspaceMember>(
       where: where?.call(WorkspaceMember.t),
@@ -347,6 +398,7 @@ class WorkspaceMemberRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -355,10 +407,12 @@ class WorkspaceMemberRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    WorkspaceMemberInclude? include,
   }) async {
     return session.db.findById<WorkspaceMember>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -476,6 +530,33 @@ class WorkspaceMemberRepository {
     return session.db.count<WorkspaceMember>(
       where: where?.call(WorkspaceMember.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class WorkspaceMemberAttachRowRepository {
+  const WorkspaceMemberAttachRowRepository._();
+
+  /// Creates a relation between the given [WorkspaceMember] and [Workspace]
+  /// by setting the [WorkspaceMember]'s foreign key `workspaceId` to refer to the [Workspace].
+  Future<void> workspace(
+    _i1.Session session,
+    WorkspaceMember workspaceMember,
+    _i2.Workspace workspace, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (workspaceMember.id == null) {
+      throw ArgumentError.notNull('workspaceMember.id');
+    }
+    if (workspace.id == null) {
+      throw ArgumentError.notNull('workspace.id');
+    }
+
+    var $workspaceMember = workspaceMember.copyWith(workspaceId: workspace.id);
+    await session.db.updateRow<WorkspaceMember>(
+      $workspaceMember,
+      columns: [WorkspaceMember.t.workspaceId],
       transaction: transaction,
     );
   }

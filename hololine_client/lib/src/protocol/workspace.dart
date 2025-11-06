@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'workspace_member.dart' as _i2;
 
 abstract class Workspace implements _i1.SerializableModel {
   Workspace._({
@@ -21,6 +22,7 @@ abstract class Workspace implements _i1.SerializableModel {
     required this.createdAt,
     this.deletedAt,
     this.archivedAt,
+    this.members,
   }) : isPremium = isPremium ?? false;
 
   factory Workspace({
@@ -32,6 +34,7 @@ abstract class Workspace implements _i1.SerializableModel {
     required DateTime createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    List<_i2.WorkspaceMember>? members,
   }) = _WorkspaceImpl;
 
   factory Workspace.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -49,6 +52,10 @@ abstract class Workspace implements _i1.SerializableModel {
       archivedAt: jsonSerialization['archivedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['archivedAt']),
+      members: (jsonSerialization['members'] as List?)
+          ?.map(
+              (e) => _i2.WorkspaceMember.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -71,6 +78,8 @@ abstract class Workspace implements _i1.SerializableModel {
 
   DateTime? archivedAt;
 
+  List<_i2.WorkspaceMember>? members;
+
   /// Returns a shallow copy of this [Workspace]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -83,6 +92,7 @@ abstract class Workspace implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    List<_i2.WorkspaceMember>? members,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -95,6 +105,8 @@ abstract class Workspace implements _i1.SerializableModel {
       'createdAt': createdAt.toJson(),
       if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
       if (archivedAt != null) 'archivedAt': archivedAt?.toJson(),
+      if (members != null)
+        'members': members?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -116,6 +128,7 @@ class _WorkspaceImpl extends Workspace {
     required DateTime createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    List<_i2.WorkspaceMember>? members,
   }) : super._(
           id: id,
           name: name,
@@ -125,6 +138,7 @@ class _WorkspaceImpl extends Workspace {
           createdAt: createdAt,
           deletedAt: deletedAt,
           archivedAt: archivedAt,
+          members: members,
         );
 
   /// Returns a shallow copy of this [Workspace]
@@ -140,6 +154,7 @@ class _WorkspaceImpl extends Workspace {
     DateTime? createdAt,
     Object? deletedAt = _Undefined,
     Object? archivedAt = _Undefined,
+    Object? members = _Undefined,
   }) {
     return Workspace(
       id: id is int? ? id : this.id,
@@ -150,6 +165,9 @@ class _WorkspaceImpl extends Workspace {
       createdAt: createdAt ?? this.createdAt,
       deletedAt: deletedAt is DateTime? ? deletedAt : this.deletedAt,
       archivedAt: archivedAt is DateTime? ? archivedAt : this.archivedAt,
+      members: members is List<_i2.WorkspaceMember>?
+          ? members
+          : this.members?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

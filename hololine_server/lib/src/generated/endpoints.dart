@@ -10,11 +10,45 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i2;
+import '../endpoints/workspace_endpoint.dart' as _i2;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
-    modules['serverpod_auth'] = _i2.Endpoints()..initializeEndpoints(server);
+    var endpoints = <String, _i1.Endpoint>{
+      'workspace': _i2.WorkspaceEndpoint()
+        ..initialize(
+          server,
+          'workspace',
+          null,
+        )
+    };
+    connectors['workspace'] = _i1.EndpointConnector(
+      name: 'workspace',
+      endpoint: endpoints['workspace']!,
+      methodConnectors: {
+        'createStandalone': _i1.MethodConnector(
+          name: 'createStandalone',
+          params: {
+            'name': _i1.ParameterDescription(
+              name: 'name',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+                  .createStandalone(
+            session,
+            params['name'],
+          ),
+        )
+      },
+    );
+    modules['serverpod_auth'] = _i3.Endpoints()..initializeEndpoints(server);
   }
 }

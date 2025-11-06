@@ -4,7 +4,7 @@ fields:
     # Links to the user who is the member.
     userInfoId: int, relation(parent=serverpod_auth_user_info)
     # Links to the workspace they are a member of.
-    workspaceId: int, relation(parent=workspace)
+    workspace: Workspace?, relation(name=workspace_members_relation)
     # Use the enum for type safety.
     role: WorkspaceRole
     # Good for auditing

@@ -344,6 +344,13 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
+    if (t == _i1.getType<List<_i6.WorkspaceMember>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i6.WorkspaceMember>(e))
+              .toList()
+          : null) as T;
+    }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}

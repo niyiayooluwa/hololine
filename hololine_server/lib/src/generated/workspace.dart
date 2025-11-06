@@ -8,8 +8,11 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'workspace_member.dart' as _i2;
 
 abstract class Workspace
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -22,6 +25,7 @@ abstract class Workspace
     required this.createdAt,
     this.deletedAt,
     this.archivedAt,
+    this.members,
   }) : isPremium = isPremium ?? false;
 
   factory Workspace({
@@ -33,6 +37,7 @@ abstract class Workspace
     required DateTime createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    List<_i2.WorkspaceMember>? members,
   }) = _WorkspaceImpl;
 
   factory Workspace.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -50,6 +55,10 @@ abstract class Workspace
       archivedAt: jsonSerialization['archivedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['archivedAt']),
+      members: (jsonSerialization['members'] as List?)
+          ?.map(
+              (e) => _i2.WorkspaceMember.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -74,6 +83,8 @@ abstract class Workspace
 
   DateTime? archivedAt;
 
+  List<_i2.WorkspaceMember>? members;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -89,6 +100,7 @@ abstract class Workspace
     DateTime? createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    List<_i2.WorkspaceMember>? members,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -101,6 +113,8 @@ abstract class Workspace
       'createdAt': createdAt.toJson(),
       if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
       if (archivedAt != null) 'archivedAt': archivedAt?.toJson(),
+      if (members != null)
+        'members': members?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -115,11 +129,13 @@ abstract class Workspace
       'createdAt': createdAt.toJson(),
       if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
       if (archivedAt != null) 'archivedAt': archivedAt?.toJson(),
+      if (members != null)
+        'members': members?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static WorkspaceInclude include() {
-    return WorkspaceInclude._();
+  static WorkspaceInclude include({_i2.WorkspaceMemberIncludeList? members}) {
+    return WorkspaceInclude._(members: members);
   }
 
   static WorkspaceIncludeList includeList({
@@ -160,6 +176,7 @@ class _WorkspaceImpl extends Workspace {
     required DateTime createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    List<_i2.WorkspaceMember>? members,
   }) : super._(
           id: id,
           name: name,
@@ -169,6 +186,7 @@ class _WorkspaceImpl extends Workspace {
           createdAt: createdAt,
           deletedAt: deletedAt,
           archivedAt: archivedAt,
+          members: members,
         );
 
   /// Returns a shallow copy of this [Workspace]
@@ -184,6 +202,7 @@ class _WorkspaceImpl extends Workspace {
     DateTime? createdAt,
     Object? deletedAt = _Undefined,
     Object? archivedAt = _Undefined,
+    Object? members = _Undefined,
   }) {
     return Workspace(
       id: id is int? ? id : this.id,
@@ -194,6 +213,9 @@ class _WorkspaceImpl extends Workspace {
       createdAt: createdAt ?? this.createdAt,
       deletedAt: deletedAt is DateTime? ? deletedAt : this.deletedAt,
       archivedAt: archivedAt is DateTime? ? archivedAt : this.archivedAt,
+      members: members is List<_i2.WorkspaceMember>?
+          ? members
+          : this.members?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -245,6 +267,41 @@ class WorkspaceTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime archivedAt;
 
+  _i2.WorkspaceMemberTable? ___members;
+
+  _i1.ManyRelation<_i2.WorkspaceMemberTable>? _members;
+
+  _i2.WorkspaceMemberTable get __members {
+    if (___members != null) return ___members!;
+    ___members = _i1.createRelationTable(
+      relationFieldName: '__members',
+      field: Workspace.t.id,
+      foreignField: _i2.WorkspaceMember.t.workspaceId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.WorkspaceMemberTable(tableRelation: foreignTableRelation),
+    );
+    return ___members!;
+  }
+
+  _i1.ManyRelation<_i2.WorkspaceMemberTable> get members {
+    if (_members != null) return _members!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'members',
+      field: Workspace.t.id,
+      foreignField: _i2.WorkspaceMember.t.workspaceId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.WorkspaceMemberTable(tableRelation: foreignTableRelation),
+    );
+    _members = _i1.ManyRelation<_i2.WorkspaceMemberTable>(
+      tableWithRelations: relationTable,
+      table: _i2.WorkspaceMemberTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _members!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -256,13 +313,25 @@ class WorkspaceTable extends _i1.Table<int?> {
         deletedAt,
         archivedAt,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'members') {
+      return __members;
+    }
+    return null;
+  }
 }
 
 class WorkspaceInclude extends _i1.IncludeObject {
-  WorkspaceInclude._();
+  WorkspaceInclude._({_i2.WorkspaceMemberIncludeList? members}) {
+    _members = members;
+  }
+
+  _i2.WorkspaceMemberIncludeList? _members;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'members': _members};
 
   @override
   _i1.Table<int?> get table => Workspace.t;
@@ -290,6 +359,14 @@ class WorkspaceIncludeList extends _i1.IncludeList {
 
 class WorkspaceRepository {
   const WorkspaceRepository._();
+
+  final attach = const WorkspaceAttachRepository._();
+
+  final attachRow = const WorkspaceAttachRowRepository._();
+
+  final detach = const WorkspaceDetachRepository._();
+
+  final detachRow = const WorkspaceDetachRowRepository._();
 
   /// Returns a list of [Workspace]s matching the given query parameters.
   ///
@@ -322,6 +399,7 @@ class WorkspaceRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<WorkspaceTable>? orderByList,
     _i1.Transaction? transaction,
+    WorkspaceInclude? include,
   }) async {
     return session.db.find<Workspace>(
       where: where?.call(Workspace.t),
@@ -331,6 +409,7 @@ class WorkspaceRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -359,6 +438,7 @@ class WorkspaceRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<WorkspaceTable>? orderByList,
     _i1.Transaction? transaction,
+    WorkspaceInclude? include,
   }) async {
     return session.db.findFirstRow<Workspace>(
       where: where?.call(Workspace.t),
@@ -367,6 +447,7 @@ class WorkspaceRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -375,10 +456,12 @@ class WorkspaceRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    WorkspaceInclude? include,
   }) async {
     return session.db.findById<Workspace>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -496,6 +579,115 @@ class WorkspaceRepository {
     return session.db.count<Workspace>(
       where: where?.call(Workspace.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class WorkspaceAttachRepository {
+  const WorkspaceAttachRepository._();
+
+  /// Creates a relation between this [Workspace] and the given [WorkspaceMember]s
+  /// by setting each [WorkspaceMember]'s foreign key `workspaceId` to refer to this [Workspace].
+  Future<void> members(
+    _i1.Session session,
+    Workspace workspace,
+    List<_i2.WorkspaceMember> workspaceMember, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (workspaceMember.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('workspaceMember.id');
+    }
+    if (workspace.id == null) {
+      throw ArgumentError.notNull('workspace.id');
+    }
+
+    var $workspaceMember = workspaceMember
+        .map((e) => e.copyWith(workspaceId: workspace.id))
+        .toList();
+    await session.db.update<_i2.WorkspaceMember>(
+      $workspaceMember,
+      columns: [_i2.WorkspaceMember.t.workspaceId],
+      transaction: transaction,
+    );
+  }
+}
+
+class WorkspaceAttachRowRepository {
+  const WorkspaceAttachRowRepository._();
+
+  /// Creates a relation between this [Workspace] and the given [WorkspaceMember]
+  /// by setting the [WorkspaceMember]'s foreign key `workspaceId` to refer to this [Workspace].
+  Future<void> members(
+    _i1.Session session,
+    Workspace workspace,
+    _i2.WorkspaceMember workspaceMember, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (workspaceMember.id == null) {
+      throw ArgumentError.notNull('workspaceMember.id');
+    }
+    if (workspace.id == null) {
+      throw ArgumentError.notNull('workspace.id');
+    }
+
+    var $workspaceMember = workspaceMember.copyWith(workspaceId: workspace.id);
+    await session.db.updateRow<_i2.WorkspaceMember>(
+      $workspaceMember,
+      columns: [_i2.WorkspaceMember.t.workspaceId],
+      transaction: transaction,
+    );
+  }
+}
+
+class WorkspaceDetachRepository {
+  const WorkspaceDetachRepository._();
+
+  /// Detaches the relation between this [Workspace] and the given [WorkspaceMember]
+  /// by setting the [WorkspaceMember]'s foreign key `workspaceId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> members(
+    _i1.Session session,
+    List<_i2.WorkspaceMember> workspaceMember, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (workspaceMember.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('workspaceMember.id');
+    }
+
+    var $workspaceMember =
+        workspaceMember.map((e) => e.copyWith(workspaceId: null)).toList();
+    await session.db.update<_i2.WorkspaceMember>(
+      $workspaceMember,
+      columns: [_i2.WorkspaceMember.t.workspaceId],
+      transaction: transaction,
+    );
+  }
+}
+
+class WorkspaceDetachRowRepository {
+  const WorkspaceDetachRowRepository._();
+
+  /// Detaches the relation between this [Workspace] and the given [WorkspaceMember]
+  /// by setting the [WorkspaceMember]'s foreign key `workspaceId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> members(
+    _i1.Session session,
+    _i2.WorkspaceMember workspaceMember, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (workspaceMember.id == null) {
+      throw ArgumentError.notNull('workspaceMember.id');
+    }
+
+    var $workspaceMember = workspaceMember.copyWith(workspaceId: null);
+    await session.db.updateRow<_i2.WorkspaceMember>(
+      $workspaceMember,
+      columns: [_i2.WorkspaceMember.t.workspaceId],
       transaction: transaction,
     );
   }
