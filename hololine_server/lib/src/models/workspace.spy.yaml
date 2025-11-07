@@ -1,0 +1,12 @@
+class: Workspace
+table: workspace
+fields:
+    name: String
+    description: String?
+    parentId: int?, relation(parent=workspace)
+    isPremium: bool, default=false
+    createdAt: DateTime
+    deletedAt: DateTime?
+    archivedAt: DateTime?
+
+    members: List<WorkspaceMember>?, relation(name=workspace_members_relation)
