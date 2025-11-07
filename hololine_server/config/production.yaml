@@ -30,8 +30,8 @@ webServer:
 # If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
-  host: postgres.railway.internal
-  port: 5432
+  host: centerbeam.proxy.rlwy.net
+  port: 31214
   name: railway
   user: postgres
   requireSsl: true
