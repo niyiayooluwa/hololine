@@ -31,6 +31,7 @@ webServer:
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
   host: "${SERVERPOD_DB_HOST}" 
+  port: 5432
   name: "${SERVERPOD_DB_NAME}"
   user: "${SERVERPOD_DB_USER}"
   password: "${SERVERPOD_DB_PASSWORD}" 
