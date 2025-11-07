@@ -30,11 +30,10 @@ webServer:
 # If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
-  host: ${PGHOST}
-  port: ${PGPORT}:!int
-  name: ${PGDATABASE}
-  user: ${PGUSER}
-  password: ${PGPASSWORD}
+  host: postgres.railway.internal
+  port: 5432
+  name: railway
+  user: postgres
   requireSsl: true
   #isUnixSocket: true # defaults to false
 
