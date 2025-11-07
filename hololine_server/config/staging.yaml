@@ -35,7 +35,7 @@ webServer:
 # connect on the public IP of the database e.g. database-staging.examplepod.com.
 database:
   host: ${PGHOST}
-  port: ${PGPORT}
+  port: ${PGPORT}:!int
   name: ${PGDATABASE}
   user: ${PGUSER}
   password: ${PGPASSWORD}
