@@ -30,11 +30,11 @@ webServer:
 # If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
-  host: ${SERVERPOD_DB_HOST} 
-  port: ${SERVERPOD_DB_PORT} 
-  name: ${SERVERPOD_DB_NAME}
-  user: ${SERVERPOD_DB_USER}
-  password: ${SERVERPOD_DB_PASSWORD} # <--- THIS IS KEY
+  host: "${SERVERPOD_DB_HOST}" 
+  port: "${SERVERPOD_DB_PORT}" # <--- Add quotes here
+  name: "${SERVERPOD_DB_NAME}"
+  user: "${SERVERPOD_DB_USER}"
+  password: "${SERVERPOD_DB_PASSWORD}" 
   requireSsl: true
 
 # This is the setup for Redis. The default for the Google Cloud Engine Terraform
