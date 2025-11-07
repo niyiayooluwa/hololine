@@ -1,5 +1,5 @@
 import 'package:hololine_server/src/generated/protocol.dart';
-import 'package:hololine_server/src/services/workspace_service.dart';
+import 'package:hololine_server/src/usecase/workspace_service.dart';
 import 'package:serverpod/serverpod.dart';
 
 class WorkspaceEndpoint extends Endpoint {
