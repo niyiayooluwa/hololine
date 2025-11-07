@@ -1,0 +1,18 @@
+class: WorkspaceMember
+table: workspace_member
+fields:
+    # Links to the user who is the member.
+    userInfoId: int, relation(parent=serverpod_auth_user_info)
+    # Links to the workspace they are a member of.
+    workspace: Workspace?, relation(name=workspace_members_relation)
+    # Use the enum for type safety.
+    role: WorkspaceRole
+    # Good for auditing
+    invitedById: int?, relation(parent=serverpod_auth_user_info, onDelete=setNull)
+    joinedAt: DateTime
+    isActive: bool, default=true
+indexes:
+    # Ensures a user can only be in a workspace once.
+    user_workspace_unique_idx:
+        fields: userInfoId, workspaceId
+        unique: true
