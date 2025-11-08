@@ -9,12 +9,15 @@ apiServer:
   port: 8080
   publicHost: server-production-a7be.up.railway.app
   publicScheme: https
+  publicPort: 443
 
 insightsServer:
   port: 8081
   publicHost: server-production-a7be.up.railway.app
   publicScheme: https
+  publicPort: 443
 
+# Configuration for the web server.
 webServer:
   port: 8082
   publicHost: server-production-a7be.up.railway.app
