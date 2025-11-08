@@ -6,7 +6,7 @@
 
 # Configuration for the main API server.
 apiServer:
-  port: $PORT
+  port: 8080
   publicHost: $SERVERPOD_PUBLIC_URL
   publicPort: 443
   protocol: https
