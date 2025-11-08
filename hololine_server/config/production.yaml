@@ -30,7 +30,7 @@ webServer:
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
   host: $PGHOST
-  port: ${PGPORT}
+  port: 5432
   user: $PGUSER
   password: $PGPASSWORD
   databaseName: $PGDATABASE
