@@ -37,7 +37,7 @@ COPY --from=build /server/confi[g]/ config/
 COPY --from=build /server/we[b]/ web/
 COPY --from=build /server/migration[s]/ migrations/
 
-COPY --from=build /web/build/web/ web/
+#COPY --from=build /web/build/web/ web/
 
 EXPOSE 8080
 EXPOSE 8081
