@@ -26,6 +26,9 @@ class RolePolicy {
   static bool canManageMembers(WorkspaceRole role) =>
       role == WorkspaceRole.owner || role == WorkspaceRole.admin;
 
+  static bool canGenerateInviteCode(WorkspaceRole role) =>
+      role == WorkspaceRole.owner || role == WorkspaceRole.admin;
+
   static bool canPromoteInWorkspace(WorkspaceRole role) =>
       role == WorkspaceRole.owner;
 

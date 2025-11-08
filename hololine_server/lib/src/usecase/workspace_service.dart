@@ -58,6 +58,8 @@ class WorkspaceService {
     }
 
     // 4. Validate Parent Workspace Hierarchy
+    // TODO: Re-evaluate this rule in the future. If users request nested
+    // workspaces (i.e. grandchildren), this validation should be removed.
     var parentWorkspace = await _workspaceRepository.findWorkspaceById(
       session,
       parentWorkspaceId,
