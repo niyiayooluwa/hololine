@@ -6,7 +6,7 @@ BEGIN;
 CREATE TABLE "workspace" (
     "id" bigserial PRIMARY KEY,
     "name" text NOT NULL,
-    "description" text,
+    "description" text NOT NULL,
     "parentId" bigint,
     "isPremium" boolean NOT NULL DEFAULT false,
     "createdAt" timestamp without time zone NOT NULL,
@@ -364,7 +364,7 @@ ALTER TABLE ONLY "workspace"
 ALTER TABLE ONLY "workspace_member"
     ADD CONSTRAINT "workspace_member_fk_0"
     FOREIGN KEY("userInfoId")
-    REFERENCES "serverpod_auth_user_info"("id")
+    REFERENCES "serverpod_user_info"("id")
     ON DELETE NO ACTION
     ON UPDATE NO ACTION;
 ALTER TABLE ONLY "workspace_member"
@@ -376,7 +376,7 @@ ALTER TABLE ONLY "workspace_member"
 ALTER TABLE ONLY "workspace_member"
     ADD CONSTRAINT "workspace_member_fk_2"
     FOREIGN KEY("invitedById")
-    REFERENCES "serverpod_auth_user_info"("id")
+    REFERENCES "serverpod_user_info"("id")
     ON DELETE SET NULL
     ON UPDATE NO ACTION;
 
@@ -415,9 +415,9 @@ ALTER TABLE ONLY "serverpod_query_log"
 -- MIGRATION VERSION FOR hololine
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('hololine', '20251105221227078', now())
+    VALUES ('hololine', '20251108140445618', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20251105221227078', "timestamp" = now();
+    DO UPDATE SET "version" = '20251108140445618', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

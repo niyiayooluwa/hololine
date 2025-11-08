@@ -64,6 +64,9 @@ class RolePolicy {
       role == ParentRole.parentAdmin ||
       role == ParentRole.superadmin;
 
+  static bool canCreateChild(WorkspaceRole role) =>
+      role == WorkspaceRole.owner || role == WorkspaceRole.admin;
+
   static bool canDownloadChildReports(ParentRole role) =>
       role == ParentRole.parentOwner ||
       role == ParentRole.parentAdmin ||

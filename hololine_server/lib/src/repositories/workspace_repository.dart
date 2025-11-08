@@ -85,4 +85,64 @@ class WorkspaceRepo {
       return insertedWorkspace;
     });
   }
+
+  /// Finds a workspace member record by matching the user and workspace IDs.
+  ///
+  /// - [session]: The active Serverpod session.
+  /// - [userId]: The ID of the user to find.
+  /// - [workspaceId]: The ID of the workspace to check for membership.
+  ///
+  /// Returns a [Future] that completes with the [WorkspaceMember] if found,
+  /// otherwise `null`.
+  Future<WorkspaceMember?> findMemberByWorkspaceId(
+    Session session,
+    int userId,
+    int workspaceId,
+  ) async {
+    return WorkspaceMember.db.findFirstRow(
+      session,
+      where: (member) =>
+          member.userInfoId.equals(userId) &
+          member.workspaceId.equals(workspaceId),
+    );
+  }
+
+  /// Finds a workspace by its unique ID.
+  ///
+  /// - [session]: The active Serverpod session.
+  /// - [workspaceId]: The ID of the workspace to find.
+  ///
+  /// Returns a [Future] that completes with the [Workspace] if found,
+  /// otherwise `null`.
+  Future<Workspace?> findWorkspaceById(
+    Session session,
+    int workspaceId,
+  ) async {
+    return Workspace.db.findById(
+      session,
+      workspaceId,
+    );
+  }
+
+  /// Checks if a child workspace with a given name already exists under a
+  /// specific parent workspace.
+  ///
+  /// - [session]: The active Serverpod session.
+  /// - [name]: The name of the child workspace to check for.
+  /// - [parentId]: The ID of the parent workspace.
+  ///
+  /// Returns a [Future] that completes with `true` if a child workspace with
+  /// the specified name exists under the given parent, otherwise `false`.
+  Future<bool> doesChildWorkspaceExist(
+    Session session,
+    String name,
+    int parentId,
+  ) async {
+    var result = await Workspace.db.findFirstRow(
+      session,
+      where: (workspace) =>
+          workspace.name.equals(name) & workspace.parentId.equals(parentId),
+    );
+    return result != null;
+  }
 }

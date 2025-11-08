@@ -25,7 +25,7 @@ ARG SERVERPOD_URL
 
 FROM alpine:latest
 
-ENV runmode=production
+ENV runmode=development
 ENV serverid=default
 ENV logging=normal
 ENV role=monolith

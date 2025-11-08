@@ -35,7 +35,12 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'name',
               type: _i1.getType<String>(),
               nullable: false,
-            )
+            ),
+            'description': _i1.ParameterDescription(
+              name: 'description',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -45,8 +50,39 @@ class Endpoints extends _i1.EndpointDispatch {
                   .createStandalone(
             session,
             params['name'],
+            params['description'],
           ),
-        )
+        ),
+        'createChild': _i1.MethodConnector(
+          name: 'createChild',
+          params: {
+            'name': _i1.ParameterDescription(
+              name: 'name',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'parentWorkspaceId': _i1.ParameterDescription(
+              name: 'parentWorkspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'description': _i1.ParameterDescription(
+              name: 'description',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i2.WorkspaceEndpoint).createChild(
+            session,
+            params['name'],
+            params['parentWorkspaceId'],
+            params['description'],
+          ),
+        ),
       },
     );
     modules['serverpod_auth'] = _i3.Endpoints()..initializeEndpoints(server);

@@ -19,7 +19,7 @@ abstract class Workspace
   Workspace._({
     this.id,
     required this.name,
-    this.description,
+    required this.description,
     this.parentId,
     bool? isPremium,
     required this.createdAt,
@@ -31,7 +31,7 @@ abstract class Workspace
   factory Workspace({
     int? id,
     required String name,
-    String? description,
+    required String description,
     int? parentId,
     bool? isPremium,
     required DateTime createdAt,
@@ -44,7 +44,7 @@ abstract class Workspace
     return Workspace(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
-      description: jsonSerialization['description'] as String?,
+      description: jsonSerialization['description'] as String,
       parentId: jsonSerialization['parentId'] as int?,
       isPremium: jsonSerialization['isPremium'] as bool,
       createdAt:
@@ -71,7 +71,7 @@ abstract class Workspace
 
   String name;
 
-  String? description;
+  String description;
 
   int? parentId;
 
@@ -107,7 +107,7 @@ abstract class Workspace
     return {
       if (id != null) 'id': id,
       'name': name,
-      if (description != null) 'description': description,
+      'description': description,
       if (parentId != null) 'parentId': parentId,
       'isPremium': isPremium,
       'createdAt': createdAt.toJson(),
@@ -123,7 +123,7 @@ abstract class Workspace
     return {
       if (id != null) 'id': id,
       'name': name,
-      if (description != null) 'description': description,
+      'description': description,
       if (parentId != null) 'parentId': parentId,
       'isPremium': isPremium,
       'createdAt': createdAt.toJson(),
@@ -170,7 +170,7 @@ class _WorkspaceImpl extends Workspace {
   _WorkspaceImpl({
     int? id,
     required String name,
-    String? description,
+    required String description,
     int? parentId,
     bool? isPremium,
     required DateTime createdAt,
@@ -196,7 +196,7 @@ class _WorkspaceImpl extends Workspace {
   Workspace copyWith({
     Object? id = _Undefined,
     String? name,
-    Object? description = _Undefined,
+    String? description,
     Object? parentId = _Undefined,
     bool? isPremium,
     DateTime? createdAt,
@@ -207,7 +207,7 @@ class _WorkspaceImpl extends Workspace {
     return Workspace(
       id: id is int? ? id : this.id,
       name: name ?? this.name,
-      description: description is String? ? description : this.description,
+      description: description ?? this.description,
       parentId: parentId is int? ? parentId : this.parentId,
       isPremium: isPremium ?? this.isPremium,
       createdAt: createdAt ?? this.createdAt,

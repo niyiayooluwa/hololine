@@ -23,11 +23,32 @@ class EndpointWorkspace extends _i1.EndpointRef {
   String get name => 'workspace';
 
   /// Create a new standalone workspace and makes the caller the owner.
-  _i2.Future<_i3.Workspace> createStandalone(String name) =>
+  _i2.Future<_i3.Workspace> createStandalone(
+    String name,
+    String description,
+  ) =>
       caller.callServerEndpoint<_i3.Workspace>(
         'workspace',
         'createStandalone',
-        {'name': name},
+        {
+          'name': name,
+          'description': description,
+        },
+      );
+
+  _i2.Future<_i3.Workspace> createChild(
+    String name,
+    int parentWorkspaceId,
+    String description,
+  ) =>
+      caller.callServerEndpoint<_i3.Workspace>(
+        'workspace',
+        'createChild',
+        {
+          'name': name,
+          'parentWorkspaceId': parentWorkspaceId,
+          'description': description,
+        },
       );
 }
 

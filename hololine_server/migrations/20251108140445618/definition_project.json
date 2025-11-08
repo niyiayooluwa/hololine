@@ -96,8 +96,8 @@
         {
           "name": "description",
           "columnType": 0,
-          "isNullable": true,
-          "dartType": "String?"
+          "isNullable": false,
+          "dartType": "String"
         },
         {
           "name": "parentId",
@@ -219,7 +219,7 @@
           "columns": [
             "userInfoId"
           ],
-          "referenceTable": "serverpod_auth_user_info",
+          "referenceTable": "serverpod_user_info",
           "referenceTableSchema": "public",
           "referenceColumns": [
             "id"
@@ -245,7 +245,7 @@
           "columns": [
             "invitedById"
           ],
-          "referenceTable": "serverpod_auth_user_info",
+          "referenceTable": "serverpod_user_info",
           "referenceTableSchema": "public",
           "referenceColumns": [
             "id"

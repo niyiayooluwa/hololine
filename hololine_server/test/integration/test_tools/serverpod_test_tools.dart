@@ -131,6 +131,7 @@ class _WorkspaceEndpoint {
   _i3.Future<_i4.Workspace> createStandalone(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
+    String description,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -143,7 +144,45 @@ class _WorkspaceEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'workspace',
           methodName: 'createStandalone',
-          parameters: _i1.testObjectToJson({'name': name}),
+          parameters: _i1.testObjectToJson({
+            'name': name,
+            'description': description,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.Workspace>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.Workspace> createChild(
+    _i1.TestSessionBuilder sessionBuilder,
+    String name,
+    int parentWorkspaceId,
+    String description,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'workspace',
+        method: 'createChild',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'workspace',
+          methodName: 'createChild',
+          parameters: _i1.testObjectToJson({
+            'name': name,
+            'parentWorkspaceId': parentWorkspaceId,
+            'description': description,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(
