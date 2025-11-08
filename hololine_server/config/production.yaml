@@ -34,6 +34,7 @@ database:
   user: $PGUSER
   password: $PGPASSWORD
   databaseName: $PGDATABASE
+  name: $PGDATABASE
   requireSsl: false
   #isUnixSocket: true # defaults to false
 
