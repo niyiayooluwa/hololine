@@ -7,21 +7,17 @@
 # Configuration for the main API server.
 apiServer:
   port: 8080
-  publicHost: $SERVERPOD_PUBLIC_URL
-  publicPort: 443
-  protocol: https
-
-# Configuration for the Insights server.
-insightsServer:
-  port: 8081
-  publicHost: $SERVERPOD_PUBLIC_URL
-  publicPort: 443
+  publicHost: server-production-a7be.up.railway.app
   publicScheme: https
 
-# Configuration for the web server.
+insightsServer:
+  port: 8081
+  publicHost: server-production-a7be.up.railway.app
+  publicScheme: https
+
 webServer:
   port: 8082
-  publicHost: $SERVERPOD_PUBLIC_URL
+  publicHost: server-production-a7be.up.railway.app
   publicPort: 443
   publicScheme: https
 
