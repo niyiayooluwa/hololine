@@ -1,16 +1,16 @@
 FROM dart:stable AS build
 
 WORKDIR /server
-COPY hello_serverpod_server .
+COPY hololine_server .
 
 # Build our server
 RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server
 
 WORKDIR /web
-COPY hello_serverpod_flutter/ .
+COPY hololine_flutter/ .
 # Copy our client package code. The flutter app depends on it
-COPY hello_serverpod_client/ ../hello_serverpod_client/
+COPY hololine_client/ ../hololine_client/
 
 # Install Flutter SDK
 RUN apt-get update && apt-get -y install curl git unzip xz-utils zip libglu1-mesa
