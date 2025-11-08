@@ -30,11 +30,11 @@ webServer:
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
   host: $PGHOST
-  port: 5432
+  port: ${PGPORT}
   user: $PGUSER
   password: $PGPASSWORD
   databaseName: $PGDATABASE
-  #requireSsl: true
+  requireSsl: false
   #isUnixSocket: true # defaults to false
 
 # This is the setup for Redis. The default for the Google Cloud Engine Terraform
