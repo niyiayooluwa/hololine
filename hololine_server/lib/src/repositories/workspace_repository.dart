@@ -1,27 +1,18 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
-/// Repository for performing persistence and query operations related to
-/// Workspace and WorkspaceMember entities.
-///
-/// Provides higher-level methods that encapsulate common database patterns
-/// (for example, transactional creation of a workspace together with its
-/// owner member) so callers do not need to manipulate raw ORM calls
-/// directly.
+/// Repository for managing workspace entities and their members.
+/// Handles workspace creation, retrieval, and member management operations
+/// with proper validation and business rules enforcement.
 class WorkspaceRepo {
-
-  /// Finds the first workspace with the given [name] in which the user with
-  /// id [userId] is a member with the owner role.
+  /// Finds a workspace by its [name] and owner user ID.
   ///
-  /// - [session]: The active Serverpod session used to execute the query.
-  /// - [name]: The workspace name to match.
-  /// - [userId]: The id of the user that must be an owner member of the
-  ///   workspace.
-  /// 
-  /// Returns a [Future] that completes with the matching [Workspace], or `null`
-  /// if no matching workspace is found. The underlying query checks that a
-  /// workspace's members contain an entry with `userInfoId == userId` and
-  /// `role == WorkspaceRole.owner`.
+  /// The [name] must match exactly and the [userId] must correspond to a user
+  /// with an owner role in the workspace. Searches through all workspaces
+  /// where the specified user is an owner and the workspace name matches.
+  ///
+  /// Returns the found workspace with its members included, or `null` if no
+  /// matching workspace is found.
   Future<Workspace?> findByNameAndOwner(
     Session session,
     String name,
@@ -36,32 +27,48 @@ class WorkspaceRepo {
             member.role.equals(WorkspaceRole.owner));
         return nameMatch & ownerMatch;
       },
+      include: Workspace.include(
+        members: WorkspaceMember.includeList(),
+      ),
     );
   }
 
-  /// Creates a new workspace and inserts an owner member for it within a single
-  /// database transaction.
+  /// Creates a new [workspace] with the specified [ownerId] as its owner.
   ///
-  /// - [session]: The active Serverpod session used to execute the transaction.
-  /// - [workspace]: The [Workspace] instance to insert (its id will be populated
-  ///   after insertion).
-  /// - [ownerId]: The user id that should be added as the owner member for the
-  ///   newly created workspace.
+  /// The [workspace] must have a unique name within its context. For root
+  /// workspaces (where [workspace.parentId] is `null`), the name must be
+  /// unique for the owner. For child workspaces, the name must be unique
+  /// under the same parent workspace.
   ///
-  /// The method performs the following steps in one transaction:
-  /// 1. Insert the provided [workspace] into the database.
-  /// 2. Create and insert a [WorkspaceMember] for [ownerId] with
-  ///    `role == WorkspaceRole.owner`, `joinedAt` set to the current UTC time,
-  ///    and `isActive == true`, referencing the newly inserted workspace id.
-  /// 
-  /// Returns a [Future] that completes with the inserted [Workspace] (including
-  /// its database-generated id). If any database operation fails, the
-  /// transaction is rolled back and the error is propagated to the caller.
+  /// Returns the created workspace with its assigned ID.
+  ///
+  /// Throws an [Exception] if a workspace with the same name already exists
+  /// for the owner or under the specified parent workspace.
   Future<Workspace> create(
     Session session,
     Workspace workspace,
     int ownerId,
   ) async {
+    if (workspace.parentId != null) {
+      final exists = await doesChildWorkspaceExist(
+        session,
+        workspace.name,
+        workspace.parentId!,
+      );
+      if (exists) {
+        throw Exception(
+          'A workspace with name "${workspace.name}" already exists under this parent',
+        );
+      }
+    } else {
+      final existing = await findByNameAndOwner(session, workspace.name, ownerId);
+      if (existing != null) {
+        throw Exception(
+          'A workspace with name "${workspace.name}" already exists',
+        );
+      }
+    }
+
     return await session.db.transaction((transaction) async {
       var insertedWorkspace = await Workspace.db.insertRow(
         session,
@@ -86,14 +93,14 @@ class WorkspaceRepo {
     });
   }
 
-  /// Finds a workspace member record by matching the user and workspace IDs.
+  /// Finds a workspace member by [userId] and [workspaceId].
   ///
-  /// - [session]: The active Serverpod session.
-  /// - [userId]: The ID of the user to find.
-  /// - [workspaceId]: The ID of the workspace to check for membership.
+  /// The [userId] and [workspaceId] are used to locate a specific membership
+  /// relationship. This is useful for checking if a user is a member of
+  /// a particular workspace.
   ///
-  /// Returns a [Future] that completes with the [WorkspaceMember] if found,
-  /// otherwise `null`.
+  /// Returns the workspace member if found, or `null` if no membership
+  /// exists for the given user and workspace combination.
   Future<WorkspaceMember?> findMemberByWorkspaceId(
     Session session,
     int userId,
@@ -107,13 +114,13 @@ class WorkspaceRepo {
     );
   }
 
-  /// Finds a workspace by its unique ID.
+  /// Finds a workspace by its [workspaceId].
   ///
-  /// - [session]: The active Serverpod session.
-  /// - [workspaceId]: The ID of the workspace to find.
+  /// The [workspaceId] must be a valid workspace identifier. This method
+  /// performs a simple lookup by primary key.
   ///
-  /// Returns a [Future] that completes with the [Workspace] if found,
-  /// otherwise `null`.
+  /// Returns the workspace if found, or `null` if no workspace exists
+  /// with the given identifier.
   Future<Workspace?> findWorkspaceById(
     Session session,
     int workspaceId,
@@ -124,15 +131,13 @@ class WorkspaceRepo {
     );
   }
 
-  /// Checks if a child workspace with a given name already exists under a
-  /// specific parent workspace.
+  /// Checks if a child workspace with the given [name] exists under [parentId].
   ///
-  /// - [session]: The active Serverpod session.
-  /// - [name]: The name of the child workspace to check for.
-  /// - [parentId]: The ID of the parent workspace.
+  /// The [name] is checked for exact match under the specified [parentId].
+  /// This is used to enforce unique naming within the same parent workspace.
   ///
-  /// Returns a [Future] that completes with `true` if a child workspace with
-  /// the specified name exists under the given parent, otherwise `false`.
+  /// Returns `true` if a child workspace with the given name exists under
+  /// the parent, `false` otherwise.
   Future<bool> doesChildWorkspaceExist(
     Session session,
     String name,
@@ -144,5 +149,95 @@ class WorkspaceRepo {
           workspace.name.equals(name) & workspace.parentId.equals(parentId),
     );
     return result != null;
+  }
+
+  /// Updates the role of a workspace member identified by [memberId].
+  ///
+  /// The [memberId] must identify an existing workspace member, and the
+  /// [workspaceId] is used to verify that the member belongs to the
+  /// specified workspace. The [role] specifies the new role to assign.
+  ///
+  /// Throws an [Exception] if the member is not found, does not belong to
+  /// the specified workspace, or if changing the role would leave the
+  /// workspace without any active owners.
+  Future<void> updateMemberRole(
+    Session session,
+    int memberId,
+    WorkspaceRole role,
+    int workspaceId,
+  ) async {
+    final member = await WorkspaceMember.db.findById(session, memberId);
+    
+    if (member == null) {
+      throw Exception('Member not found');
+    }
+
+    if (member.workspaceId != workspaceId) {
+      throw Exception('Member does not belong to the specified workspace');
+    }
+
+    if (member.role == WorkspaceRole.owner && role != WorkspaceRole.owner) {
+      final ownerCount = await WorkspaceMember.db.count(
+        session,
+        where: (m) =>
+            m.workspaceId.equals(member.workspaceId) &
+            m.role.equals(WorkspaceRole.owner) &
+            m.isActive.equals(true),
+      );
+      
+      if (ownerCount <= 1) {
+        throw Exception(
+          'Cannot change role: workspace must have at least one active owner',
+        );
+      }
+    }
+
+    member.role = role;
+    await WorkspaceMember.db.updateRow(session, member);
+  }
+
+  /// Deactivates a workspace member identified by [memberId].
+  ///
+  /// The [memberId] must identify an existing workspace member, and the
+  /// [workspaceId] is used to verify that the member belongs to the
+  /// specified workspace. Deactivating a member prevents them from
+  /// accessing the workspace.
+  ///
+  /// Throws an [Exception] if the member is not found, does not belong to
+  /// the specified workspace, or if deactivating the member would leave
+  /// the workspace without any active owners.
+  Future<void> deactivateMember(
+    Session session,
+    int memberId,
+    int workspaceId,
+  ) async {
+    final member = await WorkspaceMember.db.findById(session, memberId);
+    
+    if (member == null) {
+      throw Exception('Member not found');
+    }
+
+    if (member.workspaceId != workspaceId) {
+      throw Exception('Member does not belong to the specified workspace');
+    }
+
+    if (member.role == WorkspaceRole.owner) {
+      final activeOwnerCount = await WorkspaceMember.db.count(
+        session,
+        where: (m) =>
+            m.workspaceId.equals(workspaceId) &
+            m.role.equals(WorkspaceRole.owner) &
+            m.isActive.equals(true),
+      );
+      
+      if (activeOwnerCount <= 1) {
+        throw Exception(
+          'Cannot deactivate: workspace must have at least one active owner',
+        );
+      }
+    }
+
+    member.isActive = false;
+    await WorkspaceMember.db.updateRow(session, member);
   }
 }

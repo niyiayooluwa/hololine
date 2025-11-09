@@ -1,3 +1,5 @@
 workspace:
   - createStandalone:
   - createChild:
+  - updateMemberRole:
+  - removeMember:

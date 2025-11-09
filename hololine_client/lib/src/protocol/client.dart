@@ -12,8 +12,9 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:hololine_client/src/protocol/workspace.dart' as _i3;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i4;
-import 'protocol.dart' as _i5;
+import 'package:hololine_client/src/protocol/workspace_role.dart' as _i4;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i5;
+import 'protocol.dart' as _i6;
 
 /// {@category Endpoint}
 class EndpointWorkspace extends _i1.EndpointRef {
@@ -22,7 +23,6 @@ class EndpointWorkspace extends _i1.EndpointRef {
   @override
   String get name => 'workspace';
 
-  /// Create a new standalone workspace and makes the caller the owner.
   _i2.Future<_i3.Workspace> createStandalone(
     String name,
     String description,
@@ -50,14 +50,42 @@ class EndpointWorkspace extends _i1.EndpointRef {
           'description': description,
         },
       );
+
+  _i2.Future<void> updateMemberRole({
+    required int memberId,
+    required int workspaceId,
+    required _i4.WorkspaceRole role,
+  }) =>
+      caller.callServerEndpoint<void>(
+        'workspace',
+        'updateMemberRole',
+        {
+          'memberId': memberId,
+          'workspaceId': workspaceId,
+          'role': role,
+        },
+      );
+
+  _i2.Future<void> removeMember({
+    required int memberId,
+    required int workspaceId,
+  }) =>
+      caller.callServerEndpoint<void>(
+        'workspace',
+        'removeMember',
+        {
+          'memberId': memberId,
+          'workspaceId': workspaceId,
+        },
+      );
 }
 
 class Modules {
   Modules(Client client) {
-    auth = _i4.Caller(client);
+    auth = _i5.Caller(client);
   }
 
-  late final _i4.Caller auth;
+  late final _i5.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -76,7 +104,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i5.Protocol(),
+          _i6.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

@@ -1,4 +1,5 @@
 import 'package:hololine_server/src/generated/protocol.dart';
+import 'package:hololine_server/src/utils/permissions.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:hololine_server/src/repositories/workspace_repository.dart';
 
@@ -9,16 +10,9 @@ class WorkspaceService {
     Session session,
     String name,
     int userId,
-    String description
+    String description,
   ) async {
-    var existing =
-        await _workspaceRepository.findByNameAndOwner(session, name, userId);
-
-    if (existing != null) {
-      throw Exception('A worksapce with the name "$name" already exists');
-    }
-
-    var newWorksapce = Workspace(
+    var newWorkspace = Workspace(
       name: name,
       description: description,
       createdAt: DateTime.now().toUtc(),
@@ -26,7 +20,7 @@ class WorkspaceService {
 
     return await _workspaceRepository.create(
       session,
-      newWorksapce,
+      newWorkspace,
       userId,
     );
   }
@@ -36,9 +30,8 @@ class WorkspaceService {
     String name,
     int userId,
     int parentWorkspaceId,
-    String description
+    String description,
   ) async {
-    // 1. & 2. Get Authenticated User ID & Check User's Role in Parent Workspace
     var member = await _workspaceRepository.findMemberByWorkspaceId(
       session,
       userId,
@@ -46,42 +39,33 @@ class WorkspaceService {
     );
 
     if (member == null) {
-      throw Exception('PermissionDeniedException');
+      throw Exception('User is not a member of the parent workspace');
     }
 
-    // 3. Authorize Action
-    var hasPermission = 
-        member.role == WorkspaceRole.owner ||
+    if (!member.isActive) {
+      throw Exception('Permission denied. Your membership is inactive');
+    }
+
+    var hasPermission = member.role == WorkspaceRole.owner ||
         member.role == WorkspaceRole.admin;
+    
     if (!hasPermission) {
-      throw Exception('Permission Denied. You cannot perform this action.');
+      throw Exception('Permission denied. Insufficient role');
     }
 
-    // 4. Validate Parent Workspace Hierarchy
-    // TODO: Re-evaluate this rule in the future. If users request nested
-    // workspaces (i.e. grandchildren), this validation should be removed.
     var parentWorkspace = await _workspaceRepository.findWorkspaceById(
       session,
       parentWorkspaceId,
     );
 
-    if (parentWorkspace?.parentId != null) {
-      throw Exception('A child workspace cannot become a parent.');
+    if (parentWorkspace == null) {
+      throw Exception('Parent workspace not found');
     }
 
-    // 5. Validate Unique Name
-    var exists = await _workspaceRepository.doesChildWorkspaceExist(
-      session,
-      name,
-      parentWorkspaceId,
-    );
-
-    if (exists) {
-      throw Exception(
-          'A workspace with this name already exists in the parent.');
+    if (parentWorkspace.parentId != null) {
+      throw Exception('A child workspace cannot become a parent');
     }
 
-    // 6. Perform Atomic Creation
     var newChildWorkspace = Workspace(
       name: name,
       description: description,
@@ -89,13 +73,93 @@ class WorkspaceService {
       createdAt: DateTime.now().toUtc(),
     );
 
-    var createdWorkspace = await _workspaceRepository.create(
+    return await _workspaceRepository.create(
       session,
       newChildWorkspace,
       userId,
     );
+  }
 
-    // 7. Return the New Workspace
-    return createdWorkspace;
+  Future<void> updateMemberRole(
+    Session session, {
+    required int memberId,
+    required int workspaceId,
+    required WorkspaceRole role,
+    required int actorId,
+  }) async {
+    var actor = await _workspaceRepository.findMemberByWorkspaceId(
+        session, actorId, workspaceId);
+    var member = await _workspaceRepository.findMemberByWorkspaceId(
+        session, memberId, workspaceId);
+
+    if (actor == null) {
+      throw Exception('Actor is not a member of the workspace');
+    }
+
+    if (!actor.isActive) {
+      throw Exception('Permission denied. Your membership is inactive');
+    }
+
+    if (member == null) {
+      throw Exception('Target member not found in the workspace');
+    }
+
+    if (!member.isActive) {
+      throw Exception('Cannot update role of an inactive member');
+    }
+
+    if (actorId == memberId && actor.role == WorkspaceRole.owner) {
+      throw Exception('Owners cannot change their own role');
+    }
+
+    if (!RolePolicy.canUpdateRole(
+      actor: actor.role,
+      target: member.role,
+      newRole: role,
+    )) {
+      throw Exception('Permission denied. Insufficient privileges');
+    }
+
+    await _workspaceRepository.updateMemberRole(
+      session,
+      memberId,
+      role,
+      workspaceId,
+    );
+  }
+
+  Future<void> removeMember(
+    Session session, {
+    required int memberId,
+    required int workspaceId,
+    required int actorId,
+  }) async {
+    var actor = await _workspaceRepository.findMemberByWorkspaceId(
+        session, actorId, workspaceId);
+    var member = await _workspaceRepository.findMemberByWorkspaceId(
+        session, memberId, workspaceId);
+
+    if (actor == null) {
+      throw Exception('Actor is not a member of the workspace');
+    }
+
+    if (!actor.isActive) {
+      throw Exception('Permission denied. Your membership is inactive');
+    }
+
+    if (member == null) {
+      throw Exception('Target member not found in the workspace');
+    }
+
+    if (actorId == memberId) {
+      throw Exception('You cannot remove yourself from the workspace');
+    }
+
+    if (!RolePolicy.canManageMembers(actor.role)) {
+      throw Exception('Permission denied. Insufficient privileges');
+    }
+
+    await _workspaceRepository.deactivateMember(
+        session, memberId, workspaceId);
   }
 }

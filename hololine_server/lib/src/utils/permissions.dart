@@ -1,4 +1,4 @@
-enum WorkspaceRole { owner, admin, member, viewer }
+import 'package:hololine_server/src/generated/protocol.dart';
 
 enum ParentRole {
   parentOwner,
@@ -28,6 +28,34 @@ class RolePolicy {
 
   static bool canGenerateInviteCode(WorkspaceRole role) =>
       role == WorkspaceRole.owner || role == WorkspaceRole.admin;
+
+  static bool canUpdateRole({
+    required WorkspaceRole actor,
+    required WorkspaceRole target,
+    required WorkspaceRole newRole,
+  }) {
+    // Nobody can promote someone to owner or manage a superadmin in this flow
+    if (newRole == WorkspaceRole.owner || target == WorkspaceRole.superadmin) {
+      return false;
+    }
+
+    switch (actor) {
+      case WorkspaceRole.owner:
+        // Owner can change anyone except another owner
+        return target != WorkspaceRole.owner;
+      case WorkspaceRole.superadmin:
+        // Admin can only change members and viewers
+        return target == WorkspaceRole.member ||
+            target == WorkspaceRole.viewer ||
+            target == WorkspaceRole.admin;
+      case WorkspaceRole.admin:
+        // Admin can only change members and viewers
+        return target == WorkspaceRole.member || target == WorkspaceRole.viewer;
+      default:
+        // Other roles cannot update
+        return false;
+    }
+  }
 
   static bool canPromoteInWorkspace(WorkspaceRole role) =>
       role == WorkspaceRole.owner;

@@ -1,0 +1,10 @@
+class: WorkspaceInvitation
+table: invitation
+fields:
+    workspaceId: int, relation(parent=workspace)
+    inviteeEmail: String
+    inviterId: int, relation(parent=serverpod_user_info)
+    role: WorkspaceRole
+    token: String
+    expiresAt: DateTime
+    acceptedAt: DateTime?
