@@ -12,11 +12,13 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'user_info.dart' as _i2;
 import 'workspace.dart' as _i3;
-import 'workspace_member.dart' as _i4;
-import 'workspace_role.dart' as _i5;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i6;
+import 'workspace_invitation.dart' as _i4;
+import 'workspace_member.dart' as _i5;
+import 'workspace_role.dart' as _i6;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i7;
 export 'user_info.dart';
 export 'workspace.dart';
+export 'workspace_invitation.dart';
 export 'workspace_member.dart';
 export 'workspace_role.dart';
 export 'client.dart';
@@ -40,11 +42,14 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i3.Workspace) {
       return _i3.Workspace.fromJson(data) as T;
     }
-    if (t == _i4.WorkspaceMember) {
-      return _i4.WorkspaceMember.fromJson(data) as T;
+    if (t == _i4.WorkspaceInvitation) {
+      return _i4.WorkspaceInvitation.fromJson(data) as T;
     }
-    if (t == _i5.WorkspaceRole) {
-      return _i5.WorkspaceRole.fromJson(data) as T;
+    if (t == _i5.WorkspaceMember) {
+      return _i5.WorkspaceMember.fromJson(data) as T;
+    }
+    if (t == _i6.WorkspaceRole) {
+      return _i6.WorkspaceRole.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.UserInfo?>()) {
       return (data != null ? _i2.UserInfo.fromJson(data) : null) as T;
@@ -52,24 +57,28 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i3.Workspace?>()) {
       return (data != null ? _i3.Workspace.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i4.WorkspaceMember?>()) {
-      return (data != null ? _i4.WorkspaceMember.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.WorkspaceInvitation?>()) {
+      return (data != null ? _i4.WorkspaceInvitation.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<_i5.WorkspaceRole?>()) {
-      return (data != null ? _i5.WorkspaceRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.WorkspaceMember?>()) {
+      return (data != null ? _i5.WorkspaceMember.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i6.WorkspaceRole?>()) {
+      return (data != null ? _i6.WorkspaceRole.fromJson(data) : null) as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == _i1.getType<List<_i4.WorkspaceMember>?>()) {
+    if (t == _i1.getType<List<_i5.WorkspaceMember>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i4.WorkspaceMember>(e))
+              .map((e) => deserialize<_i5.WorkspaceMember>(e))
               .toList()
           : null) as T;
     }
     try {
-      return _i6.Protocol().deserialize<T>(data, t);
+      return _i7.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -84,13 +93,16 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i3.Workspace) {
       return 'Workspace';
     }
-    if (data is _i4.WorkspaceMember) {
+    if (data is _i4.WorkspaceInvitation) {
+      return 'WorkspaceInvitation';
+    }
+    if (data is _i5.WorkspaceMember) {
       return 'WorkspaceMember';
     }
-    if (data is _i5.WorkspaceRole) {
+    if (data is _i6.WorkspaceRole) {
       return 'WorkspaceRole';
     }
-    className = _i6.Protocol().getClassNameForObject(data);
+    className = _i7.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -109,15 +121,18 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'Workspace') {
       return deserialize<_i3.Workspace>(data['data']);
     }
+    if (dataClassName == 'WorkspaceInvitation') {
+      return deserialize<_i4.WorkspaceInvitation>(data['data']);
+    }
     if (dataClassName == 'WorkspaceMember') {
-      return deserialize<_i4.WorkspaceMember>(data['data']);
+      return deserialize<_i5.WorkspaceMember>(data['data']);
     }
     if (dataClassName == 'WorkspaceRole') {
-      return deserialize<_i5.WorkspaceRole>(data['data']);
+      return deserialize<_i6.WorkspaceRole>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i6.Protocol().deserializeByClassName(data);
+      return _i7.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }

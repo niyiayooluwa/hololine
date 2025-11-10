@@ -1,3 +1,4 @@
+import 'package:hololine_server/src/generated/workspace_role.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:serverpod/serverpod.dart';
@@ -66,8 +67,47 @@ class EmailHandler {
           .log('Password reset email sent to $email: ${sendReport.toString()}');
       return true;
     } catch (e, stackTrace) {
-      session.log('Failed to send password reset email to $email',
-          level: LogLevel.error, exception: e, stackTrace: stackTrace);
+      session.log(
+        'Failed to send password reset email to $email',
+        level: LogLevel.error,
+        exception: e,
+        stackTrace: stackTrace,
+      );
+      return false;
+    }
+  }
+
+  Future<bool> sendInvitation(
+    String email,
+    String token,
+    String workspaceName,
+    WorkspaceRole role,
+  ) async {
+    try {
+      final smtpServer = SmtpServer(
+        'smtp.resend.com',
+        username: 'resend',
+        password: _getResendApiKey(),
+        port: 465,
+        ssl: true,
+      );
+
+      final message = Message()
+        ..from = Address('onboarding@resend.dev', 'Hololine Team')
+        ..recipients.add(email)
+        ..subject = 'Invitation to join $workspaceName'
+        ..html = _workspaceInviteEmail(workspaceName, token, role.toString());
+
+      final sendReport = await send(message, smtpServer);
+      session.log('Invitation email sent to $email: ${sendReport.toString()}');
+      return true;
+    } catch (e, stackTrace) {
+      session.log(
+        'Failed to send invitation email to $email',
+        level: LogLevel.error,
+        exception: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
   }
@@ -281,6 +321,208 @@ class EmailHandler {
 </body>
 </html>''';
 
+    return string;
+  }
+
+  String _workspaceInviteEmail(String workspace, String token, String role) {
+    final string = '''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6; 
+            color: #1f2937;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+            background-size: 30px 30px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.5px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .greeting {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        
+        .greeting strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .message {
+            color: #4b5563;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .code-container {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            border: 2px dashed #d1d5db;
+        }
+        
+        .code-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6b7280;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .code { 
+            font-size: 42px; 
+            font-weight: 800; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 8px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        
+        .info {
+            background: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #3730a3;
+        }
+        
+        .footer { 
+            background: #f9fafb;
+            padding: 30px 40px;
+            text-align: center; 
+            font-size: 13px; 
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .footer-logo {
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .social-links {
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 8px;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 12px;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Invitation to Workspace</h1>
+        </div>
+        
+        <div class="content">
+            <p class="greeting">Hello,</p>
+            
+            <p class="message">A member of $workspace invited you to collaborate in their workspace as a <strong>$role</strong>! Join <strong>$workspace</strong> using the code below:</p>
+            
+            <div class="code-container">
+                <div class="code-label">Invitation Code</div>
+                <div class="code">$token</div>
+            </div>
+            
+            <div class="warning">
+                ⏱️ <strong>Time sensitive:</strong> This code will expire in 15 minutes.
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-logo">Hololine</div>
+            <p>&copy; 2025 Hololine Team. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Support</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>''';
     return string;
   }
 
