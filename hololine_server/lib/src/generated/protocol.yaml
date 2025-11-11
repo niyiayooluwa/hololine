@@ -5,3 +5,5 @@ workspace:
   - removeMember:
   - inviteMember:
   - acceptInvitation:
+  - archiveWorkspace:
+  - restoreWorkspace:

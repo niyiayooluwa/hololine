@@ -152,6 +152,48 @@ class WorkspaceRepo {
     return result != null;
   }
 
+  /// Archives the workspace with the specified [workspaceId].
+  ///
+  /// Sets the `archivedAt` field to the current time in UTC.
+  /// Returns `true` on success, or `false` if the workspace was not found.
+  Future<bool> archiveWorkspace(
+    Session session,
+    int workspaceId,
+  ) async {
+    var workspace = await findWorkspaceById(session, workspaceId);
+
+    if (workspace == null) {
+      return false;
+    }
+
+    workspace.archivedAt = DateTime.now().toUtc();
+    await Workspace.db.updateRow(session, workspace);
+
+    return true;
+  }
+
+  /// Restores an archived workspace by setting its `archivedAt` timestamp to null.
+  ///
+  /// This makes the workspace active again.
+  /// Returns `true` on success, or `false` if the workspace was not found.
+  Future<bool> restoreWorkspace(
+    Session session,
+    int workspaceId,
+  ) async {
+    var workspace = await findWorkspaceById(
+      session,
+      workspaceId,
+    );
+
+    if (workspace == null) {
+      return false;
+    }
+
+    workspace.archivedAt = null;
+    await Workspace.db.updateRow(session, workspace);
+    return true;
+  }
+
   /// Updates the role of a workspace member identified by [memberId].
   ///
   /// The [memberId] must identify an existing workspace member, and the

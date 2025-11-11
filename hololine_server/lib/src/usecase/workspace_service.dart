@@ -10,6 +10,26 @@ import 'package:hololine_server/src/repositories/workspace_repository.dart';
 class WorkspaceService {
   final WorkspaceRepo _workspaceRepository = WorkspaceRepo();
 
+  Future<Workspace> _assertWorkspaceIsMutable(
+    Session session,
+    int workspaceId,
+  ) async {
+    final workspace = await _workspaceRepository.findWorkspaceById(
+      session,
+      workspaceId,
+    );
+
+    if (workspace == null) {
+      throw Exception('Workspace not found');
+    }
+
+    if (workspace.archivedAt != null) {
+      throw Exception('This workspace has been archived');
+    }
+
+    return workspace;
+  }
+
   /// Creates a new standalone workspace with the given [name] and [description].
   ///
   /// The [userId] becomes the owner of the newly created workspace.
@@ -119,6 +139,8 @@ class WorkspaceService {
     required WorkspaceRole role,
     required int actorId,
   }) async {
+    await _assertWorkspaceIsMutable(session, workspaceId);
+
     var actor = await _workspaceRepository.findMemberByWorkspaceId(
         session, actorId, workspaceId);
     var member = await _workspaceRepository.findMemberByWorkspaceId(
@@ -173,6 +195,8 @@ class WorkspaceService {
     required int workspaceId,
     required int actorId,
   }) async {
+    await _assertWorkspaceIsMutable(session, workspaceId);
+
     var actor = await _workspaceRepository.findMemberByWorkspaceId(
         session, actorId, workspaceId);
     var member = await _workspaceRepository.findMemberByWorkspaceId(
@@ -219,6 +243,8 @@ class WorkspaceService {
     WorkspaceRole role,
     int actorId,
   ) async {
+    await _assertWorkspaceIsMutable(session, workspaceId);
+
     var workspace = await _workspaceRepository.findWorkspaceById(
       session,
       workspaceId,
@@ -347,7 +373,7 @@ class WorkspaceService {
     String token,
   ) async {
     // Ensure the user is authenticated
-    final userId =(await session.authenticated)?.userId;
+    final userId = (await session.authenticated)?.userId;
 
     // Throw an exception if the user is not authenticated
     if (userId == null) {
@@ -368,10 +394,13 @@ class WorkspaceService {
       session,
       token,
     );
+
     // Throw an exception if the invitation is not found
     if (invitation == null) {
       throw Exception('Invalid invitation token.');
     }
+
+    await _assertWorkspaceIsMutable(session, invitation.workspaceId);
 
     // Check if the invitation has expired and delete it if it has
     if (DateTime.now().toUtc().isAfter(invitation.expiresAt)) {
@@ -410,5 +439,93 @@ class WorkspaceService {
     });
 
     return newMember;
+  }
+
+  /// Archives a workspace after verifying the actor's permissions.
+  ///
+  /// This service-layer method ensures that the user attempting to archive the
+  /// workspace (the [actorId]) is a member of the workspace and has the
+  /// necessary role permissions to perform the action, as defined by the
+  /// [RolePolicy].
+  ///
+  /// - [session]: The database session.
+  /// - [workspaceId]: The ID of the workspace to be archived.
+  /// - [actorId]: The ID of the user performing the archive action.
+  ///
+  /// Throws an [Exception] if:
+  /// - The actor is not a member of the workspace.
+  /// - The actor does not have sufficient privileges to archive the workspace.
+  Future<void> archiveWorkspace(
+    Session session,
+    int workspaceId,
+    int actorId,
+  ) async {
+    await _assertWorkspaceIsMutable(session, workspaceId);
+
+    var actor = await _workspaceRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      workspaceId,
+    );
+
+    if (actor == null) {
+      throw Exception('You are not a member of the workspace');
+    }
+
+    if (!RolePolicy.canArchiveWorkspace(actor.role)) {
+      throw Exception('Permission denied. Insufficient privileges');
+    }
+
+    await _workspaceRepository.archiveWorkspace(session, workspaceId);
+  }
+
+  /// Restores an archived workspace after verifying the actor's permissions.
+  ///
+  /// This service-layer method ensures that the workspace exists and is archived,
+  /// and that the user attempting to restore it (the [actorId]) is a member
+  /// with the necessary role permissions, as defined by the [RolePolicy].
+  ///
+  /// - [session]: The database session.
+  /// - [workspaceId]: The ID of the workspace to be restored.
+  /// - [actorId]: The ID of the user performing the restore action.
+  ///
+  /// Throws an [Exception] if:
+  /// - The workspace is not found.
+  /// - The workspace is not currently archived.
+  /// - The actor is not a member of the workspace.
+  /// - The actor does not have sufficient privileges to restore the workspace.
+  Future<void> restoreWorkspace(
+    Session session,
+    int workspaceId,
+    int actorId,
+  ) async {
+    final workspace = await _workspaceRepository.findWorkspaceById(
+      session,
+      workspaceId,
+    );
+
+    if (workspace == null) {
+      throw Exception('Workspace not found');
+    }
+
+    if (workspace.archivedAt == null) {
+      throw Exception('This workspace has not been archived');
+    }
+
+    var actor = await _workspaceRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      workspaceId,
+    );
+
+    if (actor == null) {
+      throw Exception('You are not a member of the workspace');
+    }
+
+    if (!RolePolicy.canRestoreWorkspace(actor.role)) {
+      throw Exception('Permission denied. Insufficient privileges');
+    }
+
+    await _workspaceRepository.restoreWorkspace(session, workspaceId);
   }
 }

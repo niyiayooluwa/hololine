@@ -188,6 +188,44 @@ class Endpoints extends _i1.EndpointDispatch {
             params['token'],
           ),
         ),
+        'archiveWorkspace': _i1.MethodConnector(
+          name: 'archiveWorkspace',
+          params: {
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+                  .archiveWorkspace(
+            session,
+            params['workspaceId'],
+          ),
+        ),
+        'restoreWorkspace': _i1.MethodConnector(
+          name: 'restoreWorkspace',
+          params: {
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+                  .restoreWorkspace(
+            session,
+            params['workspaceId'],
+          ),
+        ),
       },
     );
     modules['serverpod_auth'] = _i4.Endpoints()..initializeEndpoints(server);
