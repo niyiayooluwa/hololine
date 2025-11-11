@@ -12,9 +12,10 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:hololine_client/src/protocol/workspace.dart' as _i3;
-import 'package:hololine_client/src/protocol/workspace_role.dart' as _i4;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i5;
-import 'protocol.dart' as _i6;
+import 'package:hololine_client/src/protocol/responses/response.dart' as _i4;
+import 'package:hololine_client/src/protocol/workspace_role.dart' as _i5;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i6;
+import 'protocol.dart' as _i7;
 
 /// {@category Endpoint}
 class EndpointWorkspace extends _i1.EndpointRef {
@@ -51,12 +52,12 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> updateMemberRole({
+  _i2.Future<_i4.Response> updateMemberRole({
     required int memberId,
     required int workspaceId,
-    required _i4.WorkspaceRole role,
+    required _i5.WorkspaceRole role,
   }) =>
-      caller.callServerEndpoint<void>(
+      caller.callServerEndpoint<_i4.Response>(
         'workspace',
         'updateMemberRole',
         {
@@ -66,11 +67,11 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> removeMember({
+  _i2.Future<_i4.Response> removeMember({
     required int memberId,
     required int workspaceId,
   }) =>
-      caller.callServerEndpoint<void>(
+      caller.callServerEndpoint<_i4.Response>(
         'workspace',
         'removeMember',
         {
@@ -78,14 +79,36 @@ class EndpointWorkspace extends _i1.EndpointRef {
           'workspaceId': workspaceId,
         },
       );
+
+  _i2.Future<_i4.Response> inviteMember(
+    String email,
+    int workspaceId,
+    _i5.WorkspaceRole role,
+  ) =>
+      caller.callServerEndpoint<_i4.Response>(
+        'workspace',
+        'inviteMember',
+        {
+          'email': email,
+          'workspaceId': workspaceId,
+          'role': role,
+        },
+      );
+
+  _i2.Future<_i4.Response> acceptInvitation(String token) =>
+      caller.callServerEndpoint<_i4.Response>(
+        'workspace',
+        'acceptInvitation',
+        {'token': token},
+      );
 }
 
 class Modules {
   Modules(Client client) {
-    auth = _i5.Caller(client);
+    auth = _i6.Caller(client);
   }
 
-  late final _i5.Caller auth;
+  late final _i6.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -104,7 +127,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i6.Protocol(),
+          _i7.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

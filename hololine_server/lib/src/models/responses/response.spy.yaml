@@ -1,0 +1,5 @@
+class: Response
+fields:
+    success: bool
+    error: String?
+    message: String?

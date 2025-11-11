@@ -333,4 +333,82 @@ class WorkspaceService {
 
     await _workspaceRepository.createInvitation(session, invitation);
   }
+
+  /// Accepts a workspace invitation using a unique [token].
+  ///
+  /// The authenticated user's email must match the one on the invitation.
+  /// This method validates the token, checks for expiration, and ensures the
+  /// user is not already a member before adding them to the workspace.
+  ///
+  /// Throws an [Exception] if the token is invalid, the invitation has expired,
+  /// the user is not the intended invitee, or if the user is already a member.
+  Future<WorkspaceMember> acceptInvitation(
+    Session session,
+    String token,
+  ) async {
+    // Ensure the user is authenticated
+    final userId =(await session.authenticated)?.userId;
+
+    // Throw an exception if the user is not authenticated
+    if (userId == null) {
+      throw Exception('User not authenticated');
+    }
+
+    // Find the user's information using their userID
+    final user = await UserInfo.db.findById(session, userId);
+
+    // Throw an exception if the user is not found or has no email
+    if (user == null || user.email == null) {
+      throw Exception('Authenticated user not found or has no email.');
+    }
+    final userEmail = user.email!;
+
+    // Find the invitation using the provided token
+    final invitation = await _workspaceRepository.findInvitationByToken(
+      session,
+      token,
+    );
+    // Throw an exception if the invitation is not found
+    if (invitation == null) {
+      throw Exception('Invalid invitation token.');
+    }
+
+    // Check if the invitation has expired and delete it if it has
+    if (DateTime.now().toUtc().isAfter(invitation.expiresAt)) {
+      await _workspaceRepository.deleteInvitation(session, token);
+      throw Exception('Invitation has expired.');
+    }
+
+    // Throw an exception is the user's email is not the as the invited email
+    if (invitation.inviteeEmail != userEmail) {
+      throw Exception('This invitation is for a different user.');
+    }
+
+    // Check if the user is a member of the workspace already
+    final existingMember = await _workspaceRepository.findMemberByWorkspaceId(
+      session,
+      userId,
+      invitation.workspaceId,
+    );
+
+    if (existingMember != null && existingMember.isActive) {
+      // If the member is inactive, we can consider reactivating them,
+      // but for now, we'll just prevent adding a duplicate.
+      await _workspaceRepository.deleteInvitation(session, token);
+      throw Exception('You are already a member of this workspace.');
+    }
+
+    // Use a transaction to ensure atomicity
+    final newMember = await session.db.transaction((transaction) async {
+      final member = await _workspaceRepository.acceptInvitation(
+        session,
+        invitation,
+        userId,
+      );
+      await _workspaceRepository.deleteInvitation(session, token);
+      return member;
+    });
+
+    return newMember;
+  }
 }

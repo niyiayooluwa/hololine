@@ -139,6 +139,55 @@ class Endpoints extends _i1.EndpointDispatch {
             workspaceId: params['workspaceId'],
           ),
         ),
+        'inviteMember': _i1.MethodConnector(
+          name: 'inviteMember',
+          params: {
+            'email': _i1.ParameterDescription(
+              name: 'email',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'role': _i1.ParameterDescription(
+              name: 'role',
+              type: _i1.getType<_i3.WorkspaceRole>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i2.WorkspaceEndpoint).inviteMember(
+            session,
+            params['email'],
+            params['workspaceId'],
+            params['role'],
+          ),
+        ),
+        'acceptInvitation': _i1.MethodConnector(
+          name: 'acceptInvitation',
+          params: {
+            'token': _i1.ParameterDescription(
+              name: 'token',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+                  .acceptInvitation(
+            session,
+            params['token'],
+          ),
+        ),
       },
     );
     modules['serverpod_auth'] = _i4.Endpoints()..initializeEndpoints(server);

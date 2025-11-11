@@ -3,3 +3,5 @@ workspace:
   - createChild:
   - updateMemberRole:
   - removeMember:
+  - inviteMember:
+  - acceptInvitation:
