@@ -149,8 +149,7 @@ class WorkspaceEndpoint extends Endpoint {
         message: 'Member removed',
       );
       return response;
-    }
-    catch (e) {
+    } catch (e) {
       var response = Response(
         success: false,
         error: 'Failed to remove member: ${e.toString()}',
@@ -266,8 +265,8 @@ class WorkspaceEndpoint extends Endpoint {
         error: 'Failed to archive workspace: ${e.toString()}',
       );
     }
-  }  
-  
+  }
+
   /// Restores an archived workspace.
   ///
   /// The authenticated user must have the necessary permissions to restore the
@@ -296,6 +295,40 @@ class WorkspaceEndpoint extends Endpoint {
       return Response(
         success: false,
         error: 'Failed to restore workspace: ${e.toString()}',
+      );
+    }
+  }
+
+  /// Transfers ownership of a workspace to another member.
+  ///
+  /// The authenticated user must be the current owner of the workspace.
+  ///
+  /// - [workspaceId]: The ID of the workspace.
+  /// - [newOwnerId]: The ID of the member who will become the new owner.
+  ///
+  /// Returns a [Response] object indicating success or failure.
+  /// Throws an [Exception] if the user is not authenticated.
+  Future<Response> transferOwnership(
+    Session session,
+    int workspaceId,
+    int newOwnerId,
+  ) async {
+    var user = (await session.authenticated)?.userId;
+
+    if (user == null) {
+      throw Exception('User not authenticated');
+    }
+
+    try {
+      await _service.transferOwnership(session, workspaceId, newOwnerId, user);
+      return Response(
+        success: true,
+        message: 'Ownership transferred successfully',
+      );
+    } catch (e) { 
+      return Response(
+        success: false,
+        error: 'Failed to transfer ownership: ${e.toString()}',
       );
     }
   }

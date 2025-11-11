@@ -190,6 +190,28 @@ class EndpointWorkspace extends _i1.EndpointRef {
         'restoreWorkspace',
         {'workspaceId': workspaceId},
       );
+
+  /// Transfers ownership of a workspace to another member.
+  ///
+  /// The authenticated user must be the current owner of the workspace.
+  ///
+  /// - [workspaceId]: The ID of the workspace.
+  /// - [newOwnerId]: The ID of the member who will become the new owner.
+  ///
+  /// Returns a [Response] object indicating success or failure.
+  /// Throws an [Exception] if the user is not authenticated.
+  _i2.Future<_i4.Response> transferOwnership(
+    int workspaceId,
+    int newOwnerId,
+  ) =>
+      caller.callServerEndpoint<_i4.Response>(
+        'workspace',
+        'transferOwnership',
+        {
+          'workspaceId': workspaceId,
+          'newOwnerId': newOwnerId,
+        },
+      );
 }
 
 class Modules {

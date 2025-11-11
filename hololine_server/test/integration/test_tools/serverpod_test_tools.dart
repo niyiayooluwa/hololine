@@ -387,4 +387,37 @@ class _WorkspaceEndpoint {
       }
     });
   }
+
+  _i3.Future<_i5.Response> transferOwnership(
+    _i1.TestSessionBuilder sessionBuilder,
+    int workspaceId,
+    int newOwnerId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'workspace',
+        method: 'transferOwnership',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'workspace',
+          methodName: 'transferOwnership',
+          parameters: _i1.testObjectToJson({
+            'workspaceId': workspaceId,
+            'newOwnerId': newOwnerId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.Response>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }

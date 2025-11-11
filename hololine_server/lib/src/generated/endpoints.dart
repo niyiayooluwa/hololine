@@ -226,6 +226,31 @@ class Endpoints extends _i1.EndpointDispatch {
             params['workspaceId'],
           ),
         ),
+        'transferOwnership': _i1.MethodConnector(
+          name: 'transferOwnership',
+          params: {
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'newOwnerId': _i1.ParameterDescription(
+              name: 'newOwnerId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+                  .transferOwnership(
+            session,
+            params['workspaceId'],
+            params['newOwnerId'],
+          ),
+        ),
       },
     );
     modules['serverpod_auth'] = _i4.Endpoints()..initializeEndpoints(server);

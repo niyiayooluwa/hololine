@@ -17,6 +17,10 @@ class RolePolicy {
 
   static bool canViewDetails(WorkspaceRole role) => true;
 
+  static bool canTransferOwnership(WorkspaceRole role) =>
+      role == WorkspaceRole.owner;
+
+
   static bool canGenerateReports(WorkspaceRole role) =>
       role == WorkspaceRole.owner || role == WorkspaceRole.admin;
 

@@ -528,4 +528,71 @@ class WorkspaceService {
 
     await _workspaceRepository.restoreWorkspace(session, workspaceId);
   }
+
+  /// Transfers ownership of a workspace from the current owner to another member.
+  ///
+  /// The [actorId] must be the current owner of the workspace. The [newOwnerId]
+  /// must be an active member of the same workspace.
+  ///
+  /// Throws an [Exception] if the actor is not the owner, if the new owner
+  /// is not a valid member, or if the owner attempts to transfer ownership
+  /// to themselves.
+  Future<void> transferOwnership(
+    Session session,
+    int workspaceId,
+    int newOwnerId,
+    int actorId,
+  ) async {
+    await _assertWorkspaceIsMutable(session, workspaceId);
+
+    var actor = await _workspaceRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      workspaceId,
+    );
+    var member = await _workspaceRepository.findMemberByWorkspaceId(
+      session,
+      newOwnerId,
+      workspaceId,
+    );
+
+    if (actor == null) {
+      throw Exception('You are not a member of the workspace');
+    }
+
+    if (member == null) {
+      throw Exception('Target member not found in the workspace');
+    }
+
+    if (!actor.isActive) {
+      throw Exception('Permission denied. Your membership is inactive');
+    }
+
+    if (!member.isActive) {
+      throw Exception('Cannot update role of an inactive member');
+    }
+
+    if (!RolePolicy.canTransferOwnership(actor.role)) {
+      throw Exception('Permission denied. You do not own this workspace');
+    }
+
+    if (actorId == newOwnerId) {
+      throw Exception('You can not modify your own role');
+    }
+
+    await session.db.transaction((transaction) async {
+      await _workspaceRepository.updateMemberRole(
+        session,
+        newOwnerId,
+        WorkspaceRole.owner,
+        workspaceId,
+      );
+      await _workspaceRepository.updateMemberRole(
+        session,
+        actorId,
+        WorkspaceRole.admin,
+        workspaceId,
+      );
+    });
+  }
 }
