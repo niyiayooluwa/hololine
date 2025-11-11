@@ -1,5 +1,6 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/usecase/workspace_service.dart';
+import 'package:hololine_server/src/utils/endpoint_helper.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Manages workspace-related operations such as creation, member management,
@@ -28,10 +29,22 @@ class WorkspaceEndpoint extends Endpoint {
       throw Exception('User not authenticated');
     }
 
+    // This endpoint returns a Workspace, not a Response, so we can't use the
+    // withLogging helper without creating a second helper. We'll add manual logging.
     try {
-      return await _service.createStandalone(
+      session.log('Endpoint "createStandalone" called.', level: LogLevel.info);
+      final workspace = await _service.createStandalone(
           session, name, userId, description);
-    } catch (e) {
+      session.log('Endpoint "createStandalone" succeeded.',
+          level: LogLevel.info);
+      return workspace;
+    } catch (e, stackTrace) {
+      session.log(
+        '"createStandalone" failed.',
+        level: LogLevel.error,
+        exception: e,
+        stackTrace: stackTrace,
+      );
       throw Exception('Failed to create workspace: ${e.toString()}');
     }
   }
@@ -59,277 +72,191 @@ class WorkspaceEndpoint extends Endpoint {
       throw Exception('User not authenticated');
     }
 
+    // This endpoint returns a Workspace, not a Response, so we can't use the
+    // withLogging helper without creating a second helper. We'll add manual logging.
     try {
-      return await _service.createChild(
+      session.log('Endpoint "createChild" called.', level: LogLevel.info);
+      final workspace = await _service.createChild(
         session,
         name,
         userId,
         parentWorkspaceId,
         description,
       );
-    } catch (e) {
+      session.log('Endpoint "createChild" succeeded.', level: LogLevel.info);
+      return workspace;
+    } catch (e, stackTrace) {
+      session.log(
+        '"createChild" failed.',
+        level: LogLevel.error,
+        exception: e,
+        stackTrace: stackTrace,
+      );
       throw Exception('Failed to create child workspace: ${e.toString()}');
     }
   }
 
   /// Updates the role of a member within a workspace.
-  ///
-  /// The authenticated user must have the necessary permissions to modify member roles.
-  ///
-  /// - [memberId]: The ID of the member whose role is to be updated.
-  /// - [workspaceId]: The ID of the workspace where the member belongs.
-  /// - [role]: The new [WorkspaceRole] to assign to the member.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   Future<Response> updateMemberRole(
     Session session, {
     required int memberId,
     required int workspaceId,
     required WorkspaceRole role,
   }) async {
-    var userId = (await session.authenticated)?.userId;
-
+    final userId = (await session.authenticated)?.userId;
     if (userId == null) {
       throw Exception('User not authenticated');
     }
 
-    try {
-      await _service.updateMemberRole(
-        session,
-        memberId: memberId,
-        workspaceId: workspaceId,
-        role: role,
-        actorId: userId,
-      );
-
-      var response = Response(
-        success: true,
-        message: 'Member role updated',
-      );
-      return response;
-    } catch (e) {
-      var response = Response(
-        success: false,
-        error: 'Failed to update member role: ${e.toString()}',
-      );
-      return response;
-    }
+    return withLogging(
+      session,
+      'updateMemberRole',
+      () async {
+        await _service.updateMemberRole(
+          session,
+          memberId: memberId,
+          workspaceId: workspaceId,
+          role: role,
+          actorId: userId,
+        );
+        return 'Member role updated';
+      },
+    );
   }
 
   /// Removes a member from a workspace.
-  ///
-  /// The authenticated user must have permissions to remove members from the
-  /// specified [workspaceId].
-  ///
-  /// - [memberId]: The ID of the member to remove.
-  /// - [workspaceId]: The ID of the workspace from which to remove the member.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   Future<Response> removeMember(
     Session session, {
     required int memberId,
     required int workspaceId,
   }) async {
-    var userId = (await session.authenticated)?.userId;
-
+    final userId = (await session.authenticated)?.userId;
     if (userId == null) {
       throw Exception('User not authenticated');
     }
 
-    try {
-      await _service.removeMember(
-        session,
-        memberId: memberId,
-        workspaceId: workspaceId,
-        actorId: userId,
-      );
-
-      var response = Response(
-        success: true,
-        message: 'Member removed',
-      );
-      return response;
-    } catch (e) {
-      var response = Response(
-        success: false,
-        error: 'Failed to remove member: ${e.toString()}',
-      );
-      return response;
-    }
+    return withLogging(
+      session,
+      'removeMember',
+      () async {
+        await _service.removeMember(
+          session,
+          memberId: memberId,
+          workspaceId: workspaceId,
+          actorId: userId,
+        );
+        return 'Member removed';
+      },
+    );
   }
 
   /// Sends an invitation to a user to join a workspace.
-  ///
-  /// The authenticated user must have permissions to invite members to the
-  /// specified [workspaceId].
-  ///
-  /// - [email]: The email address of the user to invite.
-  /// - [workspaceId]: The ID of the workspace to invite the user to.
-  /// - [role]: The [WorkspaceRole] to assign to the user upon joining.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   Future<Response> inviteMember(
     Session session,
     String email,
     int workspaceId,
     WorkspaceRole role,
   ) async {
-    var userId = (await session.authenticated)?.userId;
-
+    final userId = (await session.authenticated)?.userId;
     if (userId == null) {
       throw Exception('User not authenticated');
     }
 
-    try {
-      await _service.inviteMember(
-        session,
-        email,
-        workspaceId,
-        role,
-        userId,
-      );
-
-      var response = Response(
-        success: true,
-        message: 'Member invited',
-      );
-      return response;
-    } catch (e) {
-      var response = Response(
-        success: false,
-        error: 'Failed to invite member: ${e.toString()}',
-      );
-      return response;
-    }
+    return withLogging(
+      session,
+      'inviteMember',
+      () async {
+        await _service.inviteMember(
+          session,
+          email,
+          workspaceId,
+          role,
+          userId,
+        );
+        return 'Member invited';
+      },
+    );
   }
 
   /// Accepts a workspace invitation using an invitation token.
-  ///
-  /// The authenticated user will be added to the workspace associated with the
-  /// invitation [token].
-  ///
-  /// - [token]: The unique invitation token.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   Future<Response> acceptInvitation(
     Session session,
     String token,
   ) async {
-    var userId = (await session.authenticated)?.userId;
-
+    final userId = (await session.authenticated)?.userId;
     if (userId == null) {
       throw Exception('User not authenticated');
     }
 
-    try {
-      await _service.acceptInvitation(session, token);
-      return Response(
-        success: true,
-        message: 'Invitation accepted successfully. Welcome to the workspace!',
-      );
-    } catch (e) {
-      return Response(
-        success: false,
-        error: 'Failed to accept invitation: ${e.toString()}',
-      );
-    }
+    return withLogging(
+      session,
+      'acceptInvitation',
+      () async {
+        await _service.acceptInvitation(session, token);
+        return 'Invitation accepted successfully. Welcome to the workspace!';
+      },
+    );
   }
 
   /// Archives a workspace, making it inactive.
-  ///
-  /// The authenticated user must have the necessary permissions to archive the
-  /// specified [workspaceId].
-  ///
-  /// - [workspaceId]: The ID of the workspace to archive.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   Future<Response> archiveWorkspace(
     Session session,
     int workspaceId,
   ) async {
-    var user = (await session.authenticated)?.userId;
-
+    final user = (await session.authenticated)?.userId;
     if (user == null) {
       throw Exception('User not authenticated');
     }
 
-    try {
-      await _service.archiveWorkspace(session, workspaceId, user);
-      return Response(
-        success: true,
-        message: 'Workspace archived successfully',
-      );
-    } catch (e) {
-      return Response(
-        success: false,
-        error: 'Failed to archive workspace: ${e.toString()}',
-      );
-    }
+    return withLogging(
+      session,
+      'archiveWorkspace',
+      () async {
+        await _service.archiveWorkspace(session, workspaceId, user);
+        return 'Workspace archived successfully';
+      },
+    );
   }
 
   /// Restores an archived workspace.
-  ///
-  /// The authenticated user must have the necessary permissions to restore the
-  /// specified [workspaceId].
-  ///
-  /// - [workspaceId]: The ID of the workspace to restore.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   Future<Response> restoreWorkspace(
     Session session,
     int workspaceId,
   ) async {
-    var user = (await session.authenticated)?.userId;
-
+    final user = (await session.authenticated)?.userId;
     if (user == null) {
       throw Exception('User not authenticated');
     }
 
-    try {
-      await _service.restoreWorkspace(session, workspaceId, user);
-      return Response(
-        success: true,
-        message: 'Workspace restored successfully',
-      );
-    } catch (e) {
-      return Response(
-        success: false,
-        error: 'Failed to restore workspace: ${e.toString()}',
-      );
-    }
+    return withLogging(
+      session,
+      'restoreWorkspace',
+      () async {
+        await _service.restoreWorkspace(session, workspaceId, user);
+        return 'Workspace restored successfully';
+      },
+    );
   }
 
   /// Transfers ownership of a workspace to another member.
-  ///
-  /// The authenticated user must be the current owner of the workspace.
-  ///
-  /// - [workspaceId]: The ID of the workspace.
-  /// - [newOwnerId]: The ID of the member who will become the new owner.
-  ///
-  /// Returns a [Response] object indicating success or failure.
-  /// Throws an [Exception] if the user is not authenticated.
   Future<Response> transferOwnership(
     Session session,
     int workspaceId,
     int newOwnerId,
   ) async {
-    var user = (await session.authenticated)?.userId;
-
+    final user = (await session.authenticated)?.userId;
     if (user == null) {
       throw Exception('User not authenticated');
     }
 
-    try {
-      await _service.transferOwnership(session, workspaceId, newOwnerId, user);
-      return Response(
-        success: true,
-        message: 'Ownership transferred successfully',
-      );
-    } catch (e) { 
-      return Response(
-        success: false,
-        error: 'Failed to transfer ownership: ${e.toString()}',
-      );
-    }
+    return withLogging(
+      session,
+      'transferOwnership',
+      () async {
+        await _service.transferOwnership(
+            session, workspaceId, newOwnerId, user);
+        return 'Ownership transferred successfully';
+      },
+    );
   }
 }

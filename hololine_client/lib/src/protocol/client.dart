@@ -76,14 +76,6 @@ class EndpointWorkspace extends _i1.EndpointRef {
       );
 
   /// Updates the role of a member within a workspace.
-  ///
-  /// The authenticated user must have the necessary permissions to modify member roles.
-  ///
-  /// - [memberId]: The ID of the member whose role is to be updated.
-  /// - [workspaceId]: The ID of the workspace where the member belongs.
-  /// - [role]: The new [WorkspaceRole] to assign to the member.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   _i2.Future<_i4.Response> updateMemberRole({
     required int memberId,
     required int workspaceId,
@@ -100,14 +92,6 @@ class EndpointWorkspace extends _i1.EndpointRef {
       );
 
   /// Removes a member from a workspace.
-  ///
-  /// The authenticated user must have permissions to remove members from the
-  /// specified [workspaceId].
-  ///
-  /// - [memberId]: The ID of the member to remove.
-  /// - [workspaceId]: The ID of the workspace from which to remove the member.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   _i2.Future<_i4.Response> removeMember({
     required int memberId,
     required int workspaceId,
@@ -122,15 +106,6 @@ class EndpointWorkspace extends _i1.EndpointRef {
       );
 
   /// Sends an invitation to a user to join a workspace.
-  ///
-  /// The authenticated user must have permissions to invite members to the
-  /// specified [workspaceId].
-  ///
-  /// - [email]: The email address of the user to invite.
-  /// - [workspaceId]: The ID of the workspace to invite the user to.
-  /// - [role]: The [WorkspaceRole] to assign to the user upon joining.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   _i2.Future<_i4.Response> inviteMember(
     String email,
     int workspaceId,
@@ -147,13 +122,6 @@ class EndpointWorkspace extends _i1.EndpointRef {
       );
 
   /// Accepts a workspace invitation using an invitation token.
-  ///
-  /// The authenticated user will be added to the workspace associated with the
-  /// invitation [token].
-  ///
-  /// - [token]: The unique invitation token.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   _i2.Future<_i4.Response> acceptInvitation(String token) =>
       caller.callServerEndpoint<_i4.Response>(
         'workspace',
@@ -162,13 +130,6 @@ class EndpointWorkspace extends _i1.EndpointRef {
       );
 
   /// Archives a workspace, making it inactive.
-  ///
-  /// The authenticated user must have the necessary permissions to archive the
-  /// specified [workspaceId].
-  ///
-  /// - [workspaceId]: The ID of the workspace to archive.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   _i2.Future<_i4.Response> archiveWorkspace(int workspaceId) =>
       caller.callServerEndpoint<_i4.Response>(
         'workspace',
@@ -177,13 +138,6 @@ class EndpointWorkspace extends _i1.EndpointRef {
       );
 
   /// Restores an archived workspace.
-  ///
-  /// The authenticated user must have the necessary permissions to restore the
-  /// specified [workspaceId].
-  ///
-  /// - [workspaceId]: The ID of the workspace to restore.
-  ///
-  /// Returns a [Response] object indicating success or failure.
   _i2.Future<_i4.Response> restoreWorkspace(int workspaceId) =>
       caller.callServerEndpoint<_i4.Response>(
         'workspace',
@@ -192,14 +146,6 @@ class EndpointWorkspace extends _i1.EndpointRef {
       );
 
   /// Transfers ownership of a workspace to another member.
-  ///
-  /// The authenticated user must be the current owner of the workspace.
-  ///
-  /// - [workspaceId]: The ID of the workspace.
-  /// - [newOwnerId]: The ID of the member who will become the new owner.
-  ///
-  /// Returns a [Response] object indicating success or failure.
-  /// Throws an [Exception] if the user is not authenticated.
   _i2.Future<_i4.Response> transferOwnership(
     int workspaceId,
     int newOwnerId,
