@@ -25,6 +25,7 @@ abstract class Workspace
     required this.createdAt,
     this.deletedAt,
     this.archivedAt,
+    this.pendingDeletionUntil,
     this.members,
   }) : isPremium = isPremium ?? false;
 
@@ -37,6 +38,7 @@ abstract class Workspace
     required DateTime createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    DateTime? pendingDeletionUntil,
     List<_i2.WorkspaceMember>? members,
   }) = _WorkspaceImpl;
 
@@ -55,6 +57,10 @@ abstract class Workspace
       archivedAt: jsonSerialization['archivedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['archivedAt']),
+      pendingDeletionUntil: jsonSerialization['pendingDeletionUntil'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['pendingDeletionUntil']),
       members: (jsonSerialization['members'] as List?)
           ?.map(
               (e) => _i2.WorkspaceMember.fromJson((e as Map<String, dynamic>)))
@@ -83,6 +89,8 @@ abstract class Workspace
 
   DateTime? archivedAt;
 
+  DateTime? pendingDeletionUntil;
+
   List<_i2.WorkspaceMember>? members;
 
   @override
@@ -100,6 +108,7 @@ abstract class Workspace
     DateTime? createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    DateTime? pendingDeletionUntil,
     List<_i2.WorkspaceMember>? members,
   });
   @override
@@ -113,6 +122,8 @@ abstract class Workspace
       'createdAt': createdAt.toJson(),
       if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
       if (archivedAt != null) 'archivedAt': archivedAt?.toJson(),
+      if (pendingDeletionUntil != null)
+        'pendingDeletionUntil': pendingDeletionUntil?.toJson(),
       if (members != null)
         'members': members?.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -129,6 +140,8 @@ abstract class Workspace
       'createdAt': createdAt.toJson(),
       if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
       if (archivedAt != null) 'archivedAt': archivedAt?.toJson(),
+      if (pendingDeletionUntil != null)
+        'pendingDeletionUntil': pendingDeletionUntil?.toJson(),
       if (members != null)
         'members': members?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
@@ -176,6 +189,7 @@ class _WorkspaceImpl extends Workspace {
     required DateTime createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    DateTime? pendingDeletionUntil,
     List<_i2.WorkspaceMember>? members,
   }) : super._(
           id: id,
@@ -186,6 +200,7 @@ class _WorkspaceImpl extends Workspace {
           createdAt: createdAt,
           deletedAt: deletedAt,
           archivedAt: archivedAt,
+          pendingDeletionUntil: pendingDeletionUntil,
           members: members,
         );
 
@@ -202,6 +217,7 @@ class _WorkspaceImpl extends Workspace {
     DateTime? createdAt,
     Object? deletedAt = _Undefined,
     Object? archivedAt = _Undefined,
+    Object? pendingDeletionUntil = _Undefined,
     Object? members = _Undefined,
   }) {
     return Workspace(
@@ -213,6 +229,9 @@ class _WorkspaceImpl extends Workspace {
       createdAt: createdAt ?? this.createdAt,
       deletedAt: deletedAt is DateTime? ? deletedAt : this.deletedAt,
       archivedAt: archivedAt is DateTime? ? archivedAt : this.archivedAt,
+      pendingDeletionUntil: pendingDeletionUntil is DateTime?
+          ? pendingDeletionUntil
+          : this.pendingDeletionUntil,
       members: members is List<_i2.WorkspaceMember>?
           ? members
           : this.members?.map((e0) => e0.copyWith()).toList(),
@@ -251,6 +270,10 @@ class WorkspaceTable extends _i1.Table<int?> {
       'archivedAt',
       this,
     );
+    pendingDeletionUntil = _i1.ColumnDateTime(
+      'pendingDeletionUntil',
+      this,
+    );
   }
 
   late final _i1.ColumnString name;
@@ -266,6 +289,8 @@ class WorkspaceTable extends _i1.Table<int?> {
   late final _i1.ColumnDateTime deletedAt;
 
   late final _i1.ColumnDateTime archivedAt;
+
+  late final _i1.ColumnDateTime pendingDeletionUntil;
 
   _i2.WorkspaceMemberTable? ___members;
 
@@ -312,6 +337,7 @@ class WorkspaceTable extends _i1.Table<int?> {
         createdAt,
         deletedAt,
         archivedAt,
+        pendingDeletionUntil,
       ];
 
   @override

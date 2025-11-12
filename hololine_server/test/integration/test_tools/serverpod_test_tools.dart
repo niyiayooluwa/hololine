@@ -103,6 +103,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _CleanupEndpoint cleanup;
+
   late final _WorkspaceEndpoint workspace;
 }
 
@@ -113,10 +115,52 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
+    cleanup = _CleanupEndpoint(
+      endpoints,
+      serializationManager,
+    );
     workspace = _WorkspaceEndpoint(
       endpoints,
       serializationManager,
     );
+  }
+}
+
+class _CleanupEndpoint {
+  _CleanupEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<void> checkAndPerformHardDeletes(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'cleanup',
+        method: 'checkAndPerformHardDeletes',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'cleanup',
+          methodName: 'checkAndPerformHardDeletes',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
   }
 }
 
@@ -408,6 +452,35 @@ class _WorkspaceEndpoint {
             'workspaceId': workspaceId,
             'newOwnerId': newOwnerId,
           }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.Response>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i5.Response> initiateDeleteWorkspace(
+    _i1.TestSessionBuilder sessionBuilder,
+    int workspaceId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'workspace',
+        method: 'initiateDeleteWorkspace',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'workspace',
+          methodName: 'initiateDeleteWorkspace',
+          parameters: _i1.testObjectToJson({'workspaceId': workspaceId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(

@@ -1,3 +1,5 @@
+cleanup:
+  - checkAndPerformHardDeletes:
 workspace:
   - createStandalone:
   - createChild:
@@ -8,3 +10,4 @@ workspace:
   - archiveWorkspace:
   - restoreWorkspace:
   - transferOwnership:
+  - initiateDeleteWorkspace:

@@ -194,6 +194,54 @@ class WorkspaceRepo {
     return true;
   }
 
+  /// Performs a "hard delete" on a workspace by setting its `deletedAt` timestamp.
+  ///
+  /// This action is intended to be permanent from the application's perspective,
+  /// marking the workspace as fully deleted. This is typically called by a cleanup
+  /// job after a soft-delete grace period has expired, or when a workspace is
+  /// immediately and permanently removed.
+  ///
+  /// - [session]: The database session.
+  /// - [workspaceId]: The ID of the workspace to permanently delete.
+  /// Returns `true` if the workspace was found and marked as deleted, `false` otherwise.
+  Future<bool> softDeleteWorkspace(
+    Session session,
+    int workspaceId,
+  ) async {
+    var workspace = await findWorkspaceById(session, workspaceId);
+
+    if (workspace == null) return false;
+
+    workspace.pendingDeletionUntil =
+        DateTime.now().toUtc().add(Duration(hours: 99));
+    await Workspace.db.updateRow(session, workspace);
+    return true;
+  }
+
+  /// Performs a "hard delete" on a workspace by setting its `deletedAt` timestamp.
+  ///
+  /// This action is intended to be permanent from the application's perspective,
+  /// marking the workspace as fully deleted. This is typically called by a cleanup
+  /// job after a soft-delete grace period has expired.
+  ///
+  /// - [session]: The database session.
+  /// - [workspaceId]: The ID of the workspace to permanently delete.
+  /// 
+  /// Returns `true` if the workspace was found and marked as deleted, `false` otherwise.
+  Future<bool> hardDeleteWorkspace(
+    Session session,
+    int workspaceId,
+  ) async {
+    var workspace = await findWorkspaceById(session, workspaceId);
+
+    if (workspace == null) return false;
+
+    workspace.deletedAt =
+        DateTime.now().toUtc();
+    await Workspace.db.updateRow(session, workspace);
+    return true;
+  }
+
   /// Updates the role of a workspace member identified by [memberId].
   ///
   /// The [memberId] must identify an existing workspace member, and the

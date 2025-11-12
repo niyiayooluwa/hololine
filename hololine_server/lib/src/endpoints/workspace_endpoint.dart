@@ -33,8 +33,8 @@ class WorkspaceEndpoint extends Endpoint {
     // withLogging helper without creating a second helper. We'll add manual logging.
     try {
       session.log('Endpoint "createStandalone" called.', level: LogLevel.info);
-      final workspace = await _service.createStandalone(
-          session, name, userId, description);
+      final workspace =
+          await _service.createStandalone(session, name, userId, description);
       session.log('Endpoint "createStandalone" succeeded.',
           level: LogLevel.info);
       return workspace;
@@ -256,6 +256,26 @@ class WorkspaceEndpoint extends Endpoint {
         await _service.transferOwnership(
             session, workspaceId, newOwnerId, user);
         return 'Ownership transferred successfully';
+      },
+    );
+  }
+
+  /// Initiate the deletion process
+  Future<Response> initiateDeleteWorkspace(
+    Session session,
+    int workspaceId,
+  ) async {
+    final user = (await session.authenticated)?.userId;
+    if (user == null) {
+      throw Exception('User not authenticated');
+    }
+
+    return withLogging(
+      session,
+      'deleteWorkspace',
+      () async {
+        await _service.initiateDeleteWorkspace(session, workspaceId, user);
+        return 'Workspace deletion initiated successfully';
       },
     );
   }

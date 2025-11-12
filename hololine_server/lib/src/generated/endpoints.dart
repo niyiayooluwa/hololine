@@ -10,21 +10,44 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../endpoints/workspace_endpoint.dart' as _i2;
-import 'package:hololine_server/src/generated/workspace_role.dart' as _i3;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i4;
+import '../endpoints/jobs/workspace_cleanup.dart' as _i2;
+import '../endpoints/workspace_endpoint.dart' as _i3;
+import 'package:hololine_server/src/generated/workspace_role.dart' as _i4;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i5;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'workspace': _i2.WorkspaceEndpoint()
+      'cleanup': _i2.CleanupEndpoint()
+        ..initialize(
+          server,
+          'cleanup',
+          null,
+        ),
+      'workspace': _i3.WorkspaceEndpoint()
         ..initialize(
           server,
           'workspace',
           null,
-        )
+        ),
     };
+    connectors['cleanup'] = _i1.EndpointConnector(
+      name: 'cleanup',
+      endpoint: endpoints['cleanup']!,
+      methodConnectors: {
+        'checkAndPerformHardDeletes': _i1.MethodConnector(
+          name: 'checkAndPerformHardDeletes',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['cleanup'] as _i2.CleanupEndpoint)
+                  .checkAndPerformHardDeletes(session),
+        )
+      },
+    );
     connectors['workspace'] = _i1.EndpointConnector(
       name: 'workspace',
       endpoint: endpoints['workspace']!,
@@ -47,7 +70,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .createStandalone(
             session,
             params['name'],
@@ -77,7 +100,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint).createChild(
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint).createChild(
             session,
             params['name'],
             params['parentWorkspaceId'],
@@ -99,7 +122,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i3.WorkspaceRole>(),
+              type: _i1.getType<_i4.WorkspaceRole>(),
               nullable: false,
             ),
           },
@@ -107,7 +130,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .updateMemberRole(
             session,
             memberId: params['memberId'],
@@ -133,7 +156,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint).removeMember(
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint).removeMember(
             session,
             memberId: params['memberId'],
             workspaceId: params['workspaceId'],
@@ -154,7 +177,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i3.WorkspaceRole>(),
+              type: _i1.getType<_i4.WorkspaceRole>(),
               nullable: false,
             ),
           },
@@ -162,7 +185,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint).inviteMember(
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint).inviteMember(
             session,
             params['email'],
             params['workspaceId'],
@@ -182,7 +205,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .acceptInvitation(
             session,
             params['token'],
@@ -201,7 +224,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .archiveWorkspace(
             session,
             params['workspaceId'],
@@ -220,7 +243,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .restoreWorkspace(
             session,
             params['workspaceId'],
@@ -244,15 +267,34 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i2.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .transferOwnership(
             session,
             params['workspaceId'],
             params['newOwnerId'],
           ),
         ),
+        'initiateDeleteWorkspace': _i1.MethodConnector(
+          name: 'initiateDeleteWorkspace',
+          params: {
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+                  .initiateDeleteWorkspace(
+            session,
+            params['workspaceId'],
+          ),
+        ),
       },
     );
-    modules['serverpod_auth'] = _i4.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i5.Endpoints()..initializeEndpoints(server);
   }
 }

@@ -22,6 +22,7 @@ abstract class Workspace implements _i1.SerializableModel {
     required this.createdAt,
     this.deletedAt,
     this.archivedAt,
+    this.pendingDeletionUntil,
     this.members,
   }) : isPremium = isPremium ?? false;
 
@@ -34,6 +35,7 @@ abstract class Workspace implements _i1.SerializableModel {
     required DateTime createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    DateTime? pendingDeletionUntil,
     List<_i2.WorkspaceMember>? members,
   }) = _WorkspaceImpl;
 
@@ -52,6 +54,10 @@ abstract class Workspace implements _i1.SerializableModel {
       archivedAt: jsonSerialization['archivedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['archivedAt']),
+      pendingDeletionUntil: jsonSerialization['pendingDeletionUntil'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['pendingDeletionUntil']),
       members: (jsonSerialization['members'] as List?)
           ?.map(
               (e) => _i2.WorkspaceMember.fromJson((e as Map<String, dynamic>)))
@@ -78,6 +84,8 @@ abstract class Workspace implements _i1.SerializableModel {
 
   DateTime? archivedAt;
 
+  DateTime? pendingDeletionUntil;
+
   List<_i2.WorkspaceMember>? members;
 
   /// Returns a shallow copy of this [Workspace]
@@ -92,6 +100,7 @@ abstract class Workspace implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    DateTime? pendingDeletionUntil,
     List<_i2.WorkspaceMember>? members,
   });
   @override
@@ -105,6 +114,8 @@ abstract class Workspace implements _i1.SerializableModel {
       'createdAt': createdAt.toJson(),
       if (deletedAt != null) 'deletedAt': deletedAt?.toJson(),
       if (archivedAt != null) 'archivedAt': archivedAt?.toJson(),
+      if (pendingDeletionUntil != null)
+        'pendingDeletionUntil': pendingDeletionUntil?.toJson(),
       if (members != null)
         'members': members?.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -128,6 +139,7 @@ class _WorkspaceImpl extends Workspace {
     required DateTime createdAt,
     DateTime? deletedAt,
     DateTime? archivedAt,
+    DateTime? pendingDeletionUntil,
     List<_i2.WorkspaceMember>? members,
   }) : super._(
           id: id,
@@ -138,6 +150,7 @@ class _WorkspaceImpl extends Workspace {
           createdAt: createdAt,
           deletedAt: deletedAt,
           archivedAt: archivedAt,
+          pendingDeletionUntil: pendingDeletionUntil,
           members: members,
         );
 
@@ -154,6 +167,7 @@ class _WorkspaceImpl extends Workspace {
     DateTime? createdAt,
     Object? deletedAt = _Undefined,
     Object? archivedAt = _Undefined,
+    Object? pendingDeletionUntil = _Undefined,
     Object? members = _Undefined,
   }) {
     return Workspace(
@@ -165,6 +179,9 @@ class _WorkspaceImpl extends Workspace {
       createdAt: createdAt ?? this.createdAt,
       deletedAt: deletedAt is DateTime? ? deletedAt : this.deletedAt,
       archivedAt: archivedAt is DateTime? ? archivedAt : this.archivedAt,
+      pendingDeletionUntil: pendingDeletionUntil is DateTime?
+          ? pendingDeletionUntil
+          : this.pendingDeletionUntil,
       members: members is List<_i2.WorkspaceMember>?
           ? members
           : this.members?.map((e0) => e0.copyWith()).toList(),

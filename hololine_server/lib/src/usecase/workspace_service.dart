@@ -595,4 +595,49 @@ class WorkspaceService {
       );
     });
   }
+
+  Future<void> initiateDeleteWorkspace(
+    Session session,
+    int workspaceId,
+    int actorId,
+  ) async {
+    await _assertWorkspaceIsMutable(session, workspaceId);
+
+    var actor = await _workspaceRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      workspaceId,
+    );
+
+    var workspace = await _workspaceRepository.findWorkspaceById(
+      session,
+      workspaceId,
+    );
+
+    if (actor == null) {
+      throw Exception('You are not a member of the workspace');
+    }
+
+    if (!actor.isActive) {
+      throw Exception('Permission denied. Your membership is inactive');
+    }
+
+    if (!RolePolicy.canInitiateDelete(actor.role)) {
+      throw Exception('Permission denied. Insufficient privileges');
+    }
+
+    if (workspace == null) {
+      throw Exception('Workspace not found');
+    }
+
+    if (workspace.deletedAt != null) {
+      throw Exception('Workspace has already been deleted');
+    }
+
+    if (workspace.pendingDeletionUntil != null) {
+      throw Exception('Workspace is already pending deletion');
+    }
+
+    await _workspaceRepository.softDeleteWorkspace(session, workspaceId);
+  }
 }

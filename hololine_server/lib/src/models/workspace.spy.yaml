@@ -8,5 +8,5 @@ fields:
     createdAt: DateTime
     deletedAt: DateTime?
     archivedAt: DateTime?
-
+    pendingDeletionUntil: DateTime?
     members: List<WorkspaceMember>?, relation(name=workspace_members_relation)

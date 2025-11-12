@@ -17,6 +17,26 @@ import 'package:hololine_client/src/protocol/workspace_role.dart' as _i5;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i6;
 import 'protocol.dart' as _i7;
 
+/// [WorkspaceCleanupJob] is responsible for performing hard deletes on workspaces
+/// that have been soft deleted and their grace period has expired.
+/// {@category Endpoint}
+class EndpointCleanup extends _i1.EndpointRef {
+  EndpointCleanup(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'cleanup';
+
+  /// [checkAndPerformHardDeletes] is the main method that checks for workspaces
+  /// that are pending deletion and performs the hard delete if their
+  /// `pendingDeletionUntil` timestamp is in the past.
+  _i2.Future<void> checkAndPerformHardDeletes() =>
+      caller.callServerEndpoint<void>(
+        'cleanup',
+        'checkAndPerformHardDeletes',
+        {},
+      );
+}
+
 /// Manages workspace-related operations such as creation, member management,
 /// and invitations. All endpoints require user authentication.
 /// {@category Endpoint}
@@ -158,6 +178,14 @@ class EndpointWorkspace extends _i1.EndpointRef {
           'newOwnerId': newOwnerId,
         },
       );
+
+  /// Initiate the deletion process
+  _i2.Future<_i4.Response> initiateDeleteWorkspace(int workspaceId) =>
+      caller.callServerEndpoint<_i4.Response>(
+        'workspace',
+        'initiateDeleteWorkspace',
+        {'workspaceId': workspaceId},
+      );
 }
 
 class Modules {
@@ -194,17 +222,22 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    cleanup = EndpointCleanup(this);
     workspace = EndpointWorkspace(this);
     modules = Modules(this);
   }
+
+  late final EndpointCleanup cleanup;
 
   late final EndpointWorkspace workspace;
 
   late final Modules modules;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup =>
-      {'workspace': workspace};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'cleanup': cleanup,
+        'workspace': workspace,
+      };
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup =>
