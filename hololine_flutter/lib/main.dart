@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hololine_client/hololine_client.dart';
+import 'package:hololine_flutter/core/constants/api_constants.dart';
+import 'package:hololine_flutter/routing/router_config.dart';
+import 'package:hololine_flutter/ui/core/ui/theme/theme.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
@@ -11,19 +15,26 @@ Future<void> main() async {
   // Need to call this as we are using Flutter bindings before runApp is called.
   WidgetsFlutterBinding.ensureInitialized();
 
-  // The android emulator does not have access to the localhost of the machine.
-  // const ipAddress = '10.0.2.2'; // Android emulator ip for the host
+  // The server URL is different depending on the platform and build mode.
+  const productionUrl = ApiConstants.baseUrl;
+  late final String serverUrl;
 
-  // On a real device replace the ipAddress with the IP address of your computer.
-  const ipAddress = 'localhost';
+  if (kReleaseMode) {
+    // In release mode, we always use the production server.
+    serverUrl = productionUrl;
+  } else {
+    // In debug mode, we use different URLs for different platforms.
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      serverUrl = 'http://10.0.2.2:8080/'; // Android emulator
+    } else {
+      serverUrl = 'http://localhost:8080/'; // iOS, web, desktop
+    }
+  }
 
   // Sets up a singleton client object that can be used to talk to the server from
   // anywhere in our app. The client is generated from your server code.
-  // The client is set up to connect to a Serverpod running on a local server on
-  // the default port. You will need to modify this to connect to staging or
-  // production servers.
   client = Client(
-    'http://$ipAddress:8080/',
+    serverUrl,
     authenticationKeyManager: FlutterAuthenticationKeyManager(),
   )..connectivityMonitor = FlutterConnectivityMonitor();
 
@@ -35,25 +46,25 @@ Future<void> main() async {
   );
   await sessionManager.initialize();
 
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends HookWidget {
+/// Root widget of the application.
+/// This sets up the theme, routing, and initial screen.
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(goRouterProvider);
 
-    return MaterialApp(
-      title: 'Sellarc',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        body: Center(
-            child: const Text('Welcome to Sellarc'),
-        ),
-      ),
+    return MaterialApp.router(
+      title: 'Hololine',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      debugShowCheckedModeBanner: true,
+      routerConfig: router,
     );
   }
 }
