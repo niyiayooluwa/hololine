@@ -47,3 +47,4 @@ app.*.map.json
 
 # Lib files
 /lib/core/constants/
+/lib/.gemini

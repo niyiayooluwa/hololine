@@ -935,6 +935,7 @@ extension HLColors on ColorScheme {
   Color get warningLight => const Color(0xFFFEF3C7);
   Color get info => const Color(0xFF3B82F6);
   Color get infoLight => const Color(0xFFDCEAFE);
+  Color get errorLight => Color(0xFFFEE2E2);
   Color get premium => const Color(0xFF8B5CF6);
   Color get premiumLight => const Color(0xFFF5F3FF);
   
