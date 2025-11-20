@@ -47,97 +47,103 @@ class HoloTextField extends StatelessWidget {
     final textColor =
         hasError ? theme.colorScheme.error : theme.colorScheme.onSurface;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// LABEL
-        if (label != null) ...[
-          Text(
-            label!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: hasError ? theme.colorScheme.error : textColor,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 4),
-        ],
-
-        /// DESCRIPTION
-        if (description != null) ...[
-          Text(
-            description!,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 8),
-        ],
-
-        /// TEXTFIELD CONTAINER
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: borderColor,
-              width: 1.4,
-            ),
-          ),
-          child: Row(
-            children: [
-              /// LEADING ICON
-              if (leading != null) ...[
-                leading!,
-                const SizedBox(width: 10),
-              ],
-
-              /// INPUT
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  obscureText: obscure,
-                  obscuringCharacter: obscuringCharacter,
-                  keyboardType: keyboardType,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
-                  decoration: InputDecoration(
-                    hintText: hint,
-                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          theme.colorScheme.onSurface.withValues(alpha: 0.4),
-                    ),
-                    isCollapsed: true,
-                    border: InputBorder.none,
-                  ),
+    return ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: 250,
+          maxWidth: 350,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// LABEL
+            if (label != null) ...[
+              Text(
+                label!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: hasError ? theme.colorScheme.error : textColor,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-
-              /// TRAILING ICON (clickable)
-              if (trailing != null)
-                GestureDetector(
-                  onTap: onTrailingTap,
-                  behavior: HitTestBehavior.opaque,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: trailing!,
-                  ),
-                ),
+              const SizedBox(height: 4),
             ],
-          ),
-        ),
 
-        /// ERROR MESSAGE
-        if (hasError) ...[
-          const SizedBox(height: 6),
-          Text(
-            error!,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.error,
+            /// DESCRIPTION
+            if (description != null) ...[
+              Text(
+                description!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+
+            /// TEXTFIELD CONTAINER
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: bgColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: borderColor,
+                  width: 1.4,
+                ),
+              ),
+              child: Row(
+                children: [
+                  /// LEADING ICON
+                  if (leading != null) ...[
+                    leading!,
+                    const SizedBox(width: 10),
+                  ],
+
+                  /// INPUT
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      obscureText: obscure,
+                      obscuringCharacter: obscuringCharacter,
+                      keyboardType: keyboardType,
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: textColor),
+                      decoration: InputDecoration(
+                        hintText: hint,
+                        hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface
+                              .withValues(alpha: 0.4),
+                        ),
+                        isCollapsed: true,
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+
+                  /// TRAILING ICON (clickable)
+                  if (trailing != null)
+                    GestureDetector(
+                      onTap: onTrailingTap,
+                      behavior: HitTestBehavior.opaque,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: trailing!,
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ],
-    );
+
+            /// ERROR MESSAGE
+            if (hasError) ...[
+              const SizedBox(height: 6),
+              Text(
+                error!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+          ],
+        ));
   }
 }
 

@@ -6,9 +6,12 @@ import 'package:hololine_flutter/ui/core/widgets/textfields/hl_textfield.dart';
 class LoginScreen extends HookWidget {
   const LoginScreen({super.key});
 
-  static const double desktopBreakpoint = formMinWIdth + imageMinWIdth + 20;
-  static const double formMinWIdth = 350;
-  static const double imageMinWIdth = 400;
+  static const double formMinWidth = 405;
+  static const double formMaxWidth = 405; // Figma width
+  static const double imageMinWidth = 250;
+  static const double spacing = 32;
+
+  static double get desktopBreakpoint => formMinWidth + imageMinWidth + spacing;
 
   @override
   Widget build(BuildContext context) {
@@ -17,142 +20,146 @@ class LoginScreen extends HookWidget {
     final passwordController = useTextEditingController();
 
     return Scaffold(
-      body: LayoutBuilder(builder: (context, constraints) {
-        // Get the current avaialable width
-        final screenWidth = constraints.maxWidth;
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
 
-        // Check if the screen is wide enough for split layout
-        if (screenWidth >= desktopBreakpoint) {
-          return _buildDesktopLayout(
+          final showImage = width >= desktopBreakpoint;
+
+          if (showImage) {
+            return _buildDesktop(
+              context,
+              emailController,
+              passwordController,
+              isVisible,
+            );
+          }
+
+          return _buildMobile(
             context,
             emailController,
             passwordController,
-            isVisible.value,
+            isVisible,
           );
-        } else {
-          return _buildMobileLayout(
-            context,
-            emailController,
-            passwordController,
-            isVisible.value,
-          );
-        }
-      }),
+        },
+      ),
     );
   }
 
-  Widget _buildDesktopLayout(
+  Widget _buildDesktop(
     BuildContext context,
-    TextEditingController emailController,
-    TextEditingController passwordController,
-    bool isVisible,
+    TextEditingController email,
+    TextEditingController pass,
+    ValueNotifier<bool> isVisible,
   ) {
     final theme = Theme.of(context);
-    return Row(children: <Widget>[
-      Expanded(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: imageMinWIdth),
+
+    return Row(
+      children: [
+        // IMAGE PANEL
+        ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: imageMinWidth,
+            maxWidth: 600, // optional, prevents giant stretching
+          ),
           child: Container(
-            color: theme.colorScheme.primary,
-            child: const Center(
-              child: Text('Side A; Image'),
+            color: Colors.white,
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  //border: Border.all(color: ),
+                  borderRadius: BorderRadius.circular(24)
+                ),
+                child: Center(
+                  child: Text("Side A; Image"),
+                ),
+              ),
             ),
           ),
         ),
-      ),
-      ConstrainedBox(
-        constraints: BoxConstraints(minWidth: formMinWIdth),
-        child: Container(
-          width: 700,
-          color: theme.colorScheme.secondary,
-          child:
-              _buildLoginForm(emailController, passwordController, isVisible),
+
+        // FORM PANEL
+        Expanded(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minWidth: formMaxWidth,
+              ),
+              child: _buildForm(email, pass, isVisible),
+            ),
+          ),
         ),
-      )
-    ]);
+      ],
+    );
   }
 
-  Widget _buildMobileLayout(
+  Widget _buildMobile(
     BuildContext context,
-    TextEditingController emailController,
-    TextEditingController passwordController,
-    bool isVisible,
+    TextEditingController email,
+    TextEditingController pass,
+    ValueNotifier<bool> isVisible,
   ) {
     return SingleChildScrollView(
       child: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: 400.0,
-          ),
+          constraints: const BoxConstraints(maxWidth: formMaxWidth),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: _buildLoginForm(
-              emailController,
-              passwordController,
-              isVisible,
-            ),
+            child: _buildForm(email, pass, isVisible),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildLoginForm(
-    TextEditingController emailController,
-    TextEditingController passwordController,
-    bool isVisible,
+  Widget _buildForm(
+    TextEditingController email,
+    TextEditingController pass,
+    ValueNotifier<bool> isVisible,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
-      child: Column(children: [
-        // Top text section
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Welcome back!'),
-            const Text('Login to your account'),
-            const Text('Enter your email and password to sign in.'),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text("Welcome back!"),
+          const Text("Login to your account"),
+          const Text("Enter your email and password to sign in."),
+          const SizedBox(height: 24),
 
-        // Form
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            HoloTextField(
-              label: 'Email',
-              leading: Icon(Icons.email_outlined, size: 16),
-              controller: emailController,
-              hint: 'Enter your email',
-            ),
-            const SizedBox(height: 16),
-            HoloTextField(
-              label: 'Password',
-              leading: Icon(Icons.password, size: 16),
-              controller: passwordController,
-              hint: 'Enter your password',
-              obscure: isVisible,
-              trailing: isVisible
-                  ? const Icon(Icons.visibility_off_outlined, size: 16)
-                  : const Icon(Icons.visibility_outlined, size: 16),
-              onTrailingTap: () {
-                isVisible = !isVisible;
-              },
-            ),
-          ],
-        ),
+          // EMAIL
+          HoloTextField(
+            label: 'Email',
+            leading: const Icon(Icons.email_outlined, size: 16),
+            controller: email,
+            hint: 'Enter your email',
+          ),
+          const SizedBox(height: 16),
 
-        //Button
-        Column(
-          children: [
-            const SizedBox(height: 24),
-            HoloButton(
-              label: "Login",
-              //loading: true,
-            )
-          ],
-        )
-      ]),
+          // PASSWORD
+          HoloTextField(
+            label: 'Password',
+            leading: const Icon(Icons.lock_outline, size: 16),
+            controller: pass,
+            hint: 'Enter your password',
+            obscure: isVisible.value,
+            trailing: Icon(
+              isVisible.value ? Icons.visibility_off : Icons.visibility,
+              size: 16,
+            ),
+            onTrailingTap: () => isVisible.value = !isVisible.value,
+          ),
+          const SizedBox(height: 24),
+
+          // BUTTON
+          HoloButton(label: "Login"),
+        ],
+      ),
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:hololine_client/hololine_client.dart';
 import 'package:hololine_flutter/data/datasources/remote_data_source.dart';
 import 'package:hololine_flutter/domain/failures/failures.dart';
 import 'package:hololine_flutter/domain/models/example.dart';
-import 'package:serverpod_flutter/serverpod_flutter.dart';
 // Import your serverpod client
 // import 'package:hololine_client/hololine_client.dart';
 
