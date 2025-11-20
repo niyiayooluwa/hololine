@@ -89,46 +89,38 @@ class HoloTextField extends StatelessWidget {
                   width: 1.4,
                 ),
               ),
-              child: Row(
-                children: [
-                  /// LEADING ICON
-                  if (leading != null) ...[
-                    leading!,
-                    const SizedBox(width: 10),
-                  ],
-
-                  /// INPUT
-                  Expanded(
-                    child: TextField(
-                      controller: controller,
-                      obscureText: obscure,
-                      obscuringCharacter: obscuringCharacter,
-                      keyboardType: keyboardType,
-                      style: theme.textTheme.bodyMedium
-                          ?.copyWith(color: textColor),
-                      decoration: InputDecoration(
-                        hintText: hint,
-                        hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurface
-                              .withValues(alpha: 0.4),
-                        ),
-                        isCollapsed: true,
-                        border: InputBorder.none,
-                      ),
+              child: Expanded(
+                child: TextField(
+                  controller: controller,
+                  obscureText: obscure,
+                  obscuringCharacter: obscuringCharacter,
+                  keyboardType: keyboardType,
+                  style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                     ),
+                    prefixIcon: leading != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: leading,
+                          )
+                        : null,
+                    suffixIcon: trailing != null
+                        ? GestureDetector(
+                            onTap: onTrailingTap,
+                            child: trailing,
+                          )
+                        : null,
+                    prefixIconConstraints:
+                        BoxConstraints(minWidth: 0, minHeight: 0),
+                    suffixIconConstraints:
+                        BoxConstraints(minWidth: 0, minHeight: 0),
+                    isCollapsed: true,
+                    border: InputBorder.none,
                   ),
-
-                  /// TRAILING ICON (clickable)
-                  if (trailing != null)
-                    GestureDetector(
-                      onTap: onTrailingTap,
-                      behavior: HitTestBehavior.opaque,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: trailing!,
-                      ),
-                    ),
-                ],
+                ),
               ),
             ),
 
