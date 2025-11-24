@@ -1,6 +1,7 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/usecase/workspace_service.dart';
 import 'package:hololine_server/src/utils/endpoint_helper.dart';
+import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Manages workspace-related operations such as creation, member management,
@@ -26,7 +27,7 @@ class WorkspaceEndpoint extends Endpoint {
     var userId = (await session.authenticated)?.userId;
 
     if (userId == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     // This endpoint returns a Workspace, not a Response, so we can't use the
@@ -45,7 +46,7 @@ class WorkspaceEndpoint extends Endpoint {
         exception: e,
         stackTrace: stackTrace,
       );
-      throw Exception('Failed to create workspace: ${e.toString()}');
+      rethrow;
     }
   }
 
@@ -69,7 +70,7 @@ class WorkspaceEndpoint extends Endpoint {
     var userId = (await session.authenticated)?.userId;
 
     if (userId == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     // This endpoint returns a Workspace, not a Response, so we can't use the
@@ -92,7 +93,7 @@ class WorkspaceEndpoint extends Endpoint {
         exception: e,
         stackTrace: stackTrace,
       );
-      throw Exception('Failed to create child workspace: ${e.toString()}');
+      rethrow;
     }
   }
 
@@ -105,7 +106,7 @@ class WorkspaceEndpoint extends Endpoint {
   }) async {
     final userId = (await session.authenticated)?.userId;
     if (userId == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     return withLogging(
@@ -132,7 +133,7 @@ class WorkspaceEndpoint extends Endpoint {
   }) async {
     final userId = (await session.authenticated)?.userId;
     if (userId == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     return withLogging(
@@ -159,7 +160,7 @@ class WorkspaceEndpoint extends Endpoint {
   ) async {
     final userId = (await session.authenticated)?.userId;
     if (userId == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     return withLogging(
@@ -185,7 +186,7 @@ class WorkspaceEndpoint extends Endpoint {
   ) async {
     final userId = (await session.authenticated)?.userId;
     if (userId == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     return withLogging(
@@ -205,7 +206,7 @@ class WorkspaceEndpoint extends Endpoint {
   ) async {
     final user = (await session.authenticated)?.userId;
     if (user == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     return withLogging(
@@ -225,7 +226,7 @@ class WorkspaceEndpoint extends Endpoint {
   ) async {
     final user = (await session.authenticated)?.userId;
     if (user == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     return withLogging(
@@ -246,7 +247,7 @@ class WorkspaceEndpoint extends Endpoint {
   ) async {
     final user = (await session.authenticated)?.userId;
     if (user == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     return withLogging(
@@ -267,7 +268,7 @@ class WorkspaceEndpoint extends Endpoint {
   ) async {
     final user = (await session.authenticated)?.userId;
     if (user == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     return withLogging(

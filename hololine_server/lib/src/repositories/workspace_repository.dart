@@ -1,4 +1,5 @@
 import 'package:hololine_server/src/generated/protocol.dart';
+import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Repository for managing workspace entities and their members.
@@ -56,7 +57,7 @@ class WorkspaceRepo {
         workspace.parentId!,
       );
       if (exists) {
-        throw Exception(
+        throw ConflictException(
           'A workspace with name "${workspace.name}" already exists under this parent',
         );
       }
@@ -64,7 +65,7 @@ class WorkspaceRepo {
       final existing =
           await findByNameAndOwner(session, workspace.name, ownerId);
       if (existing != null) {
-        throw Exception(
+        throw ConflictException(
           'A workspace with name "${workspace.name}" already exists',
         );
       }
@@ -260,11 +261,12 @@ class WorkspaceRepo {
     final member = await WorkspaceMember.db.findById(session, memberId);
 
     if (member == null) {
-      throw Exception('Member not found');
+      throw NotFoundException('Member not found');
     }
 
     if (member.workspaceId != workspaceId) {
-      throw Exception('Member does not belong to the specified workspace');
+      throw PermissionDeniedException(
+          'Member does not belong to the specified workspace');
     }
 
     if (member.role == WorkspaceRole.owner && role != WorkspaceRole.owner) {
@@ -277,7 +279,7 @@ class WorkspaceRepo {
       );
 
       if (ownerCount <= 1) {
-        throw Exception(
+        throw InvalidStateException(
           'Cannot change role: workspace must have at least one active owner',
         );
       }
@@ -305,11 +307,12 @@ class WorkspaceRepo {
     final member = await WorkspaceMember.db.findById(session, memberId);
 
     if (member == null) {
-      throw Exception('Member not found');
+      throw NotFoundException('Member not found');
     }
 
     if (member.workspaceId != workspaceId) {
-      throw Exception('Member does not belong to the specified workspace');
+      throw PermissionDeniedException(
+          'Member does not belong to the specified workspace');
     }
 
     if (member.role == WorkspaceRole.owner) {
@@ -322,7 +325,7 @@ class WorkspaceRepo {
       );
 
       if (activeOwnerCount <= 1) {
-        throw Exception(
+        throw InvalidStateException(
           'Cannot deactivate: workspace must have at least one active owner',
         );
       }
@@ -375,7 +378,7 @@ class WorkspaceRepo {
     final invitation = await findInvitationByToken(session, token);
 
     if (invitation == null) {
-      throw Exception('Invitation not found');
+      throw NotFoundException('Invitation not found');
     }
     await WorkspaceInvitation.db.deleteRow(session, invitation);
   }
@@ -401,7 +404,7 @@ class WorkspaceRepo {
     );
 
     if (userInfo == null) {
-      throw Exception('User not found');
+      throw NotFoundException('User not found');
     }
 
     return await findMemberByWorkspaceId(session, userInfo.id!, workspaceId);

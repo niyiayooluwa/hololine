@@ -1,5 +1,6 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/services/email_service.dart';
+import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:hololine_server/src/utils/permissions.dart';
 import 'package:hololine_server/src/utils/token_generator.dart';
 import 'package:serverpod/serverpod.dart';
@@ -23,11 +24,11 @@ class WorkspaceService {
     );
 
     if (workspace == null) {
-      throw Exception('Workspace not found');
+      throw NotFoundException('Workspace not found');
     }
 
     if (workspace.archivedAt != null) {
-      throw Exception('This workspace has been archived');
+      throw InvalidStateException('This workspace has been archived');
     }
 
     return workspace;
@@ -85,18 +86,20 @@ class WorkspaceService {
     );
 
     if (member == null) {
-      throw Exception('User is not a member of the parent workspace');
+      throw PermissionDeniedException(
+          'User is not a member of the parent workspace');
     }
 
     if (!member.isActive) {
-      throw Exception('Permission denied. Your membership is inactive');
+      throw PermissionDeniedException(
+          'Permission denied. Your membership is inactive');
     }
 
     var hasPermission = member.role == WorkspaceRole.owner ||
         member.role == WorkspaceRole.admin;
 
     if (!hasPermission) {
-      throw Exception('Permission denied. Insufficient role');
+      throw PermissionDeniedException('Permission denied. Insufficient role');
     }
 
     var parentWorkspace = await _workspaceRepository.findWorkspaceById(
@@ -105,11 +108,11 @@ class WorkspaceService {
     );
 
     if (parentWorkspace == null) {
-      throw Exception('Parent workspace not found');
+      throw NotFoundException('Parent workspace not found');
     }
 
     if (parentWorkspace.parentId != null) {
-      throw Exception('A child workspace cannot become a parent');
+      throw InvalidStateException('A child workspace cannot become a parent');
     }
 
     var newChildWorkspace = Workspace(
@@ -150,23 +153,24 @@ class WorkspaceService {
         session, memberId, workspaceId);
 
     if (actor == null) {
-      throw Exception('Actor is not a member of the workspace');
+      throw PermissionDeniedException('Actor is not a member of the workspace');
     }
 
     if (!actor.isActive) {
-      throw Exception('Permission denied. Your membership is inactive');
+      throw PermissionDeniedException(
+          'Permission denied. Your membership is inactive');
     }
 
     if (member == null) {
-      throw Exception('Target member not found in the workspace');
+      throw NotFoundException('Target member not found in the workspace');
     }
 
     if (!member.isActive) {
-      throw Exception('Cannot update role of an inactive member');
+      throw InvalidStateException('Cannot update role of an inactive member');
     }
 
     if (actorId == memberId && actor.role == WorkspaceRole.owner) {
-      throw Exception('Owners cannot change their own role');
+      throw PermissionDeniedException('Owners cannot change their own role');
     }
 
     if (!RolePolicy.canUpdateRole(
@@ -174,7 +178,8 @@ class WorkspaceService {
       target: member.role,
       newRole: role,
     )) {
-      throw Exception('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException(
+          'Permission denied. Insufficient privileges');
     }
 
     await _workspaceRepository.updateMemberRole(
@@ -206,23 +211,26 @@ class WorkspaceService {
         session, memberId, workspaceId);
 
     if (actor == null) {
-      throw Exception('Actor is not a member of the workspace');
+      throw PermissionDeniedException('Actor is not a member of the workspace');
     }
 
     if (!actor.isActive) {
-      throw Exception('Permission denied. Your membership is inactive');
+      throw PermissionDeniedException(
+          'Permission denied. Your membership is inactive');
     }
 
     if (member == null) {
-      throw Exception('Target member not found in the workspace');
+      throw NotFoundException('Target member not found in the workspace');
     }
 
     if (actorId == memberId) {
-      throw Exception('You cannot remove yourself from the workspace');
+      throw PermissionDeniedException(
+          'You cannot remove yourself from the workspace');
     }
 
     if (!RolePolicy.canManageMembers(actor.role)) {
-      throw Exception('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException(
+          'Permission denied. Insufficient privileges');
     }
 
     await _workspaceRepository.deactivateMember(session, memberId, workspaceId);
@@ -254,7 +262,7 @@ class WorkspaceService {
     );
 
     if (workspace == null) {
-      throw Exception('Workspace not found');
+      throw NotFoundException('Workspace not found');
     }
 
     final workspaceName = workspace.name;
@@ -267,16 +275,18 @@ class WorkspaceService {
     );
 
     if (actor == null) {
-      throw Exception(
+      throw PermissionDeniedException(
           'Action not allowed. You are not a member of this workspace.');
     }
 
     if (!actor.isActive) {
-      throw Exception('Permission denied. Your membership is inactive.');
+      throw PermissionDeniedException(
+          'Permission denied. Your membership is inactive.');
     }
 
     if (!RolePolicy.canManageMembers(actor.role)) {
-      throw Exception('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException(
+          'Permission denied. Insufficient privileges');
     }
 
     // Check if the user is already a member of the workspace.
@@ -288,7 +298,8 @@ class WorkspaceService {
       );
 
       if (existingMember != null) {
-        throw Exception('This user is already a member of the workspace.');
+        throw ConflictException(
+            'This user is already a member of the workspace.');
       }
     } on Exception catch (e) {
       // The repo throws 'User not found' if the email doesn't exist in UserInfo.
@@ -314,7 +325,7 @@ class WorkspaceService {
         await _workspaceRepository.deleteInvitation(
             session, existingInvitation.token);
       } else {
-        throw Exception(
+        throw ConflictException(
             'An invitation has already been sent to this email address.');
       }
     }
@@ -335,7 +346,7 @@ class WorkspaceService {
     } while (!isUnique && attempts < 10);
 
     if (!isUnique) {
-      throw Exception(
+      throw InvalidStateException(
           'Failed to generate a unique invitation token after 10 attempts.');
     }
 
@@ -347,7 +358,7 @@ class WorkspaceService {
     );
 
     if (!sendEmail) {
-      throw Exception('Failed to send invitation email.');
+      throw ExternalServiceException('Failed to send invitation email.');
     }
 
     // Create and store the invitation
@@ -380,7 +391,7 @@ class WorkspaceService {
 
     // Throw an exception if the user is not authenticated
     if (userId == null) {
-      throw Exception('User not authenticated');
+      throw AuthenticationException('User not authenticated');
     }
 
     // Find the user's information using their userID
@@ -388,7 +399,7 @@ class WorkspaceService {
 
     // Throw an exception if the user is not found or has no email
     if (user == null || user.email == null) {
-      throw Exception('Authenticated user not found or has no email.');
+      throw NotFoundException('Authenticated user not found or has no email.');
     }
     final userEmail = user.email!;
 
@@ -400,7 +411,7 @@ class WorkspaceService {
 
     // Throw an exception if the invitation is not found
     if (invitation == null) {
-      throw Exception('Invalid invitation token.');
+      throw NotFoundException('Invalid invitation token.');
     }
 
     await _assertWorkspaceIsMutable(session, invitation.workspaceId);
@@ -408,12 +419,12 @@ class WorkspaceService {
     // Check if the invitation has expired and delete it if it has
     if (DateTime.now().toUtc().isAfter(invitation.expiresAt)) {
       await _workspaceRepository.deleteInvitation(session, token);
-      throw Exception('Invitation has expired.');
+      throw InvalidStateException('Invitation has expired.');
     }
 
     // Throw an exception is the user's email is not the as the invited email
     if (invitation.inviteeEmail != userEmail) {
-      throw Exception('This invitation is for a different user.');
+      throw PermissionDeniedException('This invitation is for a different user.');
     }
 
     // Check if the user is a member of the workspace already
@@ -427,7 +438,7 @@ class WorkspaceService {
       // If the member is inactive, we can consider reactivating them,
       // but for now, we'll just prevent adding a duplicate.
       await _workspaceRepository.deleteInvitation(session, token);
-      throw Exception('You are already a member of this workspace.');
+      throw ConflictException('You are already a member of this workspace.');
     }
 
     // Use a transaction to ensure atomicity
@@ -472,11 +483,11 @@ class WorkspaceService {
     );
 
     if (actor == null) {
-      throw Exception('You are not a member of the workspace');
+      throw PermissionDeniedException('You are not a member of the workspace');
     }
 
     if (!RolePolicy.canArchiveWorkspace(actor.role)) {
-      throw Exception('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException('Permission denied. Insufficient privileges');
     }
 
     await _workspaceRepository.archiveWorkspace(session, workspaceId);
@@ -508,11 +519,11 @@ class WorkspaceService {
     );
 
     if (workspace == null) {
-      throw Exception('Workspace not found');
+      throw NotFoundException('Workspace not found');
     }
 
     if (workspace.archivedAt == null) {
-      throw Exception('This workspace has not been archived');
+      throw InvalidStateException('This workspace has not been archived');
     }
 
     var actor = await _workspaceRepository.findMemberByWorkspaceId(
@@ -522,11 +533,11 @@ class WorkspaceService {
     );
 
     if (actor == null) {
-      throw Exception('You are not a member of the workspace');
+      throw PermissionDeniedException('You are not a member of the workspace');
     }
 
     if (!RolePolicy.canRestoreWorkspace(actor.role)) {
-      throw Exception('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException('Permission denied. Insufficient privileges');
     }
 
     await _workspaceRepository.restoreWorkspace(session, workspaceId);
@@ -560,27 +571,27 @@ class WorkspaceService {
     );
 
     if (actor == null) {
-      throw Exception('You are not a member of the workspace');
+      throw PermissionDeniedException('You are not a member of the workspace');
     }
 
     if (member == null) {
-      throw Exception('Target member not found in the workspace');
+      throw NotFoundException('Target member not found in the workspace');
     }
 
     if (!actor.isActive) {
-      throw Exception('Permission denied. Your membership is inactive');
+      throw PermissionDeniedException('Permission denied. Your membership is inactive');
     }
 
     if (!member.isActive) {
-      throw Exception('Cannot update role of an inactive member');
+      throw InvalidStateException('Cannot update role of an inactive member');
     }
 
     if (!RolePolicy.canTransferOwnership(actor.role)) {
-      throw Exception('Permission denied. You do not own this workspace');
+      throw PermissionDeniedException('Permission denied. You do not own this workspace');
     }
 
     if (actorId == newOwnerId) {
-      throw Exception('You can not modify your own role');
+      throw PermissionDeniedException('You can not modify your own role');
     }
 
     await session.db.transaction((transaction) async {
@@ -618,27 +629,27 @@ class WorkspaceService {
     );
 
     if (actor == null) {
-      throw Exception('You are not a member of the workspace');
+      throw PermissionDeniedException('You are not a member of the workspace');
     }
 
     if (!actor.isActive) {
-      throw Exception('Permission denied. Your membership is inactive');
+      throw PermissionDeniedException('Permission denied. Your membership is inactive');
     }
 
     if (!RolePolicy.canInitiateDelete(actor.role)) {
-      throw Exception('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException('Permission denied. Insufficient privileges');
     }
 
     if (workspace == null) {
-      throw Exception('Workspace not found');
+      throw NotFoundException('Workspace not found');
     }
 
     if (workspace.deletedAt != null) {
-      throw Exception('Workspace has already been deleted');
+      throw InvalidStateException('Workspace has already been deleted');
     }
 
     if (workspace.pendingDeletionUntil != null) {
-      throw Exception('Workspace is already pending deletion');
+      throw InvalidStateException('Workspace is already pending deletion');
     }
 
     await _workspaceRepository.softDeleteWorkspace(session, workspaceId);
