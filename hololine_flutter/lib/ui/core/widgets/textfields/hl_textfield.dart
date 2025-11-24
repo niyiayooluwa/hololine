@@ -38,12 +38,6 @@ class HoloTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    /// COLORS
-    final borderColor =
-        hasError ? theme.colorScheme.error : theme.colorScheme.outlineVariant;
-
-    final bgColor = theme.colorScheme.surface;
-
     final textColor =
         hasError ? theme.colorScheme.error : theme.colorScheme.onSurface;
 
@@ -90,7 +84,7 @@ class HoloTextField extends StatelessWidget {
                 hintStyle: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
-                prefixIcon: leading != null ? leading : null,
+                prefixIcon: leading,
                 suffixIcon: trailing != null
                     ? GestureDetector(
                         onTap: onTrailingTap,
