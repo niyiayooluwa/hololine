@@ -8,7 +8,10 @@ import 'package:hololine_server/src/repositories/workspace_repository.dart';
 /// Service class for managing workspace operations including creation,
 /// member management, and invitations.
 class WorkspaceService {
-  final WorkspaceRepo _workspaceRepository = WorkspaceRepo();
+  final WorkspaceRepo _workspaceRepository;
+
+  WorkspaceService({WorkspaceRepo? workspaceRepository})
+      : _workspaceRepository = workspaceRepository ?? WorkspaceRepo();
 
   Future<Workspace> _assertWorkspaceIsMutable(
     Session session,
