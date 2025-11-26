@@ -424,7 +424,8 @@ class WorkspaceService {
 
     // Throw an exception is the user's email is not the as the invited email
     if (invitation.inviteeEmail != userEmail) {
-      throw PermissionDeniedException('This invitation is for a different user.');
+      throw PermissionDeniedException(
+          'This invitation is for a different user.');
     }
 
     // Check if the user is a member of the workspace already
@@ -487,7 +488,8 @@ class WorkspaceService {
     }
 
     if (!RolePolicy.canArchiveWorkspace(actor.role)) {
-      throw PermissionDeniedException('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException(
+          'Permission denied. Insufficient privileges');
     }
 
     await _workspaceRepository.archiveWorkspace(session, workspaceId);
@@ -537,7 +539,8 @@ class WorkspaceService {
     }
 
     if (!RolePolicy.canRestoreWorkspace(actor.role)) {
-      throw PermissionDeniedException('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException(
+          'Permission denied. Insufficient privileges');
     }
 
     await _workspaceRepository.restoreWorkspace(session, workspaceId);
@@ -579,7 +582,8 @@ class WorkspaceService {
     }
 
     if (!actor.isActive) {
-      throw PermissionDeniedException('Permission denied. Your membership is inactive');
+      throw PermissionDeniedException(
+          'Permission denied. Your membership is inactive');
     }
 
     if (!member.isActive) {
@@ -587,7 +591,8 @@ class WorkspaceService {
     }
 
     if (!RolePolicy.canTransferOwnership(actor.role)) {
-      throw PermissionDeniedException('Permission denied. You do not own this workspace');
+      throw PermissionDeniedException(
+          'Permission denied. You do not own this workspace');
     }
 
     if (actorId == newOwnerId) {
@@ -633,11 +638,13 @@ class WorkspaceService {
     }
 
     if (!actor.isActive) {
-      throw PermissionDeniedException('Permission denied. Your membership is inactive');
+      throw PermissionDeniedException(
+          'Permission denied. Your membership is inactive');
     }
 
     if (!RolePolicy.canInitiateDelete(actor.role)) {
-      throw PermissionDeniedException('Permission denied. Insufficient privileges');
+      throw PermissionDeniedException(
+          'Permission denied. Insufficient privileges');
     }
 
     if (workspace == null) {
