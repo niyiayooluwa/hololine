@@ -1,6 +1,15 @@
-import 'package:hololine_server/src/repositories/workspace_repository.dart';
+import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart';
+import 'package:hololine_server/src/modules/workspace/usecase/services.dart';
 import 'package:mockito/annotations.dart';
 import 'package:serverpod/serverpod.dart';
 
-@GenerateMocks([WorkspaceRepo, Session])
+@GenerateMocks([
+  WorkspaceService,
+  MemberService,
+  InvitationService,
+  WorkspaceRepo,
+  MemberRepo,
+  InvitationRepo,
+  Session,
+])
 void main() {}
