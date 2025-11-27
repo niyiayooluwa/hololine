@@ -160,6 +160,22 @@ class MockWorkspaceRepo extends _i1.Mock implements _i5.WorkspaceRepo {
   }
 
   @override
+  _i6.Future<_i2.UserInfo?> getUserInfo(
+    _i3.Session? session,
+    int? userId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getUserInfo,
+          [
+            session,
+            userId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.UserInfo?>.value(),
+      ) as _i6.Future<_i2.UserInfo?>);
+
+  @override
   _i6.Future<_i2.Workspace?> findByNameAndOwner(
     _i3.Session? session,
     String? name,
@@ -406,8 +422,9 @@ class MockWorkspaceRepo extends _i1.Mock implements _i5.WorkspaceRepo {
   @override
   _i6.Future<void> deleteInvitation(
     _i3.Session? session,
-    String? token,
-  ) =>
+    String? token, {
+    _i3.Transaction? transaction,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #deleteInvitation,
@@ -415,6 +432,7 @@ class MockWorkspaceRepo extends _i1.Mock implements _i5.WorkspaceRepo {
             session,
             token,
           ],
+          {#transaction: transaction},
         ),
         returnValue: _i6.Future<void>.value(),
         returnValueForMissingStub: _i6.Future<void>.value(),
@@ -443,6 +461,7 @@ class MockWorkspaceRepo extends _i1.Mock implements _i5.WorkspaceRepo {
     _i3.Session? session,
     _i2.WorkspaceInvitation? invitation,
     int? userId,
+    String? token,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -451,6 +470,7 @@ class MockWorkspaceRepo extends _i1.Mock implements _i5.WorkspaceRepo {
             session,
             invitation,
             userId,
+            token,
           ],
         ),
         returnValue:
@@ -462,10 +482,45 @@ class MockWorkspaceRepo extends _i1.Mock implements _i5.WorkspaceRepo {
               session,
               invitation,
               userId,
+              token,
             ],
           ),
         )),
       ) as _i6.Future<_i2.WorkspaceMember>);
+
+  @override
+  _i6.Future<_i2.WorkspaceInvitation?> checkForExistingInvitation(
+    _i3.Session? session,
+    String? email,
+    int? workspaceId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #checkForExistingInvitation,
+          [
+            session,
+            email,
+            workspaceId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.WorkspaceInvitation?>.value(),
+      ) as _i6.Future<_i2.WorkspaceInvitation?>);
+
+  @override
+  _i6.Future<_i2.WorkspaceInvitation?> checkIfTokenIsUnique(
+    _i3.Session? session,
+    String? token,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #checkIfTokenIsUnique,
+          [
+            session,
+            token,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.WorkspaceInvitation?>.value(),
+      ) as _i6.Future<_i2.WorkspaceInvitation?>);
 }
 
 /// A class which mocks [Session].

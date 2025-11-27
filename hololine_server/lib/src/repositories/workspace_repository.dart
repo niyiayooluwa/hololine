@@ -6,6 +6,10 @@ import 'package:serverpod/serverpod.dart';
 /// Handles workspace creation, retrieval, and member management operations
 /// with proper validation and business rules enforcement.
 class WorkspaceRepo {
+  Future<UserInfo?> getUserInfo(Session session, int userId) async {
+    return await UserInfo.db.findById(session, userId);
+  }
+
   /// Finds a workspace by its [name] and owner user ID.
   ///
   /// The [name] must match exactly and the [userId] must correspond to a user
@@ -227,7 +231,7 @@ class WorkspaceRepo {
   ///
   /// - [session]: The database session.
   /// - [workspaceId]: The ID of the workspace to permanently delete.
-  /// 
+  ///
   /// Returns `true` if the workspace was found and marked as deleted, `false` otherwise.
   Future<bool> hardDeleteWorkspace(
     Session session,
@@ -237,8 +241,7 @@ class WorkspaceRepo {
 
     if (workspace == null) return false;
 
-    workspace.deletedAt =
-        DateTime.now().toUtc();
+    workspace.deletedAt = DateTime.now().toUtc();
     await Workspace.db.updateRow(session, workspace);
     return true;
   }
@@ -371,16 +374,18 @@ class WorkspaceRepo {
   /// called after an invitation has been accepted or when revoking an invitation.
   ///
   /// Throws an [Exception] if no invitation with the given token is found.
-  Future<void> deleteInvitation(
-    Session session,
-    String token,
-  ) async {
+  Future<void> deleteInvitation(Session session, String token,
+      {Transaction? transaction}) async {
     final invitation = await findInvitationByToken(session, token);
 
     if (invitation == null) {
       throw NotFoundException('Invitation not found');
     }
-    await WorkspaceInvitation.db.deleteRow(session, invitation);
+    await WorkspaceInvitation.db.deleteRow(
+      session,
+      invitation,
+      transaction: transaction,
+    );
   }
 
   /// Finds a workspace member by their [email] address and [workspaceId].
@@ -412,23 +417,28 @@ class WorkspaceRepo {
 
   /// Accepts a workspace [invitation] for the specified [userId].
   ///
-  /// Creates a new workspace member with the role specified in the invitation.
-  /// The member is marked as active and the join date is set to the current
-  /// UTC time.
+  /// This method performs an atomic operation:
+  /// 1. Creates a new [WorkspaceMember] with the role specified in the invitation.
+  ///    The member is marked as active and the join date is set to the current UTC time.
+  /// 2. Deletes the corresponding [WorkspaceInvitation] using its [token].
   ///
-  /// The [invitation] must contain a valid workspace ID and role. The [userId]
-  /// must correspond to an existing user.
+  /// Both operations are wrapped in a database transaction to ensure that either
+  /// both succeed or both fail, maintaining data consistency.
   ///
-  /// Returns the created workspace member with its assigned ID.
+  /// - [session]: The database session.
+  /// - [invitation]: The [WorkspaceInvitation] object containing details like workspace ID and role.
+  /// - [userId]: The ID of the user accepting the invitation.
+  /// - [token]: The unique token associated with the invitation, used for deletion.
   ///
-  /// Note: This method does not validate if the user is already a member
-  /// or if the invitation has expired. Such validation should be performed
-  /// at the service layer before calling this method.
-  Future<WorkspaceMember> acceptInvitation(
-    Session session,
-    WorkspaceInvitation invitation,
-    int userId,
-  ) async {
+  /// Returns the newly created [WorkspaceMember] with its assigned ID.
+  ///
+  /// Throws [NotFoundException] if the invitation token does not match an existing invitation.
+  ///
+  /// Note: This method assumes prior validation has occurred (e.g., checking if the
+  /// user is already a member, if the invitation has expired, or if the token is valid).
+  Future<WorkspaceMember> acceptInvitation(Session session,
+      WorkspaceInvitation invitation, int userId, String token) async {
+    // Create a new WorkspaceMember object based on the invitation details and user ID.
     var member = WorkspaceMember(
       userInfoId: userId,
       workspaceId: invitation.workspaceId,
@@ -436,6 +446,44 @@ class WorkspaceRepo {
       joinedAt: DateTime.now().toUtc(),
       isActive: true,
     );
-    return WorkspaceMember.db.insertRow(session, member);
+
+    // Execute both the member insertion and invitation deletion within a single transaction.
+    return await session.db.transaction((transaction) async {
+      // Insert the new workspace member into the database.
+      final newMember = await WorkspaceMember.db
+          .insertRow(session, member, transaction: transaction);
+
+      // Delete the invitation, ensuring it's part of the same transaction.
+      await deleteInvitation(session, token, transaction: transaction);
+
+      return newMember;
+    });
+  }
+
+  Future<WorkspaceInvitation?> checkForExistingInvitation(
+    Session session,
+    String email,
+    int workspaceId,
+  ) async {
+    var invitation = await WorkspaceInvitation.db.findFirstRow(
+      session,
+      where: (invitation) =>
+          invitation.inviteeEmail.equals(email) &
+          invitation.workspaceId.equals(workspaceId),
+    );
+
+    return invitation;
+  }
+
+  Future<WorkspaceInvitation?> checkIfTokenIsUnique(
+    Session session,
+    String token,
+  ) async {
+    final result = await WorkspaceInvitation.db.findFirstRow(
+      session,
+      where: (invitation) => invitation.token.equals(token),
+    );
+
+    return result;
   }
 }

@@ -310,11 +310,12 @@ class WorkspaceService {
     }
 
     // Check for an existing, unaccepted invitation for this email.
-    final existingInvitation = await WorkspaceInvitation.db.findFirstRow(
-        session,
-        where: (invitation) =>
-            invitation.inviteeEmail.equals(email) &
-            invitation.workspaceId.equals(workspaceId));
+    final existingInvitation =
+        await _workspaceRepository.checkForExistingInvitation(
+      session,
+      email,
+      workspaceId,
+    );
 
     if (existingInvitation != null) {
       final expiryDate = existingInvitation.expiresAt;
@@ -337,9 +338,9 @@ class WorkspaceService {
 
     do {
       token = generateCustomToken();
-      final existing = await WorkspaceInvitation.db.findFirstRow(
+      final existing = await _workspaceRepository.checkIfTokenIsUnique(
         session,
-        where: (invitation) => invitation.token.equals(token),
+        token,
       );
       isUnique = existing == null;
       attempts++;
@@ -395,7 +396,7 @@ class WorkspaceService {
     }
 
     // Find the user's information using their userID
-    final user = await UserInfo.db.findById(session, userId);
+    final user = await _workspaceRepository.getUserInfo(session, userId);
 
     // Throw an exception if the user is not found or has no email
     if (user == null || user.email == null) {
@@ -443,15 +444,12 @@ class WorkspaceService {
     }
 
     // Use a transaction to ensure atomicity
-    final newMember = await session.db.transaction((transaction) async {
-      final member = await _workspaceRepository.acceptInvitation(
-        session,
-        invitation,
-        userId,
-      );
-      await _workspaceRepository.deleteInvitation(session, token);
-      return member;
-    });
+    final newMember = await _workspaceRepository.acceptInvitation(
+      session,
+      invitation,
+      userId,
+      token,
+    );
 
     return newMember;
   }
