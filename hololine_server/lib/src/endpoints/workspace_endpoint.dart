@@ -1,5 +1,6 @@
 import 'package:hololine_server/src/generated/protocol.dart';
-import 'package:hololine_server/src/usecase/workspace_service.dart';
+import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart';
+import 'package:hololine_server/src/modules/workspace/usecase/services.dart';
 import 'package:hololine_server/src/utils/endpoint_helper.dart';
 import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:serverpod/serverpod.dart';
@@ -10,7 +11,25 @@ class WorkspaceEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  final WorkspaceService _service = WorkspaceService();
+  final WorkspaceRepo _coreWorkspaceRepo = WorkspaceRepo();
+  final MemberRepo _memberRepo = MemberRepo();
+  final InvitationRepo _invitationRepo = InvitationRepo();
+
+  // Now, create the services and inject their dependencies directly.
+  // We use `late final` because they depend on the repositories defined above.
+  late final WorkspaceService _workspaceService = WorkspaceService(
+    _memberRepo,
+    _coreWorkspaceRepo,
+  );
+  late final MemberService _memberService = MemberService(
+    _memberRepo,
+    _coreWorkspaceRepo,
+  );
+  late final InvitationService _invitationService = InvitationService(
+    _coreWorkspaceRepo,
+    _memberRepo,
+    _invitationRepo,
+  );
 
   /// Creates a new standalone workspace.
   ///
@@ -35,7 +54,7 @@ class WorkspaceEndpoint extends Endpoint {
     try {
       session.log('Endpoint "createStandalone" called.', level: LogLevel.info);
       final workspace =
-          await _service.createStandalone(session, name, userId, description);
+          await _workspaceService.createStandalone(session, name, userId, description);
       session.log('Endpoint "createStandalone" succeeded.',
           level: LogLevel.info);
       return workspace;
@@ -77,7 +96,7 @@ class WorkspaceEndpoint extends Endpoint {
     // withLogging helper without creating a second helper. We'll add manual logging.
     try {
       session.log('Endpoint "createChild" called.', level: LogLevel.info);
-      final workspace = await _service.createChild(
+      final workspace = await _workspaceService.createChild(
         session,
         name,
         userId,
@@ -113,7 +132,7 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'updateMemberRole',
       () async {
-        await _service.updateMemberRole(
+        await _memberService.updateMemberRole(
           session,
           memberId: memberId,
           workspaceId: workspaceId,
@@ -140,7 +159,7 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'removeMember',
       () async {
-        await _service.removeMember(
+        await _memberService.removeMember(
           session,
           memberId: memberId,
           workspaceId: workspaceId,
@@ -167,7 +186,7 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'inviteMember',
       () async {
-        await _service.inviteMember(
+        await _invitationService.inviteMember(
           session,
           email,
           workspaceId,
@@ -193,7 +212,7 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'acceptInvitation',
       () async {
-        await _service.acceptInvitation(session, token);
+        await _invitationService.acceptInvitation(session, token);
         return 'Invitation accepted successfully. Welcome to the workspace!';
       },
     );
@@ -213,7 +232,7 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'archiveWorkspace',
       () async {
-        await _service.archiveWorkspace(session, workspaceId, user);
+        await _workspaceService.archiveWorkspace(session, workspaceId, user);
         return 'Workspace archived successfully';
       },
     );
@@ -233,7 +252,7 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'restoreWorkspace',
       () async {
-        await _service.restoreWorkspace(session, workspaceId, user);
+        await _workspaceService.restoreWorkspace(session, workspaceId, user);
         return 'Workspace restored successfully';
       },
     );
@@ -254,7 +273,7 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'transferOwnership',
       () async {
-        await _service.transferOwnership(
+        await _workspaceService.transferOwnership(
             session, workspaceId, newOwnerId, user);
         return 'Ownership transferred successfully';
       },
@@ -275,7 +294,7 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'deleteWorkspace',
       () async {
-        await _service.initiateDeleteWorkspace(session, workspaceId, user);
+        await _workspaceService.initiateDeleteWorkspace(session, workspaceId, user);
         return 'Workspace deletion initiated successfully';
       },
     );

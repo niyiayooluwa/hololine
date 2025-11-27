@@ -1,6 +1,7 @@
 import 'package:hololine_server/src/generated/protocol.dart';
-import 'package:hololine_server/src/repositories/workspace_repository.dart';
-import 'package:serverpod/serverpod.dart';
+import 'package:serverpod/protocol.dart';
+import 'package:serverpod/server.dart';
+import '../../modules/workspace/repositories/repositories.dart';
 
 /// [WorkspaceCleanupJob] is responsible for performing hard deletes on workspaces
 /// that have been soft deleted and their grace period has expired.
