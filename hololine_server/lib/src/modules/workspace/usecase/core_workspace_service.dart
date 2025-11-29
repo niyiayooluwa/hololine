@@ -293,6 +293,29 @@ class WorkspaceService {
     }
   }
 
+  /// Initiates the deletion process for a workspace.
+  ///
+  /// This method performs several validation checks before marking a workspace
+  /// for deletion:
+  /// - Verifies the workspace exists and is mutable
+  /// - Confirms the actor is an active member of the workspace
+  /// - Ensures the actor has sufficient privileges to delete workspaces
+  /// - Checks the workspace is not already deleted or pending deletion
+  ///
+  /// Once all validations pass, the workspace is soft-deleted and a deletion
+  /// timer is initiated.
+  ///
+  /// Parameters:
+  ///   - [session]: The database session for executing transactions
+  ///   - [workspaceId]: The ID of the workspace to delete
+  ///   - [actorId]: The ID of the member initiating the deletion
+  ///
+  /// Throws:
+  ///   - [PermissionDeniedException]: If the actor is not a workspace member,
+  ///     their membership is inactive, or they lack deletion privileges
+  ///   - [InvalidStateException]: If the workspace is already deleted or
+  ///     pending deletion
+  ///   - [Exception]: If the database transaction fails during soft deletion
   Future<void> initiateDeleteWorkspace(
     Session session,
     int workspaceId,
