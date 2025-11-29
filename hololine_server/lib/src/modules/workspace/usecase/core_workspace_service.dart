@@ -164,7 +164,13 @@ class WorkspaceService {
           'Permission denied. Insufficient privileges');
     }
 
-    await _workspaceRepository.archiveWorkspace(session, workspaceId);
+    final success =
+        await _workspaceRepository.archiveWorkspace(session, workspaceId);
+
+    if (!success) {
+      throw Exception(
+          'Failed to archive workspace: database transaction failed');
+    }
   }
 
   /// Restores an archived workspace after verifying the actor's permissions.
@@ -215,7 +221,13 @@ class WorkspaceService {
           'Permission denied. Insufficient privileges');
     }
 
-    await _workspaceRepository.restoreWorkspace(session, workspaceId);
+    final success =
+        await _workspaceRepository.restoreWorkspace(session, workspaceId);
+
+    if (!success) {
+      throw Exception(
+          'Failed to restore workspace: database transaction failed');
+    }
   }
 
   /// Transfers ownership of a workspace from the current owner to another member.
@@ -272,20 +284,13 @@ class WorkspaceService {
       throw PermissionDeniedException('You can not modify your own role');
     }
 
-    await session.db.transaction((transaction) async {
-      await _memberRepository.updateMemberRole(
-        session,
-        newOwnerId,
-        WorkspaceRole.owner,
-        workspaceId,
-      );
-      await _memberRepository.updateMemberRole(
-        session,
-        actorId,
-        WorkspaceRole.admin,
-        workspaceId,
-      );
-    });
+    final success = await _memberRepository.transferOwnership(
+        session, workspaceId, actorId, newOwnerId);
+
+    if (!success) {
+      throw Exception(
+          'Failed to transfer ownership: database transaction failed');
+    }
   }
 
   Future<void> initiateDeleteWorkspace(
@@ -332,6 +337,12 @@ class WorkspaceService {
       throw InvalidStateException('Workspace is already pending deletion');
     }
 
-    await _workspaceRepository.softDeleteWorkspace(session, workspaceId);
+    final success =
+        await _workspaceRepository.softDeleteWorkspace(session, workspaceId);
+
+    if (!success) {
+      throw Exception(
+          'Failed to initiate workspace deletion: database transaction failed');
+    }
   }
 }

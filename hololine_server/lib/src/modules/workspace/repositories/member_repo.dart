@@ -12,15 +12,15 @@ class MemberRepo {
   /// Returns the workspace member if found, or `null` if no membership
   /// exists for the given user and workspace combination.
   Future<WorkspaceMember?> findMemberByWorkspaceId(
-      Session session,
-      int userId,
-      int workspaceId,
-      ) async {
+    Session session,
+    int userId,
+    int workspaceId,
+  ) async {
     return WorkspaceMember.db.findFirstRow(
       session,
       where: (member) =>
-      member.userInfoId.equals(userId) &
-      member.workspaceId.equals(workspaceId),
+          member.userInfoId.equals(userId) &
+          member.workspaceId.equals(workspaceId),
     );
   }
 
@@ -35,10 +35,10 @@ class MemberRepo {
   /// Throws an [Exception] if no user exists with the given email address.
   /// Returns `null` if the user exists but is not a member of the workspace.
   Future<WorkspaceMember?> findMemberByEmail(
-      Session session,
-      String email,
-      int workspaceId,
-      ) async {
+    Session session,
+    String email,
+    int workspaceId,
+  ) async {
     final userInfo = await UserInfo.db.findFirstRow(
       session,
       where: (user) => user.email.equals(email),
@@ -61,11 +61,11 @@ class MemberRepo {
   /// the specified workspace, or if changing the role would leave the
   /// workspace without any active owners.
   Future<void> updateMemberRole(
-      Session session,
-      int memberId,
-      WorkspaceRole role,
-      int workspaceId,
-      ) async {
+    Session session,
+    int memberId,
+    WorkspaceRole role,
+    int workspaceId,
+  ) async {
     final member = await WorkspaceMember.db.findById(session, memberId);
 
     if (member == null) {
@@ -81,9 +81,9 @@ class MemberRepo {
       final ownerCount = await WorkspaceMember.db.count(
         session,
         where: (m) =>
-        m.workspaceId.equals(member.workspaceId) &
-        m.role.equals(WorkspaceRole.owner) &
-        m.isActive.equals(true),
+            m.workspaceId.equals(member.workspaceId) &
+            m.role.equals(WorkspaceRole.owner) &
+            m.isActive.equals(true),
       );
 
       if (ownerCount <= 1) {
@@ -97,6 +97,34 @@ class MemberRepo {
     await WorkspaceMember.db.updateRow(session, member);
   }
 
+  Future<bool> transferOwnership(
+    Session session,
+    int workspaceId,
+    int actorId,
+    int newOwnerId,
+  ) async {
+    try {
+      await session.db.transaction((transaction) async {
+        await updateMemberRole(
+          session,
+          newOwnerId,
+          WorkspaceRole.owner,
+          workspaceId,
+        );
+        await updateMemberRole(
+          session,
+          actorId,
+          WorkspaceRole.admin,
+          workspaceId,
+        );
+      });
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   /// Deactivates a workspace member identified by [memberId].
   ///
   /// The [memberId] must identify an existing workspace member, and the
@@ -108,10 +136,10 @@ class MemberRepo {
   /// the specified workspace, or if deactivating the member would leave
   /// the workspace without any active owners.
   Future<void> deactivateMember(
-      Session session,
-      int memberId,
-      int workspaceId,
-      ) async {
+    Session session,
+    int memberId,
+    int workspaceId,
+  ) async {
     final member = await WorkspaceMember.db.findById(session, memberId);
 
     if (member == null) {
@@ -127,9 +155,9 @@ class MemberRepo {
       final activeOwnerCount = await WorkspaceMember.db.count(
         session,
         where: (m) =>
-        m.workspaceId.equals(workspaceId) &
-        m.role.equals(WorkspaceRole.owner) &
-        m.isActive.equals(true),
+            m.workspaceId.equals(workspaceId) &
+            m.role.equals(WorkspaceRole.owner) &
+            m.isActive.equals(true),
       );
 
       if (activeOwnerCount <= 1) {

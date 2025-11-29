@@ -655,6 +655,26 @@ class MockMemberRepo extends _i1.Mock implements _i9.MemberRepo {
       ) as _i6.Future<void>);
 
   @override
+  _i6.Future<bool> transferOwnership(
+    _i3.Session? session,
+    int? workspaceId,
+    int? actorId,
+    int? newOwnerId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #transferOwnership,
+          [
+            session,
+            workspaceId,
+            actorId,
+            newOwnerId,
+          ],
+        ),
+        returnValue: _i6.Future<bool>.value(false),
+      ) as _i6.Future<bool>);
+
+  @override
   _i6.Future<void> deactivateMember(
     _i3.Session? session,
     int? memberId,
