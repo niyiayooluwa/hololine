@@ -613,16 +613,6 @@ void main() {
     late WorkspaceMember targetMember;
 
     setUp(() {
-      // Create fresh instances for each test.
-      mockWorkspaceRepo = MockWorkspaceRepo();
-      mockMemberRepo = MockMemberRepo();
-      mockSession = MockSession();
-
-      workspaceService = WorkspaceService(
-        mockMemberRepo,
-        mockWorkspaceRepo,
-      );
-
       // Common test data
       workspaceName = 'Test Workspace';
       workspaceDesc = 'A workspace for testing';
@@ -913,6 +903,275 @@ void main() {
           mockSession,
           workspaceId,
           memberId,
+          actorId,
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+  });
+
+  group('tinitiateDeleteWorkspace', () {
+    late String workspaceName;
+    late int workspaceId;
+    late String workspaceDesc;
+    late Workspace expectedWorkspace;
+    late int actorId;
+    late int memberId;
+    late WorkspaceMember actorMember;
+    late WorkspaceMember targetMember;
+
+    setUp(() {
+      // Common test data
+      workspaceName = 'Test Workspace';
+      workspaceDesc = 'A workspace for testing';
+      actorId = 1;
+      memberId = 2;
+      workspaceId = 55;
+      expectedWorkspace = Workspace(
+        id: workspaceId,
+        name: workspaceName,
+        description: workspaceDesc,
+        createdAt: DateTime.now().toUtc(),
+        // archivedAt: null, // Assuming not archived for ownership transfer
+      );
+
+      // Common member data
+      actorMember = WorkspaceMember(
+        userInfoId: actorId,
+        workspaceId: workspaceId,
+        role: WorkspaceRole.owner,
+        joinedAt: DateTime.now().toUtc(),
+        isActive: true,
+      );
+
+      targetMember = WorkspaceMember(
+        userInfoId: memberId,
+        workspaceId: workspaceId,
+        role: WorkspaceRole.admin,
+        joinedAt: DateTime.now().toUtc(),
+        isActive: true,
+      );
+
+      when(mockWorkspaceRepo.softDeleteWorkspace(mockSession, workspaceId))
+          .thenAnswer((_) async => true);
+
+      // Stub findWorkspaceById for the initial check
+      when(mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId))
+          .thenAnswer((_) async => expectedWorkspace);
+    });
+
+    // Happy Path
+    test('Should successfully mark the workspace for deletion', () async {
+      // ARRANGE
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => actorMember);
+
+      // ACT
+      await workspaceService.initiateDeleteWorkspace(
+        mockSession,
+        workspaceId,
+        actorId, // actorId
+      );
+
+      // ASSERT
+      // Verify that the workspace was found (implicitly checked by not throwing NotFoundException)
+      verify(mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId))
+          .called(1);
+
+      // Verify that the actor and target member were found
+      verify(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .called(1);
+
+      // Verify that the transaction was initiated
+      verify(mockWorkspaceRepo.softDeleteWorkspace(mockSession, workspaceId))
+          .called(1);
+    });
+
+    // Unhappy Paths
+    test('Should throw PermissionDeniedException if actor is not a member',
+        () async {
+      // ARRANGE
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => null); // Actor is not a member
+
+      // ACT & ASSERT
+      expect(
+        () => workspaceService.initiateDeleteWorkspace(
+          mockSession,
+          workspaceId,
+          actorId,
+        ),
+        throwsA(isA<PermissionDeniedException>()),
+      );
+    });
+
+    test(
+        'Should throw PermissionDeniedException if actor membership is inactive',
+        () async {
+      // ARRANGE
+      final inactiveActorMember = WorkspaceMember(
+        userInfoId: actorId,
+        workspaceId: workspaceId,
+        role: WorkspaceRole.owner,
+        joinedAt: DateTime.now().toUtc(),
+        isActive: false, // Inactive
+      );
+
+      // STUB
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => inactiveActorMember);
+
+      // ACT & ASSERT
+      expect(
+        () => workspaceService.initiateDeleteWorkspace(
+          mockSession,
+          workspaceId,
+          actorId,
+        ),
+        throwsA(isA<PermissionDeniedException>()),
+      );
+    });
+
+    test(
+        'Should throw PermissionDeniedException if actor does not have sufficient priviledge',
+        () async {
+      // ARRANGE
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => targetMember);
+
+      // ACT & ASSERT
+      expect(
+        () => workspaceService.initiateDeleteWorkspace(
+          mockSession,
+          workspaceId,
+          actorId,
+        ),
+        throwsA(isA<PermissionDeniedException>()),
+      );
+    });
+
+    test('Should throw NotFoundException if workspace doesnt exist', () async {
+      when(mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId))
+          .thenAnswer((_) async => null);
+
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => actorMember);
+
+      // ACT & ASSERT
+      expect(
+        () => workspaceService.initiateDeleteWorkspace(
+          mockSession,
+          workspaceId,
+          actorId,
+        ),
+        throwsA(isA<NotFoundException>()),
+      );
+    });
+
+    test('Should throw InvalidStateException if workspace is marked as deleted',
+        () async {
+      when(mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId))
+          .thenAnswer((_) async => Workspace(
+                name: workspaceName,
+                description: workspaceDesc,
+                createdAt: DateTime.now().toUtc(),
+                pendingDeletionUntil:
+                    DateTime.now().toUtc().add(Duration(milliseconds: 1)),
+                deletedAt:
+                    DateTime.now().toUtc().add(Duration(milliseconds: 2)),
+              ));
+
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => actorMember);
+
+      // ACT & ASSERT
+      expect(
+        () => workspaceService.initiateDeleteWorkspace(
+          mockSession,
+          workspaceId,
+          actorId,
+        ),
+        throwsA(isA<InvalidStateException>()),
+      );
+    });
+
+    test(
+        'Should throw InvalidStateException if workspace is already pending deletion',
+        () async {
+      when(
+        mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId),
+      ).thenAnswer(
+        (_) async => Workspace(
+          name: workspaceName,
+          description: workspaceDesc,
+          createdAt: DateTime.now().toUtc(),
+          pendingDeletionUntil:
+              DateTime.now().toUtc().add(Duration(milliseconds: 1)),
+        ),
+      );
+
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => actorMember);
+
+      // ACT & ASSERT
+      expect(
+        () => workspaceService.initiateDeleteWorkspace(
+          mockSession,
+          workspaceId,
+          actorId,
+        ),
+        throwsA(isA<InvalidStateException>()),
+      );
+    });
+
+    test('Should throw exception if transaction fails', () async {
+      // ARRANGE
+      final transactionException = Exception('Database transaction failed');
+      // Mock the transaction to throw an exception
+      when(mockWorkspaceRepo.softDeleteWorkspace(mockSession, workspaceId))
+          .thenThrow(transactionException);
+
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => actorMember);
+
+      // ACT & ASSERT
+      expect(
+        () => workspaceService.initiateDeleteWorkspace(
+          mockSession,
+          workspaceId,
+          actorId,
+        ),
+        throwsA(transactionException),
+      );
+    });
+
+    test('Should handle when softDeleteWorkspace returns false', () async {
+      // ARRANGE
+      when(mockMemberRepo.findMemberByWorkspaceId(
+              mockSession, actorId, workspaceId))
+          .thenAnswer((_) async => actorMember);
+
+      when(mockWorkspaceRepo.softDeleteWorkspace(mockSession, workspaceId))
+          .thenAnswer((_) async => false);
+
+      when(mockMemberRepo.transferOwnership(
+              mockSession, workspaceId, actorId, memberId))
+          .thenAnswer((_) async => false);
+
+      // ACT & ASSERT
+      expect(
+        () => workspaceService.initiateDeleteWorkspace(
+          mockSession,
+          workspaceId,
           actorId,
         ),
         throwsA(isA<Exception>()),

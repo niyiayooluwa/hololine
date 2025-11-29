@@ -298,16 +298,11 @@ class WorkspaceService {
     int workspaceId,
     int actorId,
   ) async {
-    await _assertWorkspaceIsMutable(session, workspaceId);
+    final workspace = await _assertWorkspaceIsMutable(session, workspaceId);
 
     final actor = await _memberRepository.findMemberByWorkspaceId(
       session,
       actorId,
-      workspaceId,
-    );
-
-    final workspace = await _workspaceRepository.findWorkspaceById(
-      session,
       workspaceId,
     );
 
@@ -323,10 +318,6 @@ class WorkspaceService {
     if (!RolePolicy.canInitiateDelete(actor.role)) {
       throw PermissionDeniedException(
           'Permission denied. Insufficient privileges');
-    }
-
-    if (workspace == null) {
-      throw NotFoundException('Workspace not found');
     }
 
     if (workspace.deletedAt != null) {
