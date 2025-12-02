@@ -14,6 +14,7 @@ import 'package:hololine_server/src/modules/workspace/usecase/invitation_service
     as _i8;
 import 'package:hololine_server/src/modules/workspace/usecase/member_service.dart'
     as _i7;
+import 'package:hololine_server/src/services/email_service.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i10;
 import 'package:serverpod/serverpod.dart' as _i3;
@@ -149,6 +150,16 @@ class _FakeMessageCentralAccess_10 extends _i1.SmartFake
 
 class _FakeDuration_11 extends _i1.SmartFake implements Duration {
   _FakeDuration_11(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeSession_12 extends _i1.SmartFake implements _i3.Session {
+  _FakeSession_12(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -396,8 +407,9 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
   @override
   _i6.Future<_i2.WorkspaceMember> acceptInvitation(
     _i3.Session? session,
-    String? token,
-  ) =>
+    String? token, {
+    int? userId,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #acceptInvitation,
@@ -405,6 +417,7 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
             session,
             token,
           ],
+          {#userId: userId},
         ),
         returnValue:
             _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
@@ -415,6 +428,7 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
               session,
               token,
             ],
+            {#userId: userId},
           ),
         )),
       ) as _i6.Future<_i2.WorkspaceMember>);
@@ -1044,4 +1058,80 @@ class MockSession extends _i1.Mock implements _i3.Session {
         ),
         returnValueForMissingStub: null,
       );
+}
+
+/// A class which mocks [EmailHandler].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockEmailHandler extends _i1.Mock implements _i11.EmailHandler {
+  MockEmailHandler() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Session get session => (super.noSuchMethod(
+        Invocation.getter(#session),
+        returnValue: _FakeSession_12(
+          this,
+          Invocation.getter(#session),
+        ),
+      ) as _i3.Session);
+
+  @override
+  _i6.Future<bool> sendVerificationEmail({
+    required String? email,
+    required String? verificationCode,
+    required String? userName,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #sendVerificationEmail,
+          [],
+          {
+            #email: email,
+            #verificationCode: verificationCode,
+            #userName: userName,
+          },
+        ),
+        returnValue: _i6.Future<bool>.value(false),
+      ) as _i6.Future<bool>);
+
+  @override
+  _i6.Future<bool> sendPasswordResetEmail({
+    required String? email,
+    required String? resetCode,
+    required String? userName,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #sendPasswordResetEmail,
+          [],
+          {
+            #email: email,
+            #resetCode: resetCode,
+            #userName: userName,
+          },
+        ),
+        returnValue: _i6.Future<bool>.value(false),
+      ) as _i6.Future<bool>);
+
+  @override
+  _i6.Future<bool> sendInvitation(
+    String? email,
+    String? token,
+    String? workspaceName,
+    _i2.WorkspaceRole? role,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #sendInvitation,
+          [
+            email,
+            token,
+            workspaceName,
+            role,
+          ],
+        ),
+        returnValue: _i6.Future<bool>.value(false),
+      ) as _i6.Future<bool>);
 }

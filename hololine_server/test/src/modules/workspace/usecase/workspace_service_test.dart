@@ -910,7 +910,7 @@ void main() {
     });
   });
 
-  group('tinitiateDeleteWorkspace', () {
+  group('initiateDeleteWorkspace', () {
     late String workspaceName;
     late int workspaceId;
     late String workspaceDesc;
