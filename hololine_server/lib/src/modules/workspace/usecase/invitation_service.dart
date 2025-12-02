@@ -11,11 +11,14 @@ class InvitationService {
   final WorkspaceRepo _workspaceRepository;
   final MemberRepo _memberRepository;
   final InvitationRepo _invitationRepository;
+  final EmailHandler _emailHandler;
+
 
   InvitationService(
     this._workspaceRepository,
     this._memberRepository,
     this._invitationRepository,
+    this._emailHandler
   );
 
   Future<Workspace> _assertWorkspaceIsMutable(
@@ -56,17 +59,8 @@ class InvitationService {
     WorkspaceRole role,
     int actorId,
   ) async {
-    await _assertWorkspaceIsMutable(session, workspaceId);
-
-    var workspace = await _workspaceRepository.findWorkspaceById(
-      session,
-      workspaceId,
-    );
-
-    if (workspace == null) {
-      throw NotFoundException('Workspace not found');
-    }
-
+    final workspace = await _assertWorkspaceIsMutable(session, workspaceId);
+    
     final workspaceName = workspace.name;
 
     // Verify Permissions
@@ -92,32 +86,35 @@ class InvitationService {
     }
 
     // Check if the user is already a member of the workspace.
+    WorkspaceMember? existingMember;
     try {
-      final existingMember = await _memberRepository.findMemberByEmail(
-        session,
-        email,
-        workspaceId,
-      );
-
-      if (existingMember != null) {
-        throw ConflictException(
-            'This user is already a member of the workspace.');
-      }
-    } on Exception catch (e) {
-      // The repo throws 'User not found' if the email doesn't exist in UserInfo.
-      // We can ignore this and proceed with the invitation, as the user can sign up.
-      if (e.toString() != 'Exception: User not found') {
-        rethrow; // Re-throw other unexpected exceptions.
-      }
-    }
-
-    // Check for an existing, unaccepted invitation for this email.
-    final existingInvitation =
-        await _invitationRepository.checkForExistingInvitation(
+      existingMember = await _memberRepository.findMemberByEmail(
       session,
       email,
       workspaceId,
-    );
+      );
+    } on NotFoundException {
+      // Member not found by email — that's fine, continue to invite.
+      existingMember = null;
+    }
+
+    if (existingMember != null) {
+      throw ConflictException(
+      'This user is already a member of the workspace.',
+      );
+    }
+
+    // Check for an existing, unaccepted invitation for this email.
+    WorkspaceInvitation? existingInvitation;
+    try {
+      existingInvitation = await _invitationRepository.checkForExistingInvitation(
+      session,
+      email,
+      workspaceId,
+      );
+    } on NotFoundException {
+      existingInvitation = null;
+    }
 
     if (existingInvitation != null) {
       final expiryDate = existingInvitation.expiresAt;
@@ -153,7 +150,7 @@ class InvitationService {
           'Failed to generate a unique invitation token after 10 attempts.');
     }
 
-    final sendEmail = await EmailHandler(session).sendInvitation(
+    final sendEmail = await _emailHandler.sendInvitation(
       email,
       token,
       workspaceName,
@@ -187,18 +184,19 @@ class InvitationService {
   /// the user is not the intended invitee, or if the user is already a member.
   Future<WorkspaceMember> acceptInvitation(
     Session session,
-    String token,
-  ) async {
-    // Ensure the user is authenticated
-    final userId = (await session.authenticated)?.userId;
+    String token, {
+    int? userId,
+  }) async {
+    // If userId is not provided, extract it from session authentication
+    final actualUserId = userId ?? (await session.authenticated)?.userId;
 
     // Throw an exception if the user is not authenticated
-    if (userId == null) {
+    if (actualUserId == null) {
       throw AuthenticationException('User not authenticated');
     }
 
     // Find the user's information using their userID
-    final user = await _workspaceRepository.getUserInfo(session, userId);
+    final user = await _workspaceRepository.getUserInfo(session, actualUserId);
 
     // Throw an exception if the user is not found or has no email
     if (user == null || user.email == null) {
@@ -234,7 +232,7 @@ class InvitationService {
     // Check if the user is a member of the workspace already
     final existingMember = await _memberRepository.findMemberByWorkspaceId(
       session,
-      userId,
+      actualUserId,
       invitation.workspaceId,
     );
 
@@ -249,7 +247,7 @@ class InvitationService {
     final newMember = await _invitationRepository.acceptInvitation(
       session,
       invitation,
-      userId,
+      actualUserId,
       token,
     );
 

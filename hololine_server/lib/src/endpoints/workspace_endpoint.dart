@@ -1,6 +1,7 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart';
 import 'package:hololine_server/src/modules/workspace/usecase/services.dart';
+import 'package:hololine_server/src/services/email_service.dart';
 import 'package:hololine_server/src/utils/endpoint_helper.dart';
 import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:serverpod/serverpod.dart';
@@ -25,11 +26,6 @@ class WorkspaceEndpoint extends Endpoint {
     _memberRepo,
     _coreWorkspaceRepo,
   );
-  late final InvitationService _invitationService = InvitationService(
-    _coreWorkspaceRepo,
-    _memberRepo,
-    _invitationRepo,
-  );
 
   /// Creates a new standalone workspace.
   ///
@@ -53,8 +49,8 @@ class WorkspaceEndpoint extends Endpoint {
     // withLogging helper without creating a second helper. We'll add manual logging.
     try {
       session.log('Endpoint "createStandalone" called.', level: LogLevel.info);
-      final workspace =
-          await _workspaceService.createStandalone(session, name, userId, description);
+      final workspace = await _workspaceService.createStandalone(
+          session, name, userId, description);
       session.log('Endpoint "createStandalone" succeeded.',
           level: LogLevel.info);
       return workspace;
@@ -181,12 +177,20 @@ class WorkspaceEndpoint extends Endpoint {
     if (userId == null) {
       throw AuthenticationException('User not authenticated');
     }
+    final emailHandler = EmailHandler(session);
+
+    final invitationService = InvitationService(
+      _coreWorkspaceRepo,
+      _memberRepo,
+      _invitationRepo,
+      emailHandler,
+    );
 
     return withLogging(
       session,
       'inviteMember',
       () async {
-        await _invitationService.inviteMember(
+        await invitationService.inviteMember(
           session,
           email,
           workspaceId,
@@ -208,11 +212,20 @@ class WorkspaceEndpoint extends Endpoint {
       throw AuthenticationException('User not authenticated');
     }
 
+    final emailHandler = EmailHandler(session);
+
+    final invitationService = InvitationService(
+      _coreWorkspaceRepo,
+      _memberRepo,
+      _invitationRepo,
+      emailHandler,
+    );
     return withLogging(
       session,
       'acceptInvitation',
       () async {
-        await _invitationService.acceptInvitation(session, token);
+        await invitationService.acceptInvitation(session, token,
+            userId: userId);
         return 'Invitation accepted successfully. Welcome to the workspace!';
       },
     );
@@ -294,7 +307,8 @@ class WorkspaceEndpoint extends Endpoint {
       session,
       'deleteWorkspace',
       () async {
-        await _workspaceService.initiateDeleteWorkspace(session, workspaceId, user);
+        await _workspaceService.initiateDeleteWorkspace(
+            session, workspaceId, user);
         return 'Workspace deletion initiated successfully';
       },
     );
