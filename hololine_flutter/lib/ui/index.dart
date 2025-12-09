@@ -298,7 +298,6 @@ class ComponentShowcase extends HookConsumerWidget {
     ];
   }
 
-
   Widget _buildComponentCard(
     String title,
     Widget component,
