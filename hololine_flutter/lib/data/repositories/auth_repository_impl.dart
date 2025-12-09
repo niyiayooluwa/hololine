@@ -1,6 +1,6 @@
 import 'package:dart_either/dart_either.dart';
 import 'package:hololine_flutter/data/datasources/auth_remote_data_source.dart';
-import 'package:hololine_flutter/data/datasources/exception_handler.dart';
+import 'package:hololine_flutter/domain/failures/exception_handler.dart';
 import 'package:hololine_flutter/domain/failures/failures.dart';
 import 'package:hololine_flutter/domain/repository/auth_repository.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';
