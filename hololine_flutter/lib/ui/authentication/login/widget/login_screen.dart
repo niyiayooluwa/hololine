@@ -26,8 +26,7 @@ class LoginScreen extends HookWidget {
 
           // Determine device type
           final isMobile = width < mobileBreakpoint;
-          final isTablet =
-              width >= mobileBreakpoint && width < tabletBreakpoint;
+          //final isTablet =width >= mobileBreakpoint && width < tabletBreakpoint;
           final isDesktop = width >= desktopBreakpoint;
 
           // Show side image only on desktop
@@ -173,7 +172,7 @@ class LoginScreen extends HookWidget {
       ValueNotifier<bool> isPasswordVisible,
       ValueNotifier<bool> rememberMe,
       {required bool isMobile}) {
-    final theme = Theme.of(context);
+    //final theme = Theme.of(context);
 
     // Responsive values
     final titleFontSize = isMobile ? 24.0 : 28.0;
