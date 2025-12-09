@@ -33,7 +33,7 @@ class HLCard extends StatelessWidget {
         color: color ?? theme.cardTheme.color,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: theme.colorScheme.outline.withValues (alpha: 0.2),
+          color: theme.colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: elevated ? theme.elevation2 : null,

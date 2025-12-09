@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
+import 'package:hololine_flutter/ui/core/ui/theme/theme.dart';
 
 class HoloTextField extends StatelessWidget {
   final String? label;
@@ -39,75 +40,69 @@ class HoloTextField extends StatelessWidget {
     final theme = Theme.of(context);
 
     final textColor =
-        hasError ? theme.colorScheme.error : theme.colorScheme.onSurface;
+        hasError ? theme.colorScheme.error : theme.colorScheme.grey400;
 
-    return ConstrainedBox(
-        constraints: BoxConstraints(
-          minWidth: 250,
-          maxWidth: 350,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// LABEL
-            if (label != null) ...[
-              Text(
-                label!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: hasError ? theme.colorScheme.error : textColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 4),
-            ],
-
-            /// DESCRIPTION
-            if (description != null) ...[
-              Text(
-                description!,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 8),
-            ],
-
-            /// TEXTFIELD CONTAINER
-            TextField(
-              controller: controller,
-              obscureText: obscure,
-              obscuringCharacter: obscuringCharacter,
-              keyboardType: keyboardType,
-              style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-                ),
-                prefixIcon: leading,
-                suffixIcon: trailing != null
-                    ? GestureDetector(
-                        onTap: onTrailingTap,
-                        child: trailing,
-                      )
-                    : null,
-                isCollapsed: true,
-                border: InputBorder.none,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// LABEL
+        if (label != null) ...[
+          Text(
+            label!,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: textColor,
             ),
+          ),
+          const SizedBox(height: 4),
+        ],
 
-            /// ERROR MESSAGE
-            if (hasError) ...[
-              const SizedBox(height: 6),
-              Text(
-                error!,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.error,
-                ),
-              ),
-            ],
-          ],
-        ));
+        /// DESCRIPTION
+        if (description != null) ...[
+          Text(
+            description!,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+
+        /// TEXTFIELD CONTAINER
+        TextField(
+          controller: controller,
+          obscureText: obscure,
+          obscuringCharacter: obscuringCharacter,
+          keyboardType: keyboardType,
+          style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
+            ),
+            prefixIcon: leading,
+            suffixIcon: trailing != null
+                ? GestureDetector(
+                    onTap: onTrailingTap,
+                    child: trailing,
+                  )
+                : null,
+            isCollapsed: true,
+            border: InputBorder.none,
+          ),
+        ),
+
+        /// ERROR MESSAGE
+        if (hasError) ...[
+          const SizedBox(height: 6),
+          Text(
+            error!,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+        ],
+      ],
+    );
   }
 }
 
@@ -117,11 +112,12 @@ Widget preview() {
     height: 500,
     width: 500,
     child: Container(
-        decoration: BoxDecoration(color: Colors.blue),
+        decoration:
+            BoxDecoration(color: const Color.fromARGB(255, 118, 125, 131)),
         child: Center(
           child: HoloTextField(
             label: 'Login',
-            hint: 'This is the hint text',
+            //hint: 'This is the hint text',
             leading: Icon(Icons.email_outlined, size: 16),
             trailing: Icon(Icons.lock_outline, size: 16),
           ),

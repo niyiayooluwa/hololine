@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// Design System
-/// 
+///
 /// A clean, elevated design system optimized for financial data management.
 /// Design principles:
 /// - Trust through clarity and consistency
@@ -16,9 +16,10 @@ class AppTheme {
   AppTheme._();
 
   // ==================== COLOR PALETTE ====================
-  
+
   // Primary Blues - Trust & Authority
-  static const Color _primaryBlue = Color(0xFF2563EB); // Vibrant, confident blue
+  static const Color _primaryBlue =
+      Color(0xFF2563EB); // Vibrant, confident blue
   static const Color _primaryBlueLight = Color(0xFF60A5FA);
   static const Color _primaryBlueDark = Color(0xFF1E40AF);
   static const Color _primaryBlueSubtle = Color(0xFFEFF6FF); // Backgrounds
@@ -70,7 +71,7 @@ class AppTheme {
     primaryFixedDim: _primaryBlue,
     onPrimaryFixed: _white,
     onPrimaryFixedVariant: _primaryBlueDark,
-    
+
     // Secondary (Success)
     secondary: _successGreen,
     onSecondary: _white,
@@ -80,7 +81,7 @@ class AppTheme {
     secondaryFixedDim: _successGreen,
     onSecondaryFixed: _white,
     onSecondaryFixedVariant: Color(0xFF047857),
-    
+
     // Tertiary (Premium)
     tertiary: _premiumPurple,
     onTertiary: _white,
@@ -90,13 +91,13 @@ class AppTheme {
     tertiaryFixedDim: _premiumPurple,
     onTertiaryFixed: _white,
     onTertiaryFixedVariant: Color(0xFF6D28D9),
-    
+
     // Error
     error: _errorRed,
     onError: _white,
     errorContainer: _errorRedLight,
     onErrorContainer: Color(0xFF991B1B),
-    
+
     // Surface & Background
     surface: _white,
     onSurface: _gray900,
@@ -108,18 +109,18 @@ class AppTheme {
     surfaceContainerHigh: _gray200,
     surfaceContainerHighest: _gray300,
     onSurfaceVariant: _gray600,
-    
+
     // Outline & Shadow
     outline: _gray300,
     outlineVariant: _gray200,
     shadow: _black,
     scrim: _black,
-    
+
     // Inverse
     inverseSurface: _gray900,
     onInverseSurface: _gray50,
     inversePrimary: _primaryBlueLight,
-    
+
     // Surface Tint
     surfaceTint: _primaryBlue,
   );
@@ -135,7 +136,7 @@ class AppTheme {
     primaryFixedDim: _primaryBlue,
     onPrimaryFixed: _gray900,
     onPrimaryFixedVariant: _white,
-    
+
     // Secondary (Success)
     secondary: Color(0xFF34D399),
     onSecondary: _gray900,
@@ -145,7 +146,7 @@ class AppTheme {
     secondaryFixedDim: _successGreen,
     onSecondaryFixed: _gray900,
     onSecondaryFixedVariant: _white,
-    
+
     // Tertiary (Premium)
     tertiary: Color(0xFFA78BFA),
     onTertiary: _gray900,
@@ -155,13 +156,13 @@ class AppTheme {
     tertiaryFixedDim: _premiumPurple,
     onTertiaryFixed: _gray900,
     onTertiaryFixedVariant: _white,
-    
+
     // Error
     error: Color(0xFFF87171),
     onError: _gray900,
     errorContainer: Color(0xFF991B1B),
     onErrorContainer: _errorRedLight,
-    
+
     // Surface & Background
     surface: _darkSurface,
     onSurface: _gray100,
@@ -173,18 +174,18 @@ class AppTheme {
     surfaceContainerHigh: Color(0xFF475569),
     surfaceContainerHighest: Color(0xFF64748B),
     onSurfaceVariant: _gray400,
-    
+
     // Outline & Shadow
     outline: _darkBorder,
     outlineVariant: Color(0xFF334155),
     shadow: _black,
     scrim: _black,
-    
+
     // Inverse
     inverseSurface: _gray100,
     onInverseSurface: _gray900,
     inversePrimary: _primaryBlue,
-    
+
     // Surface Tint
     surfaceTint: _primaryBlueLight,
   );
@@ -297,7 +298,7 @@ class AppTheme {
 
   static List<BoxShadow> get elevation1 => [
         BoxShadow(
-          color: _black.withValues (alpha: 0.05),
+          color: _black.withValues(alpha: 0.05),
           blurRadius: 2,
           offset: const Offset(0, 1),
         ),
@@ -305,12 +306,12 @@ class AppTheme {
 
   static List<BoxShadow> get elevation2 => [
         BoxShadow(
-          color: _black.withValues (alpha: 0.1),
+          color: _black.withValues(alpha: 0.1),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
         BoxShadow(
-          color: _black.withValues (alpha: 0.06),
+          color: _black.withValues(alpha: 0.06),
           blurRadius: 4,
           offset: const Offset(0, 1),
         ),
@@ -318,12 +319,12 @@ class AppTheme {
 
   static List<BoxShadow> get elevation3 => [
         BoxShadow(
-          color: _black.withValues (alpha: 0.12),
+          color: _black.withValues(alpha: 0.12),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
         BoxShadow(
-          color: _black.withValues (alpha: 0.08),
+          color: _black.withValues(alpha: 0.08),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -331,12 +332,12 @@ class AppTheme {
 
   static List<BoxShadow> get elevation4 => [
         BoxShadow(
-          color: _black.withValues (alpha: 0.14),
+          color: _black.withValues(alpha: 0.14),
           blurRadius: 24,
           offset: const Offset(0, 8),
         ),
         BoxShadow(
-          color: _black.withValues (alpha: 0.10),
+          color: _black.withValues(alpha: 0.10),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
@@ -359,7 +360,7 @@ class AppTheme {
         backgroundColor: _white,
         foregroundColor: _gray900,
         surfaceTintColor: Colors.transparent,
-        shadowColor: _black.withValues (alpha: 0.05),
+        shadowColor: _black.withValues(alpha: 0.05),
         titleTextStyle: GoogleFonts.inter(
           fontSize: 20,
           fontWeight: FontWeight.w600,
@@ -376,7 +377,7 @@ class AppTheme {
         elevation: 0,
         color: _white,
         surfaceTintColor: Colors.transparent,
-        shadowColor: _black.withValues (alpha: 0.08),
+        shadowColor: _black.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: _gray200, width: 1),
@@ -405,10 +406,10 @@ class AppTheme {
         ).copyWith(
           overlayColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.hovered)) {
-              return _white.withValues (alpha: 0.1);
+              return _white.withValues(alpha: 0.1);
             }
             if (states.contains(WidgetState.pressed)) {
-              return _white.withValues (alpha: 0.2);
+              return _white.withValues(alpha: 0.2);
             }
             return null;
           }),
@@ -529,7 +530,7 @@ class AppTheme {
         elevation: 3,
         backgroundColor: _white,
         surfaceTintColor: Colors.transparent,
-        shadowColor: _black.withValues (alpha: 0.1),
+        shadowColor: _black.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -703,7 +704,7 @@ class AppTheme {
         backgroundColor: _darkBg,
         foregroundColor: _gray100,
         surfaceTintColor: Colors.transparent,
-        shadowColor: _black.withValues (alpha: 0.3),
+        shadowColor: _black.withValues(alpha: 0.3),
         titleTextStyle: GoogleFonts.inter(
           fontSize: 20,
           fontWeight: FontWeight.w600,
@@ -720,10 +721,10 @@ class AppTheme {
         elevation: 0,
         color: _darkSurface,
         surfaceTintColor: Colors.transparent,
-        shadowColor: _black.withValues (alpha: 0.3),
+        shadowColor: _black.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: _darkBorder.withValues (alpha: 0.3), width: 1),
+          side: BorderSide(color: _darkBorder.withValues(alpha: 0.3), width: 1),
         ),
         margin: const EdgeInsets.all(0),
       ),
@@ -799,7 +800,7 @@ class AppTheme {
         elevation: 3,
         backgroundColor: _darkSurface,
         surfaceTintColor: Colors.transparent,
-        shadowColor: _black.withValues (alpha: 0.3),
+        shadowColor: _black.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
@@ -870,7 +871,7 @@ class AppTheme {
 
       // Divider
       dividerTheme: DividerThemeData(
-        color: _darkBorder.withValues (alpha: 0.3),
+        color: _darkBorder.withValues(alpha: 0.3),
         thickness: 1,
         space: 1,
       ),
@@ -938,12 +939,26 @@ extension HLColors on ColorScheme {
   Color get errorLight => Color(0xFFFEE2E2);
   Color get premium => const Color(0xFF8B5CF6);
   Color get premiumLight => const Color(0xFFF5F3FF);
-  
+
   // Financial semantic colors
   Color get profit => success;
   Color get loss => error;
   Color get pending => warning;
   Color get archived => const Color(0xFF6B7280);
+}
+
+/// Extension for accessing grey color palette
+extension HLGreys on ColorScheme {
+  Color get grey50 => const Color(0xFFF9FAFB);
+  Color get grey100 => const Color(0xFFF3F4F6);
+  Color get grey200 => const Color(0xFFE5E7EB);
+  Color get grey300 => const Color(0xFFD1D5DB);
+  Color get grey400 => const Color(0xFF9CA3AF);
+  Color get grey500 => const Color(0xFF6B7280);
+  Color get grey600 => const Color(0xFF4B5563);
+  Color get grey700 => const Color(0xFF374151);
+  Color get grey800 => const Color(0xFF1F2937);
+  Color get grey900 => const Color(0xFF111827);
 }
 
 /// Extension for accessing elevation shadows
@@ -975,7 +990,7 @@ extension HLRadius on BuildContext {
   double get radiusLarge => 16.0;
   double get radiusXLarge => 20.0;
   double get radiusRound => 999.0;
-  
+
   BorderRadius get borderRadiusSmall => BorderRadius.circular(radiusSmall);
   BorderRadius get borderRadiusMedium => BorderRadius.circular(radiusMedium);
   BorderRadius get borderRadiusLarge => BorderRadius.circular(radiusLarge);
