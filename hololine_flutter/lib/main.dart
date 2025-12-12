@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hololine_flutter/core/application/providers.dart';
 import 'package:hololine_flutter/routing/router_config.dart';
-import 'package:hololine_flutter/ui/core/ui/theme/theme.dart';
+import 'package:hololine_flutter/shared_ui/core/ui/theme/theme.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> main() async {

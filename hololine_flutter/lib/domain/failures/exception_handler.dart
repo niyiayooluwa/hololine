@@ -10,7 +10,7 @@ class ExceptionHandler {
     // Match against the exception types thrown from your server
     switch (exceptionType) {
       case 'AuthenticationException':
-        return AuthenticationFailure(message);
+        return AuthFailure(message);
       case 'NotFoundException':
         return NotFoundFailure(message);
       case 'PermissionDeniedException':

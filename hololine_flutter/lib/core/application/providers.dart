@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:hololine_client/hololine_client.dart';
 import 'package:hololine_flutter/core/constants/api_constants.dart';
-import 'package:hololine_flutter/data/datasources/auth_remote_data_source.dart';
-import 'package:hololine_flutter/data/datasources/auth_remote_data_source_impl.dart';
+import 'package:hololine_flutter/module/auth/data/remote/auth_remote_data_source.dart';
+import 'package:hololine_flutter/module/auth/data/remote/auth_remote_data_source_impl.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
