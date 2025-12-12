@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
-import 'package:hololine_flutter/ui/core/ui/theme/theme.dart';
+import 'package:hololine_flutter/shared_ui/core/ui/theme/theme.dart';
 
 class HoloTextField extends StatelessWidget {
   final String? label;

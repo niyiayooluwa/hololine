@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hololine_flutter/ui/core/ui/theme/theme.dart';
+import 'package:hololine_flutter/shared_ui/core/ui/theme/theme.dart';
 
 /// Elevated card with consistent styling
 class HLCard extends StatelessWidget {

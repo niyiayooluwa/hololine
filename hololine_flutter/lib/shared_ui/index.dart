@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hololine_flutter/ui/core/widgets/snackbar/snackbar.dart';
-import 'package:hololine_flutter/ui/core/widgets/buttons/buttons.dart';
-import 'package:hololine_flutter/ui/core/widgets/widgets.dart';
+import 'package:hololine_flutter/shared_ui/core/widgets/snackbar/snackbar.dart';
+import 'package:hololine_flutter/shared_ui/core/widgets/buttons/buttons.dart';
+import 'package:hololine_flutter/shared_ui/core/widgets/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
