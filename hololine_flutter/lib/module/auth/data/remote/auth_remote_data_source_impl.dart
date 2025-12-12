@@ -1,6 +1,6 @@
 import 'package:hololine_client/hololine_client.dart';
 import 'package:hololine_flutter/core/application/providers.dart';
-import 'package:hololine_flutter/data/datasources/auth_remote_data_source.dart';
+import 'package:hololine_flutter/module/auth/data/remote/auth_remote_data_source.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart'
     as serverpod_auth;

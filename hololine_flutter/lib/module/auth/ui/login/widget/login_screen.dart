@@ -1,5 +1,5 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hololine_flutter/ui/core/components.dart';
+import 'package:hololine_flutter/shared_ui/core/components.dart';
 
 class LoginScreen extends HookWidget {
   const LoginScreen({super.key});
