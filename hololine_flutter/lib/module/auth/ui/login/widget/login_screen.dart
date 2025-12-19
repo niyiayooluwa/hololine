@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, deprecated_member_use
+
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
 

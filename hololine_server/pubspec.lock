@@ -325,10 +325,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: "4e973fcf4caae1a4be2fa0a13157aa38a8f9cb049db6529aa00b4d71abc4d928"
+      sha256: "51555e36056541237b15b57afc31a0f53d4f9aefd9bd00873a6dc0090e54e332"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.4"
+    version: "4.6.0"
   intl:
     dependency: transitive
     description:
@@ -397,10 +397,10 @@ packages:
     dependency: transitive
     description:
       name: matcher
-      sha256: dc58c723c3c24bf8d3e2d3ad3f2f9d7bd9cf43ec6feaa64181775e60190153f2
+      sha256: "12956d0ad8390bbcc63ca2e1469c0619946ccb52809807067a7020d57e647aa6"
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.17"
+    version: "0.12.18"
   meta:
     dependency: transitive
     description:
@@ -445,10 +445,10 @@ packages:
     dependency: transitive
     description:
       name: openid_client
-      sha256: "9f09d107a8bcb540e0c5d3aa5601440c5eea7043a665dfbf8bcff10383049e03"
+      sha256: d7c229b849eaf4ff0ac77c22f8f1c4c522f6830b8c58d7b73953514ad6980954
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.9+1"
+    version: "0.4.9+2"
   package_config:
     dependency: transitive
     description:
@@ -725,10 +725,10 @@ packages:
     dependency: "direct dev"
     description:
       name: test
-      sha256: "8f0eb7fa76b7d05a4f3707e0dbd581babef5b0915ca508b757cf15d0cabb56cb"
+      sha256: "77cc98ea27006c84e71a7356cf3daf9ddbde2d91d84f77dbfe64cf0e4d9611ae"
       url: "https://pub.dev"
     source: hosted
-    version: "1.27.0"
+    version: "1.28.0"
   test_api:
     dependency: transitive
     description:
@@ -741,10 +741,10 @@ packages:
     dependency: transitive
     description:
       name: test_core
-      sha256: bad9916601a4f2ef6e4dbc466fb712e4b42cf4917c3fd428b018f51984fce13b
+      sha256: f1072617a6657e5fc09662e721307f7fb009b4ed89b19f47175d11d5254a62d4
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.13"
+    version: "0.6.14"
   typed_data:
     dependency: transitive
     description:
@@ -773,10 +773,10 @@ packages:
     dependency: transitive
     description:
       name: watcher
-      sha256: "592ab6e2892f67760543fb712ff0177f4ec76c031f02f5b4ff8d3fc5eb9fb61a"
+      sha256: f52385d4f73589977c80797e60fe51014f7f2b957b5e9a62c3f6ada439889249
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.4"
+    version: "1.2.0"
   web:
     dependency: transitive
     description:

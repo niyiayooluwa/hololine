@@ -36,7 +36,7 @@ dependencies:
   google_fonts: ^6.3.2
   flutter_svg: ^2.0.0
   badges: ^3.1.2
-  animations: ^2.0.6
+  #animations: ^2.0.6
   riverpod_annotation: ^2.5.1
   hooks_riverpod: ^2.5.1
 
