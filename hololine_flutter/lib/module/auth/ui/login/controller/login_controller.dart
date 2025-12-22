@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:hololine_flutter/module/auth/domain/usecase/login_usecase.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart';
 
-class LoginController extends AsyncNotifier<AuthenticationResponse?> {
+part 'login_controller.g.dart';
+
+@riverpod
+class LoginController extends _$LoginController {
   @override
-  Future<AuthenticationResponse?> build() async {
-    return null;
-  }
+  FutureOr<AuthenticationResponse?> build() => null;
 
   LoginUsecase get loginUseCase => ref.read(loginUsecaseProvider);
 

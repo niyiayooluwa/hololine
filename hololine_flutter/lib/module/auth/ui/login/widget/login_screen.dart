@@ -1,24 +1,27 @@
-// ignore_for_file: avoid_print, deprecated_member_use
-
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hololine_flutter/module/auth/ui/login/controller/login_controller.dart';
+import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:serverpod_auth_client/module.dart';
 
-class LoginScreen extends HookWidget {
+class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
 
   // Breakpoints
-  static const double mobileBreakpoint = 600;
-  static const double tabletBreakpoint = 800;
-  static const double desktopBreakpoint = 1200;
   static const double formMaxWidth = 420;
   static const double imageMinWidth = 400;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isPasswordVisible = useState(false);
     final rememberMe = useState(false);
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
+
+    final controller = ref.read(loginControllerProvider.notifier);
+    final state = ref.watch(loginControllerProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -27,9 +30,9 @@ class LoginScreen extends HookWidget {
           final width = constraints.maxWidth;
 
           // Determine device type
-          final isMobile = width < mobileBreakpoint;
+          final isMobile = width < Breakpoints.Mobile;
           //final isTablet =width >= mobileBreakpoint && width < tabletBreakpoint;
-          final isDesktop = width >= desktopBreakpoint;
+          final isDesktop = width >= Breakpoints.Desktop;
 
           // Show side image only on desktop
           final showSideImage = isDesktop;
@@ -55,6 +58,8 @@ class LoginScreen extends HookWidget {
                         passwordController,
                         isPasswordVisible,
                         rememberMe,
+                        controller,
+                        state,
                         isMobile: false,
                       ),
                     ),
@@ -77,6 +82,8 @@ class LoginScreen extends HookWidget {
                 passwordController,
                 isPasswordVisible,
                 rememberMe,
+                controller,
+                state,
                 isMobile: isMobile,
               ),
             ),
@@ -91,7 +98,7 @@ class LoginScreen extends HookWidget {
     final theme = Theme.of(context);
 
     return Container(
-      color: Colors.white,
+      color: theme.colorScheme.surface,
       padding: const EdgeInsets.all(16),
       child: Container(
         decoration: BoxDecoration(
@@ -132,7 +139,7 @@ class LoginScreen extends HookWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
               ),
             ),
@@ -149,6 +156,8 @@ class LoginScreen extends HookWidget {
       TextEditingController passwordController,
       ValueNotifier<bool> isPasswordVisible,
       ValueNotifier<bool> rememberMe,
+      LoginController controller,
+      AsyncValue<AuthenticationResponse?> state,
       {required bool isMobile}) {
     return Container(
       constraints: BoxConstraints(
@@ -161,6 +170,8 @@ class LoginScreen extends HookWidget {
         passwordController,
         isPasswordVisible,
         rememberMe,
+        controller,
+        state,
         isMobile: isMobile,
       ),
     );
@@ -173,6 +184,8 @@ class LoginScreen extends HookWidget {
       TextEditingController passwordController,
       ValueNotifier<bool> isPasswordVisible,
       ValueNotifier<bool> rememberMe,
+      LoginController controller,
+      AsyncValue<AuthenticationResponse?> state,
       {required bool isMobile}) {
     //final theme = Theme.of(context);
 
@@ -241,9 +254,11 @@ class LoginScreen extends HookWidget {
             label: "Sign In",
             onPressed: () {
               // Handle login
-              print('Email: ${emailController.text}');
-              print('Password: ${passwordController.text}');
-              print('Remember me: ${rememberMe.value}');
+              final email = emailController.text.trim();
+              final password = passwordController.text.trim();
+
+              //Execute login
+              controller.login(email, password);
             },
           ),
         ),
@@ -270,8 +285,8 @@ class LoginScreen extends HookWidget {
         Text(
           "Welcome back!",
           style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.6),
-            fontSize: subtitleFontSize,
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            fontSize: subtitleFontSize + 2,
           ),
         ),
         const SizedBox(height: 8),
@@ -286,7 +301,7 @@ class LoginScreen extends HookWidget {
         Text(
           "Enter your email and password to sign in.",
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurface.withOpacity(0.7),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             fontSize: subtitleFontSize - 2,
           ),
         ),
@@ -330,7 +345,7 @@ class LoginScreen extends HookWidget {
             child: TextButton(
               onPressed: () {
                 // Handle forgot password
-                print('Forgot password clicked');
+                context.go('/auth/forgot-password');
               },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
@@ -375,7 +390,7 @@ class LoginScreen extends HookWidget {
         TextButton(
           onPressed: () {
             // Handle forgot password
-            print('Forgot password clicked');
+            //print('Forgot password clicked');
           },
           child: Text('Forgot Password?'),
         ),
@@ -398,8 +413,7 @@ class LoginScreen extends HookWidget {
           ),
           TextButton(
             onPressed: () {
-              // Navigate to sign up
-              print('Navigate to sign up');
+              context.go('/auth/signup');
             },
             style: TextButton.styleFrom(
               padding: EdgeInsets.symmetric(horizontal: 4),
