@@ -13,6 +13,14 @@ class EmailHandler {
     required String verificationCode,
     required String userName,
   }) async {
+    if (session.serverpod.runMode == 'development') {
+      session.log(
+        '📧 [DEV] Verification Code for $email: $verificationCode',
+        level: LogLevel.info,
+      );
+      return true;
+    }
+
     try {
       final smtpServer = SmtpServer(
         'smtp.resend.com',
@@ -47,6 +55,14 @@ class EmailHandler {
     required String resetCode,
     required String userName,
   }) async {
+    if (session.serverpod.runMode == 'development') {
+      session.log(
+        '📧 [DEV] Password Reset Code for $email: $resetCode',
+        level: LogLevel.info,
+      );
+      return true;
+    }
+
     try {
       final smtpServer = SmtpServer(
         'smtp.resend.com',
@@ -83,6 +99,13 @@ class EmailHandler {
     String workspaceName,
     WorkspaceRole role,
   ) async {
+    if (session.serverpod.runMode == 'development') {
+      session.log(
+        '📧 [DEV] Invitation to $workspaceName for $email. Token: $token',
+        level: LogLevel.info,
+      );
+      return true;
+    }
     try {
       final smtpServer = SmtpServer(
         'smtp.resend.com',

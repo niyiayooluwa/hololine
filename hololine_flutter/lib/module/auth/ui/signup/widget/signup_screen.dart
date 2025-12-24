@@ -1,10 +1,9 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hololine_flutter/module/auth/ui/login/controller/login_controller.dart';
+import 'package:hololine_flutter/module/auth/ui/signup/controller/signup_controller.dart';
 import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:serverpod_auth_client/module.dart';
 
 class SignupScreen extends HookConsumerWidget {
   const SignupScreen({super.key});
@@ -22,8 +21,8 @@ class SignupScreen extends HookConsumerWidget {
     final confirmPasswordController = useTextEditingController();
     final passwordController = useTextEditingController();
 
-    final controller = ref.read(loginControllerProvider.notifier);
-    final state = ref.watch(loginControllerProvider);
+    final controller = ref.read(signupControllerProvider.notifier);
+    final state = ref.watch(signupControllerProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -164,8 +163,8 @@ class SignupScreen extends HookConsumerWidget {
       TextEditingController passwordController,
       TextEditingController confirmPasswordController,
       ValueNotifier<bool> isPasswordVisible,
-      LoginController controller,
-      AsyncValue<AuthenticationResponse?> state,
+      SignupController controller,
+      AsyncValue<bool?> state,
       {required bool isMobile}) {
     return Container(
       constraints: BoxConstraints(
@@ -196,8 +195,8 @@ class SignupScreen extends HookConsumerWidget {
       TextEditingController passwordController,
       TextEditingController confirmPasswordController,
       ValueNotifier<bool> isPasswordVisible,
-      LoginController controller,
-      AsyncValue<AuthenticationResponse?> state,
+      SignupController controller,
+      AsyncValue<bool?> state,
       {required bool isMobile}) {
     //final theme = Theme.of(context);
 
@@ -273,7 +272,7 @@ class SignupScreen extends HookConsumerWidget {
         HoloTextField(
           label: 'Confirm Password',
           leading: const Icon(Icons.lock_outline, size: 20),
-          controller: passwordController,
+          controller: confirmPasswordController,
           hint: 'Re-enter your password',
           obscure: !isPasswordVisible.value,
           trailing: IconButton(
@@ -294,12 +293,15 @@ class SignupScreen extends HookConsumerWidget {
           child: HoloButton(
             label: "Create an Account",
             onPressed: () {
-              // Handle login
+              // Handle signup logic
+              final firstName = firstNameController.text.trim();
+              final lastName = lastNameCOntroller.text.trim();
+              final userName = '$firstName $lastName';
               final email = emailController.text.trim();
               final password = passwordController.text.trim();
 
-              //Execute login
-              controller.login(email, password);
+              //Execute signup
+              controller.signup(userName, email, password);
             },
           ),
         ),
