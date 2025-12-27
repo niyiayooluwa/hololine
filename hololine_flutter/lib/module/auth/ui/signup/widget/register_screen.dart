@@ -1,9 +1,10 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/module/auth/ui/signup/controller/signup_controller.dart';
+import 'package:hololine_flutter/module/auth/ui/signup/widget/register_state.dart';
 import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class SignupScreen extends HookConsumerWidget {
   const SignupScreen({super.key});
@@ -14,12 +15,7 @@ class SignupScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isPasswordVisible = useState(false);
-    final firstNameController = useTextEditingController();
-    final lastNameController = useTextEditingController();
-    final emailController = useTextEditingController();
-    final confirmPasswordController = useTextEditingController();
-    final passwordController = useTextEditingController();
+    final formState = useRegisterForm();
 
     final controller = ref.read(signupControllerProvider.notifier);
     final state = ref.watch(signupControllerProvider);
@@ -55,12 +51,7 @@ class SignupScreen extends HookConsumerWidget {
                     child: SingleChildScrollView(
                       child: _buildFormContainer(
                         context,
-                        firstNameController,
-                        lastNameController,
-                        emailController,
-                        passwordController,
-                        confirmPasswordController,
-                        isPasswordVisible,
+                        formState,
                         controller,
                         state,
                         isMobile: false,
@@ -81,12 +72,7 @@ class SignupScreen extends HookConsumerWidget {
               ),
               child: _buildFormContainer(
                 context,
-                firstNameController,
-                lastNameController,
-                emailController,
-                passwordController,
-                confirmPasswordController,
-                isPasswordVisible,
+                formState,
                 controller,
                 state,
                 isMobile: isMobile,
@@ -155,16 +141,8 @@ class SignupScreen extends HookConsumerWidget {
   }
 
   // FORM CONTAINER (Used in all layouts)
-  Widget _buildFormContainer(
-      BuildContext context,
-      TextEditingController firstNameController,
-      TextEditingController lastNameController,
-      TextEditingController emailController,
-      TextEditingController passwordController,
-      TextEditingController confirmPasswordController,
-      ValueNotifier<bool> isPasswordVisible,
-      SignupController controller,
-      AsyncValue<bool?> state,
+  Widget _buildFormContainer(BuildContext context, RegisterFormState formstate,
+      SignupController controller, AsyncValue<bool?> state,
       {required bool isMobile}) {
     return Container(
       constraints: BoxConstraints(
@@ -173,12 +151,7 @@ class SignupScreen extends HookConsumerWidget {
       padding: EdgeInsets.all(isMobile ? 24 : 32),
       child: _buildForm(
         context,
-        firstNameController,
-        lastNameController,
-        emailController,
-        passwordController,
-        confirmPasswordController,
-        isPasswordVisible,
+        formstate,
         controller,
         state,
         isMobile: isMobile,
@@ -187,16 +160,8 @@ class SignupScreen extends HookConsumerWidget {
   }
 
   // MAIN FORM
-  Widget _buildForm(
-      BuildContext context,
-      TextEditingController firstNameController,
-      TextEditingController lastNameCOntroller,
-      TextEditingController emailController,
-      TextEditingController passwordController,
-      TextEditingController confirmPasswordController,
-      ValueNotifier<bool> isPasswordVisible,
-      SignupController controller,
-      AsyncValue<bool?> state,
+  Widget _buildForm(BuildContext context, RegisterFormState formState,
+      SignupController controller, AsyncValue<bool?> state,
       {required bool isMobile}) {
     //final theme = Theme.of(context);
 
@@ -206,111 +171,167 @@ class SignupScreen extends HookConsumerWidget {
     final spacingLarge = isMobile ? 24.0 : 32.0;
     final spacingMedium = isMobile ? 16.0 : 20.0;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // HEADER
-        _buildHeader(
-          context,
-          titleFontSize: titleFontSize,
-          subtitleFontSize: subtitleFontSize,
-        ),
+    final formKey = GlobalKey<ShadFormState>();
 
-        SizedBox(height: spacingLarge),
-
-        // EMAIL FIELD
-        HoloTextField(
-          label: 'First Name',
-          leading: const Icon(Icons.email_outlined, size: 20),
-          controller: firstNameController,
-          hint: 'John',
-          keyboardType: TextInputType.emailAddress,
-        ),
-
-        SizedBox(height: spacingMedium),
-
-        HoloTextField(
-          label: 'Last Name',
-          leading: const Icon(Icons.email_outlined, size: 20),
-          controller: lastNameCOntroller,
-          hint: 'Doe',
-          keyboardType: TextInputType.emailAddress,
-        ),
-
-        SizedBox(height: spacingMedium),
-
-        HoloTextField(
-          label: 'Email',
-          leading: const Icon(Icons.email_outlined, size: 20),
-          controller: emailController,
-          hint: 'Enter your email',
-          keyboardType: TextInputType.emailAddress,
-        ),
-
-        SizedBox(height: spacingMedium),
-
-        // PASSWORD FIELD
-        HoloTextField(
-          label: 'Password',
-          leading: const Icon(Icons.lock_outline, size: 20),
-          controller: passwordController,
-          hint: 'Enter your password',
-          obscure: !isPasswordVisible.value,
-          trailing: IconButton(
-            icon: Icon(
-              isPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
-              size: 20,
-            ),
-            onPressed: () => isPasswordVisible.value = !isPasswordVisible.value,
+    return ShadForm(
+      key: formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // HEADER
+          _buildHeader(
+            context,
+            titleFontSize: titleFontSize,
+            subtitleFontSize: subtitleFontSize,
           ),
-        ),
+          SizedBox(height: spacingLarge),
 
-        SizedBox(height: spacingMedium),
-
-        // CONFIRM PASSWORD FIELD
-        HoloTextField(
-          label: 'Confirm Password',
-          leading: const Icon(Icons.lock_outline, size: 20),
-          controller: confirmPasswordController,
-          hint: 'Re-enter your password',
-          obscure: !isPasswordVisible.value,
-          trailing: IconButton(
-            icon: Icon(
-              isPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
-              size: 20,
-            ),
-            onPressed: () => isPasswordVisible.value = !isPasswordVisible.value,
-          ),
-        ),
-
-        SizedBox(height: spacingLarge),
-
-        // SIGN IN BUTTON
-        SizedBox(
-          width: double.infinity,
-          height: isMobile ? 40 : 44,
-          child: HoloButton(
-            label: "Create an Account",
-            onPressed: () {
-              // Handle signup logic
-              final firstName = firstNameController.text.trim();
-              final lastName = lastNameCOntroller.text.trim();
-              final userName = '$firstName $lastName';
-              final email = emailController.text.trim();
-              final password = passwordController.text.trim();
-
-              //Execute signup
-              controller.signup(userName, email, password);
+          // FIRST NAME FIELD
+          ShadInputFormField(
+            id: 'first_name',
+            label: const Text('First Name'),
+            controller: formState.firstNameController,
+            placeholder: const Text('John'),
+            keyboardType: TextInputType.emailAddress,
+            validator: (v) {
+              if (v.isEmpty) {
+                return 'Please enter your last name';
+              }
+              return null;
             },
           ),
-        ),
+          SizedBox(height: spacingMedium),
 
-        SizedBox(height: spacingMedium),
+          // LAST NAME FIELD
+          ShadInputFormField(
+            id: 'last_name',
+            label: const Text('Last Name'),
+            controller: formState.lastNameController,
+            placeholder: const Text('Doe'),
+            keyboardType: TextInputType.name,
+            validator: (v) {
+              if (v.isEmpty) {
+                return 'Please enter your last name';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: spacingMedium),
 
-        // SIGN UP LINK
-        _buildSignUpLink(context),
-      ],
+          // EMAIL FIELD
+          ShadInputFormField(
+            id: 'email',
+            label: const Text('Email'),
+            controller: formState.emailController,
+            placeholder: const Text('john.doe@example.com'),
+            keyboardType: TextInputType.emailAddress,
+            validator: (v) {
+              if (v.isEmpty) {
+                return 'Please enter your email';
+              }
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
+                return 'Please enter a valid email';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: spacingMedium),
+
+          // PASSWORD FIELD
+          ShadInputFormField(
+            id: 'password',
+            label: const Text('Password'),
+            controller: formState.passwordController,
+            placeholder: const Text('Enter your password'),
+            obscureText: !formState.isPasswordVisible.value,
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                // Reduce the splash/hitbox size
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  formState.isPasswordVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  size: 20, // Explicit size helps alignment
+                ),
+                onPressed: () => formState.isPasswordVisible.value =
+                    !formState.isPasswordVisible.value,
+              ),
+            ),
+          ),
+          SizedBox(height: spacingMedium),
+
+          // CONFIRM PASSWORD FIELD
+          ShadInputFormField(
+            id: 'confirm_password',
+            label: const Text('Confirm Password'),
+            controller: formState.confirmPasswordController,
+            placeholder: const Text('Re-enter your password'),
+            obscureText: !formState.isConfirmPasswordVisible.value,
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                // Reduce the splash/hitbox size
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  formState.isConfirmPasswordVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  size: 20, // Explicit size helps alignment
+                ),
+                onPressed: () => formState.isConfirmPasswordVisible.value =
+                    !formState.isConfirmPasswordVisible.value,
+              ),
+            ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please confirm your password';
+              }
+              if (value != formState.passwordController.text) {
+                return 'Passwords do not match';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: spacingLarge),
+
+          // SIGN UP BUTTON
+          SizedBox(
+            width: double.infinity,
+            height: isMobile ? 44 : 48,
+            child: ShadButton(
+              enabled: formState.isFormValid.value,
+              onPressed: formState.isFormValid.value
+                  ? () {
+                      if (formKey.currentState!.validate()) {
+                        // Handle signup logic
+                        final firstName =
+                            formState.firstNameController.text.trim();
+                        final lastName =
+                            formState.lastNameController.text.trim();
+                        final userName = '$firstName $lastName';
+                        final email = formState.emailController.text.trim();
+                        final password =
+                            formState.passwordController.text.trim();
+
+                        controller.signup(userName, email, password);
+                      }
+                    }
+                  : null,
+              child: const Text("Sign up"),
+            ),
+          ),
+
+          SizedBox(height: spacingMedium),
+
+          // SIGN UP LINK
+          _buildSignUpLink(context),
+        ],
+      ),
     );
   }
 

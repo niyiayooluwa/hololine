@@ -1,10 +1,11 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/module/auth/ui/login/controller/login_controller.dart';
+import 'package:hololine_flutter/module/auth/ui/login/widget/login_state.dart';
 import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_client/module.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
@@ -15,10 +16,7 @@ class LoginScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isPasswordVisible = useState(false);
-    final rememberMe = useState(false);
-    final emailController = useTextEditingController();
-    final passwordController = useTextEditingController();
+    final formState = useLoginForm();
 
     final controller = ref.read(loginControllerProvider.notifier);
     final state = ref.watch(loginControllerProvider);
@@ -31,7 +29,6 @@ class LoginScreen extends HookConsumerWidget {
 
           // Determine device type
           final isMobile = width < Breakpoints.Mobile;
-          //final isTablet =width >= mobileBreakpoint && width < tabletBreakpoint;
           final isDesktop = width >= Breakpoints.Desktop;
 
           // Show side image only on desktop
@@ -54,10 +51,7 @@ class LoginScreen extends HookConsumerWidget {
                     child: SingleChildScrollView(
                       child: _buildFormContainer(
                         context,
-                        emailController,
-                        passwordController,
-                        isPasswordVisible,
-                        rememberMe,
+                        formState,
                         controller,
                         state,
                         isMobile: false,
@@ -78,10 +72,7 @@ class LoginScreen extends HookConsumerWidget {
               ),
               child: _buildFormContainer(
                 context,
-                emailController,
-                passwordController,
-                isPasswordVisible,
-                rememberMe,
+                formState,
                 controller,
                 state,
                 isMobile: isMobile,
@@ -150,14 +141,8 @@ class LoginScreen extends HookConsumerWidget {
   }
 
   // FORM CONTAINER (Used in all layouts)
-  Widget _buildFormContainer(
-      BuildContext context,
-      TextEditingController emailController,
-      TextEditingController passwordController,
-      ValueNotifier<bool> isPasswordVisible,
-      ValueNotifier<bool> rememberMe,
-      LoginController controller,
-      AsyncValue<AuthenticationResponse?> state,
+  Widget _buildFormContainer(BuildContext context, LoginFormState formState,
+      LoginController controller, AsyncValue<AuthenticationResponse?> state,
       {required bool isMobile}) {
     return Container(
       constraints: BoxConstraints(
@@ -166,10 +151,7 @@ class LoginScreen extends HookConsumerWidget {
       padding: EdgeInsets.all(isMobile ? 24 : 32),
       child: _buildForm(
         context,
-        emailController,
-        passwordController,
-        isPasswordVisible,
-        rememberMe,
+        formState,
         controller,
         state,
         isMobile: isMobile,
@@ -178,96 +160,121 @@ class LoginScreen extends HookConsumerWidget {
   }
 
   // MAIN FORM
-  Widget _buildForm(
-      BuildContext context,
-      TextEditingController emailController,
-      TextEditingController passwordController,
-      ValueNotifier<bool> isPasswordVisible,
-      ValueNotifier<bool> rememberMe,
-      LoginController controller,
-      AsyncValue<AuthenticationResponse?> state,
+  Widget _buildForm(BuildContext context, LoginFormState formState,
+      LoginController controller, AsyncValue<AuthenticationResponse?> state,
       {required bool isMobile}) {
-    //final theme = Theme.of(context);
-
     // Responsive values
     final titleFontSize = isMobile ? 24.0 : 28.0;
     final subtitleFontSize = isMobile ? 14.0 : 16.0;
     final spacingLarge = isMobile ? 24.0 : 32.0;
     final spacingMedium = isMobile ? 16.0 : 20.0;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // HEADER
-        _buildHeader(
-          context,
-          titleFontSize: titleFontSize,
-          subtitleFontSize: subtitleFontSize,
-        ),
+    final formKey = GlobalKey<ShadFormState>();
 
-        SizedBox(height: spacingLarge),
-
-        // EMAIL FIELD
-        HoloTextField(
-          label: 'Email',
-          leading: const Icon(Icons.email_outlined, size: 20),
-          controller: emailController,
-          hint: 'Enter your email',
-          keyboardType: TextInputType.emailAddress,
-        ),
-
-        SizedBox(height: spacingMedium),
-
-        // PASSWORD FIELD
-        HoloTextField(
-          label: 'Password',
-          leading: const Icon(Icons.lock_outline, size: 20),
-          controller: passwordController,
-          hint: 'Enter your password',
-          obscure: !isPasswordVisible.value,
-          trailing: IconButton(
-            icon: Icon(
-              isPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
-              size: 20,
-            ),
-            onPressed: () => isPasswordVisible.value = !isPasswordVisible.value,
+    return ShadForm(
+      key: formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // HEADER
+          _buildHeader(
+            context,
+            titleFontSize: titleFontSize,
+            subtitleFontSize: subtitleFontSize,
           ),
-        ),
 
-        SizedBox(height: isMobile ? 12 : 16),
+          SizedBox(height: spacingLarge),
 
-        // REMEMBER ME & FORGOT PASSWORD ROW
-        _buildRememberMeRow(
-          context,
-          rememberMe,
-          isMobile: isMobile,
-        ),
-
-        SizedBox(height: spacingLarge),
-
-        // SIGN IN BUTTON
-        SizedBox(
-          width: double.infinity,
-          height: isMobile ? 40 : 44,
-          child: HoloButton(
-            label: "Sign In",
-            onPressed: () {
-              // Handle login
-              final email = emailController.text.trim();
-              final password = passwordController.text.trim();
-
-              //Execute login
-              controller.login(email, password);
+          // EMAIL FIELD
+          ShadInputFormField(
+            id: 'email',
+            controller: formState.emailController,
+            label: const Text('Email'),
+            placeholder: const Text('Enter your email'),
+            keyboardType: TextInputType.emailAddress,
+            validator: (v) {
+              if (v.isEmpty) {
+                return 'Please enter your email';
+              }
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
+                return 'Please enter a valid email';
+              }
+              return null;
             },
           ),
-        ),
 
-        SizedBox(height: spacingMedium),
+          SizedBox(height: spacingMedium),
 
-        // SIGN UP LINK
-        _buildSignUpLink(context),
-      ],
+          // PASSWORD FIELD
+          ShadInputFormField(
+            id: 'password',
+            controller: formState.passwordController,
+            label: const Text('Password'),
+            placeholder: const Text('Enter your password'),
+            obscureText: !formState.isPasswordVisible.value,
+            trailing: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                // Reduce the splash/hitbox size
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  formState.isPasswordVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  size: 20, // Explicit size helps alignment
+                ),
+                onPressed: () => formState.isPasswordVisible.value =
+                    !formState.isPasswordVisible.value,
+              ),
+            ),
+            validator: (v) {
+              if (v.isEmpty) {
+                return 'Please enter your password';
+              }
+              return null;
+            },
+          ),
+
+          SizedBox(height: isMobile ? 12 : 16),
+
+          // REMEMBER ME & FORGOT PASSWORD ROW
+          _buildRememberMeRow(
+            context,
+            formState.rememberMe,
+            isMobile: isMobile,
+          ),
+
+          SizedBox(height: spacingLarge),
+
+          // SIGN IN BUTTON
+          SizedBox(
+            width: double.infinity,
+            height: isMobile ? 44 : 48,
+            child: ShadButton(
+              enabled: formState.isFormValid.value,
+              onPressed: formState.isFormValid.value
+                  ? () {
+                      if (formKey.currentState!.validate()) {
+                        final email = formState.emailController.text.trim();
+                        final password =
+                            formState.passwordController.text.trim();
+
+                        controller.login(email, password);
+                      }
+                    }
+                  : null,
+              child: const Text("Sign In"),
+            ),
+          ),
+
+          SizedBox(height: spacingMedium),
+
+          // SIGN UP LINK
+          _buildSignUpLink(context),
+        ],
+      ),
     );
   }
 
@@ -389,8 +396,7 @@ class LoginScreen extends HookConsumerWidget {
         ),
         TextButton(
           onPressed: () {
-            // Handle forgot password
-            //print('Forgot password clicked');
+            context.go('/auth/forgot-password');
           },
           child: Text('Forgot Password?'),
         ),
