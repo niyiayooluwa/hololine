@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hololine_flutter/core/application/providers.dart';
 import 'package:hololine_flutter/routing/router_config.dart';
-import 'package:hololine_flutter/shared_ui/core/ui/theme/theme.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 Future<void> main() async {
   // Ensures that the Flutter binding is initialized before any Flutter specific
@@ -38,10 +38,10 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
 
-    return MaterialApp.router(
+    return ShadApp.router(
       title: 'Hololine',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      //theme: AppTheme.lightTheme as ShadThemeData,
+      //darkTheme: AppTheme.darkTheme as ShadThemeData,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: true,
       routerConfig: router,

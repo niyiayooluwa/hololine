@@ -19,7 +19,7 @@ class AppTheme {
 
   // Primary Blues - Trust & Authority
   static const Color _primaryBlue =
-      Color(0xFF2563EB); // Vibrant, confident blue
+      Color(0xFF5465FF); // Primary color (updated to #5465FF)
   static const Color _primaryBlueLight = Color(0xFF60A5FA);
   static const Color _primaryBlueDark = Color(0xFF1E40AF);
   static const Color _primaryBlueSubtle = Color(0xFFEFF6FF); // Backgrounds
