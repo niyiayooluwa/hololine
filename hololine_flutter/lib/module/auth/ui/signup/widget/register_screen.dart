@@ -306,7 +306,7 @@ class SignupScreen extends HookConsumerWidget {
             child: ShadButton(
               enabled: formState.isFormValid.value,
               onPressed: formState.isFormValid.value
-                  ? () {
+                  ? () async {
                       if (formKey.currentState!.validate()) {
                         // Handle signup logic
                         final firstName =
@@ -318,7 +318,14 @@ class SignupScreen extends HookConsumerWidget {
                         final password =
                             formState.passwordController.text.trim();
 
-                        controller.signup(userName, email, password);
+                        context.go('/auth/verification', extra: email);
+
+                        await controller.signup(userName, email, password);
+
+                        // On successful signup, navigate to verification screen
+                        /*if (state.value == true) {
+                          context.go('/auth/verification', extra: email);
+                        }*/
                       }
                     }
                   : null,
