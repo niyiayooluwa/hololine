@@ -32,6 +32,7 @@ void run(List<String> args) async {
   // Configure Auth with Email
   auth.AuthConfig.set(auth.AuthConfig(
       sendValidationEmail: (session, email, validationCode) async {
+        session.log('Sending verification email to $email with code $validationCode');
         final emailHandler = EmailHandler(session);
         return await emailHandler.sendVerificationEmail(
           email: email,
@@ -40,6 +41,7 @@ void run(List<String> args) async {
         );
       },
       sendPasswordResetEmail: (session, userInfo, validationCode) async {
+        //print('Sending password reset email to ${userInfo.email} with code $validationCode');
         final emailHandler = EmailHandler(session);
         return await emailHandler.sendPasswordResetEmail(
           email: userInfo.email!,

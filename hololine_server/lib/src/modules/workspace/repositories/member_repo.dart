@@ -1,6 +1,7 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:serverpod/server.dart';
+import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 
 class MemberRepo {
   /// Finds a workspace member by [userId] and [workspaceId].

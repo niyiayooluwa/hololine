@@ -13,13 +13,11 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
 import 'responses/response.dart' as _i4;
-import 'user_info.dart' as _i5;
-import 'workspace.dart' as _i6;
-import 'workspace_invitation.dart' as _i7;
-import 'workspace_member.dart' as _i8;
-import 'workspace_role.dart' as _i9;
+import 'workspace.dart' as _i5;
+import 'workspace_invitation.dart' as _i6;
+import 'workspace_member.dart' as _i7;
+import 'workspace_role.dart' as _i8;
 export 'responses/response.dart';
-export 'user_info.dart';
 export 'workspace.dart';
 export 'workspace_invitation.dart';
 export 'workspace_member.dart';
@@ -127,81 +125,6 @@ class Protocol extends _i1.SerializationManagerServer {
         )
       ],
       managed: true,
-    ),
-    _i2.TableDefinition(
-      name: 'serverpod_auth_user_info',
-      dartName: 'UserInfo',
-      schema: 'public',
-      module: 'hololine',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault:
-              'nextval(\'serverpod_auth_user_info_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userIdentifier',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userName',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'fullName',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'email',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'created',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-        ),
-        _i2.ColumnDefinition(
-          name: 'blocked',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-        ),
-        _i2.ColumnDefinition(
-          name: 'scopeNames',
-          columnType: _i2.ColumnType.json,
-          isNullable: false,
-          dartType: 'List<String>',
-        ),
-      ],
-      foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'serverpod_auth_user_info_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
-      managed: false,
     ),
     _i2.TableDefinition(
       name: 'workspace',
@@ -425,47 +348,38 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i4.Response) {
       return _i4.Response.fromJson(data) as T;
     }
-    if (t == _i5.UserInfo) {
-      return _i5.UserInfo.fromJson(data) as T;
+    if (t == _i5.Workspace) {
+      return _i5.Workspace.fromJson(data) as T;
     }
-    if (t == _i6.Workspace) {
-      return _i6.Workspace.fromJson(data) as T;
+    if (t == _i6.WorkspaceInvitation) {
+      return _i6.WorkspaceInvitation.fromJson(data) as T;
     }
-    if (t == _i7.WorkspaceInvitation) {
-      return _i7.WorkspaceInvitation.fromJson(data) as T;
+    if (t == _i7.WorkspaceMember) {
+      return _i7.WorkspaceMember.fromJson(data) as T;
     }
-    if (t == _i8.WorkspaceMember) {
-      return _i8.WorkspaceMember.fromJson(data) as T;
-    }
-    if (t == _i9.WorkspaceRole) {
-      return _i9.WorkspaceRole.fromJson(data) as T;
+    if (t == _i8.WorkspaceRole) {
+      return _i8.WorkspaceRole.fromJson(data) as T;
     }
     if (t == _i1.getType<_i4.Response?>()) {
       return (data != null ? _i4.Response.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.UserInfo?>()) {
-      return (data != null ? _i5.UserInfo.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.Workspace?>()) {
+      return (data != null ? _i5.Workspace.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.Workspace?>()) {
-      return (data != null ? _i6.Workspace.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i7.WorkspaceInvitation?>()) {
-      return (data != null ? _i7.WorkspaceInvitation.fromJson(data) : null)
+    if (t == _i1.getType<_i6.WorkspaceInvitation?>()) {
+      return (data != null ? _i6.WorkspaceInvitation.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i8.WorkspaceMember?>()) {
-      return (data != null ? _i8.WorkspaceMember.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.WorkspaceMember?>()) {
+      return (data != null ? _i7.WorkspaceMember.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.WorkspaceRole?>()) {
-      return (data != null ? _i9.WorkspaceRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.WorkspaceRole?>()) {
+      return (data != null ? _i8.WorkspaceRole.fromJson(data) : null) as T;
     }
-    if (t == List<String>) {
-      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
-    }
-    if (t == _i1.getType<List<_i8.WorkspaceMember>?>()) {
+    if (t == _i1.getType<List<_i7.WorkspaceMember>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i8.WorkspaceMember>(e))
+              .map((e) => deserialize<_i7.WorkspaceMember>(e))
               .toList()
           : null) as T;
     }
@@ -485,19 +399,16 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i4.Response) {
       return 'Response';
     }
-    if (data is _i5.UserInfo) {
-      return 'UserInfo';
-    }
-    if (data is _i6.Workspace) {
+    if (data is _i5.Workspace) {
       return 'Workspace';
     }
-    if (data is _i7.WorkspaceInvitation) {
+    if (data is _i6.WorkspaceInvitation) {
       return 'WorkspaceInvitation';
     }
-    if (data is _i8.WorkspaceMember) {
+    if (data is _i7.WorkspaceMember) {
       return 'WorkspaceMember';
     }
-    if (data is _i9.WorkspaceRole) {
+    if (data is _i8.WorkspaceRole) {
       return 'WorkspaceRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -520,20 +431,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Response') {
       return deserialize<_i4.Response>(data['data']);
     }
-    if (dataClassName == 'UserInfo') {
-      return deserialize<_i5.UserInfo>(data['data']);
-    }
     if (dataClassName == 'Workspace') {
-      return deserialize<_i6.Workspace>(data['data']);
+      return deserialize<_i5.Workspace>(data['data']);
     }
     if (dataClassName == 'WorkspaceInvitation') {
-      return deserialize<_i7.WorkspaceInvitation>(data['data']);
+      return deserialize<_i6.WorkspaceInvitation>(data['data']);
     }
     if (dataClassName == 'WorkspaceMember') {
-      return deserialize<_i8.WorkspaceMember>(data['data']);
+      return deserialize<_i7.WorkspaceMember>(data['data']);
     }
     if (dataClassName == 'WorkspaceRole') {
-      return deserialize<_i9.WorkspaceRole>(data['data']);
+      return deserialize<_i8.WorkspaceRole>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -561,14 +469,12 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i5.UserInfo:
-        return _i5.UserInfo.t;
-      case _i6.Workspace:
-        return _i6.Workspace.t;
-      case _i7.WorkspaceInvitation:
-        return _i7.WorkspaceInvitation.t;
-      case _i8.WorkspaceMember:
-        return _i8.WorkspaceMember.t;
+      case _i5.Workspace:
+        return _i5.Workspace.t;
+      case _i6.WorkspaceInvitation:
+        return _i6.WorkspaceInvitation.t;
+      case _i7.WorkspaceMember:
+        return _i7.WorkspaceMember.t;
     }
     return null;
   }

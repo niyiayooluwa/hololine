@@ -1,4 +1,27 @@
 {
     "files.autoSaveWhenNoErrors": true,
-    "files.autoSaveDelay": 500
+    "files.autoSaveDelay": 500,
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Testing",
+            "username": "postgres",
+            "database": "hololine"
+        },
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 8090,
+            "driver": "PostgreSQL",
+            "name": "hololine",
+            "database": "hololine",
+            "username": "postgres",
+            "password": "jdzFEJyZG6WsyilSOvnS3PyC7nOvWHMY"
+        }
+    ]
 }

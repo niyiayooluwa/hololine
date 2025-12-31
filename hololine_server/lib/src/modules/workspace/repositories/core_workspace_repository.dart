@@ -1,6 +1,7 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 
 /// Repository for managing workspace entities and their members.
 /// Handles workspace creation, retrieval, and member management operations

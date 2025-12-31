@@ -2,6 +2,7 @@ import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/modules/workspace/usecase/services.dart';
 import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:mockito/mockito.dart';
+import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 import 'package:test/test.dart';
 
 import '../../../../mocks.mocks.dart';
