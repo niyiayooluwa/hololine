@@ -1,20 +1,23 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/module/auth/ui/reset_password/controller/reset_password_controller.dart';
+import 'package:hololine_flutter/module/auth/ui/reset_password/widget/reset_password_state.dart';
 import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class ResetPasswordScreen extends HookConsumerWidget {
-  const ResetPasswordScreen({super.key});
+  final String email;
+  const ResetPasswordScreen({super.key, required this.email});
 
   // Breakpoints
   static const double formMaxWidth = 420;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final emailController = useTextEditingController();
+    final formState = useResetPasswordState();
     final controller = ref.read(resetPasswordControllerProvider.notifier);
     final state = ref.watch(resetPasswordControllerProvider);
 
@@ -24,8 +27,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
         next.when(
           data: (response) {
             if (response == true) {
-              context.go('/auth/reset-password/verify',
-                  extra: emailController.text.trim());
+              context.go('/auth/login');
             } else {
               ShadToaster.of(context).show(
                 ShadToast(
@@ -75,7 +77,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
                     child: SingleChildScrollView(
                       child: _buildFormContainer(
                         context,
-                        emailController,
+                        formState,
                         controller,
                         state,
                         isMobile: false,
@@ -96,7 +98,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
               ),
               child: _buildFormContainer(
                 context,
-                emailController,
+                formState,
                 controller,
                 state,
                 isMobile: isMobile,
@@ -165,11 +167,8 @@ class ResetPasswordScreen extends HookConsumerWidget {
   }
 
   // FORM CONTAINER (Used in all layouts)
-  Widget _buildFormContainer(
-      BuildContext context,
-      TextEditingController emailController,
-      ResetPasswordController controller,
-      AsyncValue<bool?> state,
+  Widget _buildFormContainer(BuildContext context, ResetPasswordState formState,
+      ResetPasswordController controller, AsyncValue<bool?> state,
       {required bool isMobile}) {
     return Container(
       constraints: BoxConstraints(
@@ -178,7 +177,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
       padding: EdgeInsets.all(isMobile ? 24 : 32),
       child: _buildForm(
         context,
-        emailController,
+        formState,
         controller,
         state,
         isMobile: isMobile,
@@ -187,9 +186,13 @@ class ResetPasswordScreen extends HookConsumerWidget {
   }
 
   // MAIN FORM
-  Widget _buildForm(BuildContext context, TextEditingController emailController,
-      ResetPasswordController controller, AsyncValue<bool?> state,
-      {required bool isMobile}) {
+  Widget _buildForm(
+    BuildContext context,
+    ResetPasswordState formState,
+    ResetPasswordController controller,
+    AsyncValue<bool?> state, {
+    required bool isMobile,
+  }) {
     // Responsive values
     final titleFontSize = isMobile ? 24.0 : 28.0;
     final subtitleFontSize = isMobile ? 14.0 : 16.0;
@@ -197,6 +200,12 @@ class ResetPasswordScreen extends HookConsumerWidget {
     final spacingMedium = isMobile ? 16.0 : 20.0;
 
     final formKey = GlobalKey<ShadFormState>();
+    final page = useValueListenable(formState.page);
+    final isPasswordVisible = useValueListenable(formState.isPasswordVisible);
+    final isConfirmPasswordVisible =
+        useValueListenable(formState.isConfirmPasswordVisible);
+    useListenable(formState.codeController);
+    final isFormValid = useValueListenable(formState.isFormValid);
 
     return ShadForm(
       key: formKey,
@@ -207,63 +216,167 @@ class ResetPasswordScreen extends HookConsumerWidget {
           // HEADER
           _buildHeader(
             context,
+            page: page,
             titleFontSize: titleFontSize,
             subtitleFontSize: subtitleFontSize,
           ),
 
           SizedBox(height: spacingLarge),
 
-          // EMAIL INPUT FIELD
-          ShadInputFormField(
-            id: 'email',
-            label: const Text('Email'),
-            placeholder: const Text('Enter your email'),
-            keyboardType: TextInputType.emailAddress,
-            controller: emailController,
-            validator: (v) {
-              if (v.isEmpty) {
-                return 'Email is required';
-              }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v)) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            },
-          ),
-
-          SizedBox(height: spacingLarge),
-
-          // RESET PASSWORD BUTTON
-          SizedBox(
-            width: double.infinity,
-            height: isMobile ? 44 : 48,
-            child: ValueListenableBuilder(
-              valueListenable: emailController,
-              builder: (context, value, child) {
-                return ShadButton(
-                  onPressed: !state.isLoading
-                      ? () async {
-                          if (formKey.currentState!.validate()) {
-                            final email = emailController.text.trim();
-                            await controller.resetPasswordRequest(email);
-                          }
-                        }
-                      : null,
-                  child: const Text("Reset Password"),
-                );
+          if (page == 1) ...[
+            // OTP INPUT FIELD
+            ShadInputOTPFormField(
+              id: 'otp',
+              maxLength: 6,
+              label: const Text('Verification Code'),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp('^[a-zA-Z0-9]+')),
+              ],
+              onChanged: (v) => formState.codeController.text = v,
+              validator: (v) {
+                if (v.contains(' ')) {
+                  return 'Fill the whole OTP code';
+                }
+                return null;
+              },
+              children: const [
+                ShadInputOTPGroup(
+                  children: [
+                    ShadInputOTPSlot(),
+                    ShadInputOTPSlot(),
+                    ShadInputOTPSlot(),
+                  ],
+                ),
+                Icon(size: 24, LucideIcons.dot),
+                ShadInputOTPGroup(
+                  children: [
+                    ShadInputOTPSlot(),
+                    ShadInputOTPSlot(),
+                    ShadInputOTPSlot(),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: spacingLarge),
+            // VERIFY CODE BUTTON
+            SizedBox(
+              width: double.infinity,
+              height: isMobile ? 44 : 48,
+              child: ShadButton(
+                enabled: formState.codeController.text.length == 6,
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    formState.page.value = 2;
+                  }
+                },
+                child: const Text("Verify Code"),
+              ),
+            ),
+          ] else ...[
+            ShadInputFormField(
+              label: const Text('New Password'),
+              controller: formState.passwordController,
+              obscureText: !isPasswordVisible,
+              trailing: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                  // Reduce the splash/hitbox size
+                  constraints: const BoxConstraints(),
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    formState.isPasswordVisible.value
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    size: 20, // Explicit size helps alignment
+                  ),
+                  onPressed: () => formState.isPasswordVisible.value =
+                      !formState.isPasswordVisible.value,
+                ),
+              ),
+              validator: (v) {
+                if (v.length < 8) {
+                  return 'Password must be at least 8 characters';
+                }
+                return null;
               },
             ),
-          ),
+            const SizedBox(height: 16),
 
-          SizedBox(height: spacingMedium),
-
-          ShadButton.ghost(
-            onPressed: () {
-              context.go('/auth/login');
-            },
-            leading: const Icon(LucideIcons.arrowLeft),
-            child: const Text("Return to Login Page"),
-          ),
+            ShadInputFormField(
+              label: const Text('Confirm Password'),
+              controller: formState.confirmPasswordController,
+              obscureText: !isConfirmPasswordVisible,
+              trailing: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                  // Reduce the splash/hitbox size
+                  constraints: const BoxConstraints(),
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    formState.isConfirmPasswordVisible.value
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    size: 20, // Explicit size helps alignment
+                  ),
+                  onPressed: () => formState.isConfirmPasswordVisible.value =
+                      !formState.isConfirmPasswordVisible.value,
+                ),
+              ),
+              validator: (v) {
+                if (v != formState.passwordController.text) {
+                  return 'Passwords do not match';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: spacingLarge),
+            // RESET PASSWORD BUTTON
+            SizedBox(
+              width: double.infinity,
+              height: isMobile ? 44 : 48,
+              child: ShadButton(
+                enabled: isFormValid && !state.isLoading,
+                onPressed: isFormValid && !state.isLoading
+                    ? () async {
+                        if (formKey.currentState!.validate()) {
+                          final code = formState.codeController.text.trim();
+                          final password =
+                              formState.passwordController.text.trim();
+                          controller.resetPassword(code, password);
+                        }
+                      }
+                    : null,
+                leading: state.isLoading
+                    ? SizedBox.square(
+                        dimension: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: ShadTheme.of(context)
+                              .colorScheme
+                              .primaryForeground,
+                        ),
+                      )
+                    : null,
+                child: const Text("Reset Password"),
+              ),
+            ),
+            SizedBox(height: spacingMedium),
+            ShadButton.ghost(
+              onPressed: () => formState.page.value = 1,
+              leading: const Icon(LucideIcons.arrowLeft),
+              child: const Text("Back"),
+            ),
+          ],
+          if (page == 1) ...[
+            SizedBox(height: spacingMedium),
+            ShadButton.ghost(
+              onPressed: () {
+                context.go('/auth/login');
+              },
+              leading: const Icon(LucideIcons.arrowLeft),
+              child: const Text("Return to Login Page"),
+            ),
+          ],
         ],
       ),
     );
@@ -272,17 +385,19 @@ class ResetPasswordScreen extends HookConsumerWidget {
   // HEADER SECTION
   Widget _buildHeader(
     BuildContext context, {
+    required int page,
     required double titleFontSize,
     required double subtitleFontSize,
   }) {
     final theme = Theme.of(context);
+    final isPageOne = page == 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 8),
         Text(
-          "Forgot your password?",
+          isPageOne ? "Verification" : "Reset Password",
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: titleFontSize,
@@ -290,7 +405,9 @@ class ResetPasswordScreen extends HookConsumerWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          "Don’t worry! Please enter the email linked with your account and we’ll send you a One-Time Password(OTP).",
+          isPageOne
+              ? "Please enter the code sent to your email."
+              : "Enter your new password below.",
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             fontSize: subtitleFontSize,

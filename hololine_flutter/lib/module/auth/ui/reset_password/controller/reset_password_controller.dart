@@ -12,12 +12,12 @@ class ResetPasswordController extends _$ResetPasswordController {
   ResetPasswordUsecase get resetPasswordUseCase =>
       ref.read(resetPasswordUsecaseProvider);
 
-  Future<void> resetPasswordRequest(String email) async {
+  Future<void> resetPassword(String code, String password) async {
     // Set state to loading
     state = const AsyncLoading();
 
     // execute the usecase
-    final result = await resetPasswordUseCase.call(email);
+    final result = await resetPasswordUseCase.call(code, password);
 
     // Handle response
     state = result.fold(

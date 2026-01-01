@@ -9,18 +9,16 @@ class ResetPasswordUsecase {
 
   ResetPasswordUsecase(this._authRepository);
 
-  Future<Either<Failure, bool>> call(String email) async {
-    if (email.isEmpty) {
-      return Left(AuthFailure.invalidEmail());
+  Future<Either<Failure, bool>> call(String verificationCode, String password) async {
+    if (verificationCode.isEmpty) {
+      return Left(InvalidStateFailure('Verification code cannot be empty.'));
     }
 
-    if (!RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email)) {
-      return Left(AuthFailure.invalidEmail());
+    if (password.length < 8) {
+      return Left(InvalidStateFailure('Password must be at least 8 characters long.'));
     }
 
-    return await _authRepository.initiatePasswordReset(email);
+    return await _authRepository.resetPassword(verificationCode, password);
   }
 }
 
