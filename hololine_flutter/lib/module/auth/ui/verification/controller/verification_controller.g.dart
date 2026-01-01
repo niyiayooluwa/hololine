@@ -34,7 +34,7 @@ final class VerificationControllerProvider
 }
 
 String _$verificationControllerHash() =>
-    r'7b2957ac67d5a1f69c8bca6e66c2f4de7e1d8460';
+    r'8f216445c93a54622cef1fcacb05892d5e1d663d';
 
 abstract class _$VerificationController extends $AsyncNotifier<UserInfo?> {
   FutureOr<UserInfo?> build();
