@@ -22,7 +22,20 @@ class ResetPasswordScreen extends HookConsumerWidget {
       resetPasswordControllerProvider,
       (previous, next) {
         next.when(
-          data: (response) {},
+          data: (response) {
+            if (response == true) {
+              context.go('/auth/reset-password/verify',
+                  extra: emailController.text.trim());
+            } else {
+              ShadToaster.of(context).show(
+                ShadToast(
+                  title: const Text('Reset Failed'),
+                  description:
+                      const Text('Unable to process reset password request.'),
+                ),
+              );
+            }
+          },
           error: (error, stackTrace) {
             ShadToaster.of(context).show(
               ShadToast.destructive(
@@ -277,7 +290,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          "A code will be sent to your email to reset your password.",
+          "Don’t worry! Please enter the email linked with your account and we’ll send you a One-Time Password(OTP).",
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             fontSize: subtitleFontSize,
