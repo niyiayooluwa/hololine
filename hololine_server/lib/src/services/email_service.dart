@@ -14,7 +14,6 @@ class EmailHandler {
     required String userName,
   }) async {
     if (session.serverpod.runMode == 'development') {
-      print('📧 [DEV] Verification Code for $email: $verificationCode');
       session.log(
         '📧 [DEV] Verification Code for $email: $verificationCode',
         level: LogLevel.info,
@@ -57,7 +56,6 @@ class EmailHandler {
     required String userName,
   }) async {
     if (session.serverpod.runMode == 'development') {
-      print('📧 [DEV] Password Reset Code for $email: $resetCode');
       session.log(
         '📧 [DEV] Password Reset Code for $email: $resetCode',
         level: LogLevel.info,
@@ -102,7 +100,6 @@ class EmailHandler {
     WorkspaceRole role,
   ) async {
     if (session.serverpod.runMode == 'development') {
-      print('📧 [DEV] Invitation to $workspaceName for $email. Token: $token');
       session.log(
         '📧 [DEV] Invitation to $workspaceName for $email. Token: $token',
         level: LogLevel.info,
