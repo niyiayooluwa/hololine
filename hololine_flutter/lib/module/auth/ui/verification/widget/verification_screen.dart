@@ -21,6 +21,33 @@ class VerificationScreen extends HookConsumerWidget {
     final controller = ref.read(verificationControllerProvider.notifier);
     final state = ref.watch(verificationControllerProvider);
 
+    ref.listen<AsyncValue<UserInfo?>>(
+      verificationControllerProvider,
+      (previous, next) {
+        next.when(
+          data: (user) {
+            if (user != null) {
+              ShadToaster.of(context).show(
+                const ShadToast(
+                  title: Text('Verification Successful'),
+                  description: Text('You have been verified successfully.'),
+                ),
+              );
+              context.go('/dashboard');
+            }
+          },
+          error: (error, stackTrace) {
+            ShadToaster.of(context).show(
+              ShadToast.destructive(
+                title: const Text('Verification Failed'),
+                description: Text(error.toString()),
+              ),
+            );
+          },
+          loading: () {},
+        );
+      },
+    );
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: LayoutBuilder(
@@ -193,6 +220,7 @@ class VerificationScreen extends HookConsumerWidget {
             inputFormatters: [
               FilteringTextInputFormatter.allow(RegExp('^[a-zA-Z0-9]+')),
             ],
+            onChanged: (v) => otpController.text = v,
             validator: (v) {
               if (v.contains(' ')) {
                 return 'Fill the whole OTP code';
@@ -224,16 +252,21 @@ class VerificationScreen extends HookConsumerWidget {
           SizedBox(
             width: double.infinity,
             height: isMobile ? 44 : 48,
-            child: ShadButton(
-              onPressed: otpController.text.isEmpty
-                  ? () {
-                      if (formKey.currentState!.validate()) {
-                        final otp = otpController.text.trim();
-                        controller.verifyOtp(email, otp);
-                      }
-                    }
-                  : null,
-              child: const Text("Verify Code"),
+            child: ValueListenableBuilder(
+              valueListenable: otpController,
+              builder: (context, value, child) {
+                return ShadButton(
+                  onPressed: value.text.length == 6 && !state.isLoading
+                      ? () async {
+                          if (formKey.currentState!.validate()) {
+                            final otp = otpController.text.trim();
+                            await controller.verifyOtp(email, otp);
+                          }
+                        }
+                      : null,
+                  child: const Text("Verify Code"),
+                );
+              },
             ),
           ),
 
@@ -260,7 +293,7 @@ class VerificationScreen extends HookConsumerWidget {
     final theme = Theme.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 8),
         Text(
@@ -272,11 +305,12 @@ class VerificationScreen extends HookConsumerWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          "Please enter the code sent to your email.",
+          "Please enter the code sent to $email.",
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
             fontSize: subtitleFontSize,
           ),
+          textAlign: TextAlign.center,
         ),
       ],
     );

@@ -21,6 +21,32 @@ class LoginScreen extends HookConsumerWidget {
     final controller = ref.read(loginControllerProvider.notifier);
     final state = ref.watch(loginControllerProvider);
 
+    ref.listen<AsyncValue<AuthenticationResponse?>>(loginControllerProvider,
+        (previous, next) {
+      next.when(
+          data: (response) {
+            if (response != null) {
+              ShadToaster.of(context).show(
+                const ShadToast(
+                  title: Text('Login Successful'),
+                  description: Text('You have been logged in successfully.'),
+                ),
+              );
+
+              context.go('/dashboard');
+            }
+          },
+          error: (error, stackTrace) {
+            ShadToaster.of(context).show(
+              ShadToast.destructive(
+                title: const Text('Login Failed'),
+                description: Text(error.toString()),
+              ),
+            );
+          },
+          loading: () {});
+    });
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: LayoutBuilder(
@@ -233,6 +259,10 @@ class LoginScreen extends HookConsumerWidget {
               if (v.isEmpty) {
                 return 'Please enter your password';
               }
+              if (v.length < 8) {
+                return 'Password must be at least 8 characters';
+              }
+
               return null;
             },
           ),
@@ -253,9 +283,9 @@ class LoginScreen extends HookConsumerWidget {
             width: double.infinity,
             height: isMobile ? 44 : 48,
             child: ShadButton(
-              enabled: formState.isFormValid.value,
-              onPressed: formState.isFormValid.value
-                  ? () {
+              enabled: formState.isFormValid.value && !state.isLoading,
+              onPressed: formState.isFormValid.value && !state.isLoading
+                  ? () async {
                       if (formKey.currentState!.validate()) {
                         final email = formState.emailController.text.trim();
                         final password =
@@ -264,6 +294,16 @@ class LoginScreen extends HookConsumerWidget {
                         controller.login(email, password);
                       }
                     }
+                  : null,
+              leading: state.isLoading
+                  ? SizedBox.square(
+                      dimension: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color:
+                            ShadTheme.of(context).colorScheme.primaryForeground,
+                      ),
+                    )
                   : null,
               child: const Text("Sign In"),
             ),

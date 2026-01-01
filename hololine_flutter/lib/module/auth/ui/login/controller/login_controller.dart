@@ -15,7 +15,7 @@ class LoginController extends _$LoginController {
 
   Future<void> login(String email, String password) async {
     // Set state to loading
-    state = AsyncLoading();
+    state = const AsyncLoading();
 
     // execute the usecase
     final result = await loginUseCase.call(email, password);
@@ -23,7 +23,12 @@ class LoginController extends _$LoginController {
     // Handle response
     state = result.fold(
       ifLeft: (failure) => AsyncError(failure, StackTrace.current),
-      ifRight: (response) => AsyncData(response),
+      ifRight: (response) {
+        if (response.success) {
+          return AsyncData(response);
+        }
+        return AsyncError('Invalid email or password', StackTrace.current);
+      },
     );
   }
 }

@@ -20,6 +20,35 @@ class SignupScreen extends HookConsumerWidget {
     final controller = ref.read(signupControllerProvider.notifier);
     final state = ref.watch(signupControllerProvider);
 
+    ref.listen<AsyncValue<bool?>>(
+      signupControllerProvider,
+      (previous, next) {
+        next.when(
+            data: (isSuccessful) {
+              if (isSuccessful == true) {
+                ShadToaster.of(context).show(
+                  const ShadToast(
+                    title: Text('Signup Successful'),
+                    description: Text('Please verify your email to continue.'),
+                  ),
+                );
+                // Navigate to verification screen
+                final email = formState.emailController.text.trim();
+                context.go('/auth/verification', extra: email);
+              }
+            },
+            error: (error, stackTrace) {
+              ShadToaster.of(context).show(
+                ShadToast.destructive(
+                  title: const Text('Signup Failed'),
+                  description: Text(error.toString()),
+                ),
+              );
+            },
+            loading: () {});
+      },
+    );
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: LayoutBuilder(
@@ -304,8 +333,8 @@ class SignupScreen extends HookConsumerWidget {
             width: double.infinity,
             height: isMobile ? 44 : 48,
             child: ShadButton(
-              enabled: formState.isFormValid.value,
-              onPressed: formState.isFormValid.value
+              enabled: formState.isFormValid.value && !state.isLoading,
+              onPressed: formState.isFormValid.value && !state.isLoading
                   ? () async {
                       if (formKey.currentState!.validate()) {
                         // Handle signup logic
@@ -318,8 +347,6 @@ class SignupScreen extends HookConsumerWidget {
                         final password =
                             formState.passwordController.text.trim();
 
-                        context.go('/auth/verification', extra: email);
-
                         await controller.signup(userName, email, password);
 
                         // On successful signup, navigate to verification screen
@@ -328,6 +355,16 @@ class SignupScreen extends HookConsumerWidget {
                         }*/
                       }
                     }
+                  : null,
+              leading: state.isLoading
+                  ? SizedBox.square(
+                      dimension: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color:
+                            ShadTheme.of(context).colorScheme.primaryForeground,
+                      ),
+                    )
                   : null,
               child: const Text("Sign up"),
             ),

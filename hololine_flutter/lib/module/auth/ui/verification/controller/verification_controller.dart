@@ -15,7 +15,7 @@ class VerificationController extends _$VerificationController {
 
   Future<void> verifyOtp(String email, String otp) async {
     // Set state to loading
-    state = AsyncLoading();
+    state = const AsyncLoading();
 
     // execute the usecase
     final result = await verificationUseCase.call(email, otp);
@@ -23,7 +23,12 @@ class VerificationController extends _$VerificationController {
     // Handle response
     state = result.fold(
       ifLeft: (failure) => AsyncError(failure, StackTrace.current),
-      ifRight: (response) => AsyncData(response),
+      ifRight: (response) {
+        if (response == null) {
+          return AsyncError('Verification failed', StackTrace.current);
+        }
+        return AsyncData(response);
+      },
     );
   }
 }
