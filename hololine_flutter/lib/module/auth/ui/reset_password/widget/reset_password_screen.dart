@@ -1,5 +1,4 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/module/auth/ui/reset_password/controller/reset_password_controller.dart';
 import 'package:hololine_flutter/module/auth/ui/reset_password/widget/reset_password_state.dart';
@@ -200,12 +199,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
     final spacingMedium = isMobile ? 16.0 : 20.0;
 
     final formKey = GlobalKey<ShadFormState>();
-    final page = useValueListenable(formState.page);
-    final isPasswordVisible = useValueListenable(formState.isPasswordVisible);
-    final isConfirmPasswordVisible =
-        useValueListenable(formState.isConfirmPasswordVisible);
-    useListenable(formState.codeController);
-    final isFormValid = useValueListenable(formState.isFormValid);
+    final page = formState.page.value;
 
     return ShadForm(
       key: formKey,
@@ -258,25 +252,31 @@ class ResetPasswordScreen extends HookConsumerWidget {
               ],
             ),
             SizedBox(height: spacingLarge),
+
             // VERIFY CODE BUTTON
             SizedBox(
               width: double.infinity,
               height: isMobile ? 44 : 48,
-              child: ShadButton(
-                enabled: formState.codeController.text.length == 6,
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    formState.page.value = 2;
-                  }
+              child: ValueListenableBuilder(
+                valueListenable: formState.codeController,
+                builder: (context, value, child) {
+                  return ShadButton(
+                    enabled: formState.codeController.text.length == 6,
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        formState.page.value = 2;
+                      }
+                    },
+                    child: const Text("Verify Code"),
+                  );
                 },
-                child: const Text("Verify Code"),
               ),
             ),
           ] else ...[
             ShadInputFormField(
               label: const Text('New Password'),
               controller: formState.passwordController,
-              obscureText: !isPasswordVisible,
+              obscureText: !formState.isPasswordVisible.value,
               trailing: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: IconButton(
@@ -305,7 +305,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
             ShadInputFormField(
               label: const Text('Confirm Password'),
               controller: formState.confirmPasswordController,
-              obscureText: !isConfirmPasswordVisible,
+              obscureText: !formState.isConfirmPasswordVisible.value,
               trailing: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: IconButton(
@@ -335,8 +335,8 @@ class ResetPasswordScreen extends HookConsumerWidget {
               width: double.infinity,
               height: isMobile ? 44 : 48,
               child: ShadButton(
-                enabled: isFormValid && !state.isLoading,
-                onPressed: isFormValid && !state.isLoading
+                enabled: formState.isFormValid.value && !state.isLoading,
+                onPressed: formState.isFormValid.value && !state.isLoading
                     ? () async {
                         if (formKey.currentState!.validate()) {
                           final code = formState.codeController.text.trim();
