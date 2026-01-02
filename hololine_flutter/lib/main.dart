@@ -40,8 +40,8 @@ class MyApp extends ConsumerWidget {
 
     return ShadApp.router(
       title: 'Hololine',
-      theme: ShadThemeData(colorScheme: const ShadOrangeColorScheme.light()),
-      darkTheme: ShadThemeData(colorScheme: const ShadOrangeColorScheme.dark()),
+      theme: ShadThemeData(colorScheme: const ShadVioletColorScheme.light()),
+      darkTheme: ShadThemeData(colorScheme: const ShadVioletColorScheme.dark()),
       //theme: AppTheme.lightTheme as ShadThemeData,
       //darkTheme: AppTheme.darkTheme as ShadThemeData,
       themeMode: ThemeMode.system,
