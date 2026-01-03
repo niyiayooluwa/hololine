@@ -68,13 +68,13 @@ class LoginScreen extends HookConsumerWidget {
               children: [
                 // LEFT: Image Panel
                 Expanded(
-                  flex: 6,
+                  flex: 7,
                   child: _buildImagePanel(context),
                 ),
 
                 // RIGHT: Form Panel
                 Expanded(
-                  flex: 4,
+                  flex: 3,
                   child: Center(
                     child: SingleChildScrollView(
                       child: _buildFormContainer(
@@ -91,22 +91,30 @@ class LoginScreen extends HookConsumerWidget {
             );
           }
 
+          return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/scott-webb.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 16 : 24,
+                    vertical: 24,
+                  ),
+                  child: _buildFormContainer(
+                    context,
+                    formState,
+                    controller,
+                    state,
+                    isMobile: isMobile,
+                  ),
+                ),
+              ));
           // MOBILE & TABLET LAYOUT: Just the form, centered
-          return Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: isMobile ? 16 : 24,
-                vertical: 24,
-              ),
-              child: _buildFormContainer(
-                context,
-                formState,
-                controller,
-                state,
-                isMobile: isMobile,
-              ),
-            ),
-          );
         },
       ),
     );
@@ -115,9 +123,13 @@ class LoginScreen extends HookConsumerWidget {
   // IMAGE PANEL (Desktop only)
   Widget _buildImagePanel(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(24)),
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            bottomLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+            bottomRight: Radius.circular(24)),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: const BoxDecoration(
@@ -133,6 +145,7 @@ class LoginScreen extends HookConsumerWidget {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
+                  width: double.infinity,
                   color: Colors.black.withValues(alpha: 0.3),
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -175,6 +188,17 @@ class LoginScreen extends HookConsumerWidget {
       LoginController controller, AsyncValue<AuthenticationResponse?> state,
       {required bool isMobile}) {
     return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       constraints: BoxConstraints(
         maxWidth: formMaxWidth,
       ),
