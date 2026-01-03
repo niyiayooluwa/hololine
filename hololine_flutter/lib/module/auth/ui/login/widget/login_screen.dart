@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/module/auth/ui/login/controller/login_controller.dart';
 import 'package:hololine_flutter/module/auth/ui/login/widget/login_state.dart';
@@ -11,7 +13,7 @@ class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
 
   // Breakpoints
-  static const double formMaxWidth = 420;
+  static const double formMaxWidth = 380;
   static const double imageMinWidth = 400;
 
   @override
@@ -112,55 +114,57 @@ class LoginScreen extends HookConsumerWidget {
 
   // IMAGE PANEL (Desktop only)
   Widget _buildImagePanel(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      color: theme.colorScheme.surface,
-      padding: const EdgeInsets.all(16),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.primary.withValues(alpha: 0.5),
-              theme.colorScheme.secondary.withValues(alpha: 0.5),
-              theme.colorScheme.secondary,
-            ],
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(24)),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/scott-webb.jpg'),
+              fit: BoxFit.cover,
+            ),
           ),
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.login_rounded,
-              size: 120,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Welcome to Holo',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                'Sign in to access your dashboard and manage your account',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white.withValues(alpha: 0.9),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Welcome to Holo',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Text(
+                          'Sign in to access your dashboard and manage your account',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
