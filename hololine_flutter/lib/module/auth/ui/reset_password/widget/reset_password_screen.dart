@@ -57,9 +57,9 @@ class ResetPasswordScreen extends HookConsumerWidget {
 
           // Determine device type
           final isMobile = width < Breakpoints.Mobile;
-          final isDesktop = width >= Breakpoints.Desktop;
+          //final isDesktop = width >= Breakpoints.Desktop;
 
-          if (isDesktop) {
+          /*if (isDesktop) {
             // DESKTOP LAYOUT: Image on left, form on right
             return Row(
               children: [
@@ -86,7 +86,7 @@ class ResetPasswordScreen extends HookConsumerWidget {
                 ),
               ],
             );
-          }
+          }*/
 
           // MOBILE & TABLET LAYOUT: Just the form, centered
           return Center(
@@ -110,66 +110,81 @@ class ResetPasswordScreen extends HookConsumerWidget {
   }
 
   // IMAGE PANEL (Desktop only)
-  Widget _buildImagePanel(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      color: theme.colorScheme.surface,
-      padding: const EdgeInsets.all(16),
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.primary.withValues(alpha: 0.5),
-              theme.colorScheme.secondary.withValues(alpha: 0.5),
-              theme.colorScheme.secondary,
-            ],
+  /*Widget _buildImagePanel(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(24)),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/scott-webb.jpg'),
+              fit: BoxFit.cover,
+            ),
           ),
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.login_rounded,
-              size: 120,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Welcome to Holo',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                'Sign in to access your dashboard and manage your account',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white.withValues(alpha: 0.9),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Welcome to Holo',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Text(
+                          'Sign in to access your dashboard and manage your account',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
-  }
+  }*/
 
   // FORM CONTAINER (Used in all layouts)
   Widget _buildFormContainer(BuildContext context, ResetPasswordState formState,
       ResetPasswordController controller, AsyncValue<bool?> state,
       {required bool isMobile}) {
     return Container(
+      decoration: isMobile
+          ? null
+          : BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
       constraints: BoxConstraints(
         maxWidth: formMaxWidth,
       ),

@@ -58,12 +58,12 @@ class SignupScreen extends HookConsumerWidget {
           // Determine device type
           final isMobile = width < Breakpoints.Mobile;
           //final isTablet =width >= mobileBreakpoint && width < tabletBreakpoint;
-          final isDesktop = width >= Breakpoints.Desktop;
+          //final isDesktop = width >= Breakpoints.Desktop;
 
           // Show side image only on desktop
-          final showSideImage = isDesktop;
+          //final showSideImage = isDesktop;
 
-          if (showSideImage) {
+        /*if (showSideImage) {
             // DESKTOP LAYOUT: Image on left, form on right
             return Row(
               children: [
@@ -90,7 +90,7 @@ class SignupScreen extends HookConsumerWidget {
                 ),
               ],
             );
-          }
+          }*/
 
           // MOBILE & TABLET LAYOUT: Just the form, centered
           return Center(
@@ -114,7 +114,7 @@ class SignupScreen extends HookConsumerWidget {
   }
 
   // IMAGE PANEL (Desktop only)
-  Widget _buildImagePanel(BuildContext context) {
+  /*Widget _buildImagePanel(BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
@@ -167,13 +167,26 @@ class SignupScreen extends HookConsumerWidget {
         ),
       ),
     );
-  }
+  }*/
 
   // FORM CONTAINER (Used in all layouts)
   Widget _buildFormContainer(BuildContext context, RegisterFormState formstate,
       SignupController controller, AsyncValue<bool?> state,
       {required bool isMobile}) {
     return Container(
+      decoration: isMobile
+          ? null
+          : BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
       constraints: BoxConstraints(
         maxWidth: formMaxWidth,
       ),

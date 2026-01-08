@@ -56,9 +56,9 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
 
           // Determine device type
           final isMobile = width < Breakpoints.Mobile;
-          final isDesktop = width >= Breakpoints.Desktop;
+          //final isDesktop = width >= Breakpoints.Desktop;
 
-          if (isDesktop) {
+          /*if (isDesktop) {
             // DESKTOP LAYOUT: Image on left, form on right
             return Row(
               children: [
@@ -85,7 +85,7 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
                 ),
               ],
             );
-          }
+          }*/
 
           // MOBILE & TABLET LAYOUT: Just the form, centered
           return Center(
@@ -109,7 +109,7 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
   }
 
   // IMAGE PANEL (Desktop only)
-  Widget _buildImagePanel(BuildContext context) {
+  /*Widget _buildImagePanel(BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
@@ -162,7 +162,7 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
         ),
       ),
     );
-  }
+  }*/
 
   // FORM CONTAINER (Used in all layouts)
   Widget _buildFormContainer(
@@ -172,6 +172,19 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
       AsyncValue<bool?> state,
       {required bool isMobile}) {
     return Container(
+      decoration: isMobile
+          ? null
+          : BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
       constraints: BoxConstraints(
         maxWidth: formMaxWidth,
       ),

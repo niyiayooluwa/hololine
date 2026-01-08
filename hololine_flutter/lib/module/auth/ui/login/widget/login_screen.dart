@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/module/auth/ui/login/controller/login_controller.dart';
 import 'package:hololine_flutter/module/auth/ui/login/widget/login_state.dart';
@@ -13,7 +11,7 @@ class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
 
   // Breakpoints
-  static const double formMaxWidth = 380;
+  static const double formMaxWidth = 400;
   static const double imageMinWidth = 400;
 
   @override
@@ -57,12 +55,12 @@ class LoginScreen extends HookConsumerWidget {
 
           // Determine device type
           final isMobile = width < Breakpoints.Mobile;
-          final isDesktop = width >= Breakpoints.Desktop;
+          //final isDesktop = width >= Breakpoints.Desktop;
 
           // Show side image only on desktop
-          final showSideImage = isDesktop;
+          //final showSideImage = isDesktop;
 
-          if (showSideImage) {
+          /*if (showSideImage) {
             // DESKTOP LAYOUT: Image on left, form on right
             return Row(
               children: [
@@ -89,7 +87,7 @@ class LoginScreen extends HookConsumerWidget {
                 ),
               ],
             );
-          }
+          }*/
 
           // MOBILE & TABLET LAYOUT: Just the form, centered
           return Center(
@@ -113,7 +111,7 @@ class LoginScreen extends HookConsumerWidget {
   }
 
   // IMAGE PANEL (Desktop only)
-  Widget _buildImagePanel(BuildContext context) {
+  /*Widget _buildImagePanel(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16),
       child: ClipRRect(
@@ -169,12 +167,26 @@ class LoginScreen extends HookConsumerWidget {
       ),
     );
   }
+*/
 
   // FORM CONTAINER (Used in all layouts)
   Widget _buildFormContainer(BuildContext context, LoginFormState formState,
       LoginController controller, AsyncValue<AuthenticationResponse?> state,
       {required bool isMobile}) {
     return Container(
+      decoration: isMobile
+          ? null
+          : BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
       constraints: BoxConstraints(
         maxWidth: formMaxWidth,
       ),
