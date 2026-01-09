@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/module/auth/ui/login/controller/login_controller.dart';
 import 'package:hololine_flutter/module/auth/ui/login/widget/login_state.dart';
@@ -7,13 +5,14 @@ import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_client/module.dart';
+import 'package:hololine_flutter/domain/failures/failures.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class LoginScreen extends HookConsumerWidget {
   const LoginScreen({super.key});
 
   // Breakpoints
-  static const double formMaxWidth = 380;
+  static const double formMaxWidth = 400;
   static const double imageMinWidth = 400;
 
   @override
@@ -39,10 +38,17 @@ class LoginScreen extends HookConsumerWidget {
             }
           },
           error: (error, stackTrace) {
+            String message;
+            if (error is Failure) {
+              message = error.message;
+            } else {
+              message = error.toString();
+            }
+
             ShadToaster.of(context).show(
               ShadToast.destructive(
                 title: const Text('Login Failed'),
-                description: Text(error.toString()),
+                description: Text(message),
               ),
             );
           },
@@ -57,12 +63,12 @@ class LoginScreen extends HookConsumerWidget {
 
           // Determine device type
           final isMobile = width < Breakpoints.Mobile;
-          final isDesktop = width >= Breakpoints.Desktop;
+          //final isDesktop = width >= Breakpoints.Desktop;
 
           // Show side image only on desktop
-          final showSideImage = isDesktop;
+          //final showSideImage = isDesktop;
 
-          if (showSideImage) {
+          /*if (showSideImage) {
             // DESKTOP LAYOUT: Image on left, form on right
             return Row(
               children: [
@@ -89,7 +95,7 @@ class LoginScreen extends HookConsumerWidget {
                 ),
               ],
             );
-          }
+          }*/
 
           return Container(
               padding: const EdgeInsets.all(16),
@@ -121,7 +127,7 @@ class LoginScreen extends HookConsumerWidget {
   }
 
   // IMAGE PANEL (Desktop only)
-  Widget _buildImagePanel(BuildContext context) {
+  /*Widget _buildImagePanel(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       child: ClipRRect(
@@ -182,23 +188,26 @@ class LoginScreen extends HookConsumerWidget {
       ),
     );
   }
+*/
 
   // FORM CONTAINER (Used in all layouts)
   Widget _buildFormContainer(BuildContext context, LoginFormState formState,
       LoginController controller, AsyncValue<AuthenticationResponse?> state,
       {required bool isMobile}) {
     return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      decoration: isMobile
+          ? null
+          : BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
       constraints: BoxConstraints(
         maxWidth: formMaxWidth,
       ),
@@ -223,7 +232,7 @@ class LoginScreen extends HookConsumerWidget {
     final spacingLarge = isMobile ? 24.0 : 32.0;
     final spacingMedium = isMobile ? 16.0 : 20.0;
 
-    final formKey = GlobalKey<ShadFormState>();
+    final formKey = formState.formKey;
 
     return ShadForm(
       key: formKey,
@@ -287,10 +296,6 @@ class LoginScreen extends HookConsumerWidget {
               if (v.isEmpty) {
                 return 'Please enter your password';
               }
-              if (v.length < 8) {
-                return 'Password must be at least 8 characters';
-              }
-
               return null;
             },
           ),
@@ -319,7 +324,7 @@ class LoginScreen extends HookConsumerWidget {
                         final password =
                             formState.passwordController.text.trim();
 
-                        controller.login(email, password);
+                        await controller.login(email, password);
                       }
                     }
                   : null,
