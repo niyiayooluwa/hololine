@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:hololine_flutter/domain/failures/failures.dart';
 
 class ExceptionHandler {
@@ -20,17 +21,57 @@ class ExceptionHandler {
       case 'InvalidStateException':
         return InvalidStateFailure(message);
       default:
-        // Handle other exception types
+        // Handle common network and parsing exceptions with user-friendly messages
+        if (exception is SocketException) {
+          return ServerFailure(
+              'No internet connection. Please check your network.');
+        }
+
         if (exception is FormatException) {
-          return ServerFailure('Invalid data format: ${exception.message}');
+          return ServerFailure('Received unexpected data from server.');
         }
 
         if (exception is TimeoutException) {
-          return ServerFailure('Request timeout - please try again');
+          return ServerFailure('Request timed out. Please try again.');
         }
 
-        // Fallback for unknown exceptions
-        return ServerFailure(message);
+        // Normalize common network-related messages to a clear offline message.
+        final lower = message.toLowerCase();
+
+        // Common substrings that indicate network/connectivity problems.
+        final networkIndicators = [
+          'failed host lookup',
+          'socketexception',
+          'connection refused',
+          'no address associated with hostname',
+          'network is unreachable',
+          'host lookup',
+          'connection timed out',
+          'tls',
+          'handshake',
+          'certificate',
+          'failed to fetch',
+        ];
+
+        if (exception is SocketException ||
+            networkIndicators.any((s) => lower.contains(s)) ||
+            ((lower.contains('statuscode') || lower.contains('status code')) &&
+                lower.contains('-1'))) {
+          return ServerFailure(
+              'No internet connection. Please check your network.');
+        }
+
+        // Serverpod client may throw a verbose client exception like
+        // "Serverpod client exception: unknown server response code ...".
+        // Normalize those to a simple user-facing message.
+        if (exceptionType.toLowerCase().contains('serverpod') ||
+            lower.contains('unknown server response') ||
+            lower.contains('serverpod client exception')) {
+          return ServerFailure('Hmm.. Something went wrong on our end');
+        }
+
+        // Fallback for unknown exceptions: use the friendly generic message.
+        return ServerFailure('Hmm.. Something went wrong on our end');
     }
   }
 }
