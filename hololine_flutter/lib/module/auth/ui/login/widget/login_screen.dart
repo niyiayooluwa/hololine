@@ -5,6 +5,7 @@ import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_client/module.dart';
+import 'package:hololine_flutter/domain/failures/failures.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class LoginScreen extends HookConsumerWidget {
@@ -37,10 +38,17 @@ class LoginScreen extends HookConsumerWidget {
             }
           },
           error: (error, stackTrace) {
+            String message;
+            if (error is Failure) {
+              message = error.message;
+            } else {
+              message = error.toString();
+            }
+
             ShadToaster.of(context).show(
               ShadToast.destructive(
                 title: const Text('Login Failed'),
-                description: Text(error.toString()),
+                description: Text(message),
               ),
             );
           },
@@ -211,7 +219,7 @@ class LoginScreen extends HookConsumerWidget {
     final spacingLarge = isMobile ? 24.0 : 32.0;
     final spacingMedium = isMobile ? 16.0 : 20.0;
 
-    final formKey = GlobalKey<ShadFormState>();
+    final formKey = formState.formKey;
 
     return ShadForm(
       key: formKey,
@@ -275,10 +283,6 @@ class LoginScreen extends HookConsumerWidget {
               if (v.isEmpty) {
                 return 'Please enter your password';
               }
-              if (v.length < 8) {
-                return 'Password must be at least 8 characters';
-              }
-
               return null;
             },
           ),
@@ -307,7 +311,7 @@ class LoginScreen extends HookConsumerWidget {
                         final password =
                             formState.passwordController.text.trim();
 
-                        controller.login(email, password);
+                        await controller.login(email, password);
                       }
                     }
                   : null,

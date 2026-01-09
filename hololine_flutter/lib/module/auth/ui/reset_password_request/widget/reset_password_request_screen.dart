@@ -1,5 +1,6 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hololine_flutter/domain/failures/failures.dart';
 import 'package:hololine_flutter/module/auth/ui/reset_password_request/controller/reset_password_request_controller.dart';
 import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
 import 'package:hololine_flutter/shared_ui/core/components.dart';
@@ -37,10 +38,17 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
             }
           },
           error: (error, stackTrace) {
+            String message;
+            if (error is Failure) {
+              message = error.message;
+            } else {
+              message = error.toString();
+            }
+
             ShadToaster.of(context).show(
               ShadToast.destructive(
-                title: const Text('Verification Failed'),
-                description: Text(error.toString()),
+                title: const Text('Login Failed'),
+                description: Text(message),
               ),
             );
           },

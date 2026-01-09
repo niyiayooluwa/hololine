@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:hololine_flutter/domain/failures/failures.dart';
 import 'package:hololine_flutter/module/auth/ui/signup/controller/signup_controller.dart';
 import 'package:hololine_flutter/module/auth/ui/signup/widget/register_state.dart';
 import 'package:hololine_flutter/shared_ui/core/breakpoints.dart';
@@ -38,10 +39,17 @@ class SignupScreen extends HookConsumerWidget {
               }
             },
             error: (error, stackTrace) {
+              String message;
+              if (error is Failure) {
+                message = error.message;
+              } else {
+                message = error.toString();
+              }
+
               ShadToaster.of(context).show(
                 ShadToast.destructive(
-                  title: const Text('Signup Failed'),
-                  description: Text(error.toString()),
+                  title: const Text('Login Failed'),
+                  description: Text(message),
                 ),
               );
             },
@@ -63,7 +71,7 @@ class SignupScreen extends HookConsumerWidget {
           // Show side image only on desktop
           //final showSideImage = isDesktop;
 
-        /*if (showSideImage) {
+          /*if (showSideImage) {
             // DESKTOP LAYOUT: Image on left, form on right
             return Row(
               children: [

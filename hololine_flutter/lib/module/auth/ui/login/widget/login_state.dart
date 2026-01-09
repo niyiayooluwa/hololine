@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class LoginFormState {
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final ValueNotifier<bool> isPasswordVisible;
   final ValueNotifier<bool> rememberMe;
-  final ValueNotifier<bool> isFormValid;
+  final ValueNotifier<bool> isFormValid;final GlobalKey<ShadFormState> formKey;
 
   LoginFormState({
     required this.emailController,
@@ -14,6 +15,7 @@ class LoginFormState {
     required this.isPasswordVisible,
     required this.rememberMe,
     required this.isFormValid,
+    required this.formKey,
   });
 }
 
@@ -23,6 +25,7 @@ LoginFormState useLoginForm() {
   final isPasswordVisible = useState(false);
   final rememberMe = useState(false);
   final isFormValid = useState(false);
+  final formKey = useMemoized(() => GlobalKey<ShadFormState>());
 
   useEffect(() {
     void updateFormValidity() {
@@ -46,5 +49,6 @@ LoginFormState useLoginForm() {
     isPasswordVisible: isPasswordVisible,
     rememberMe: rememberMe,
     isFormValid: isFormValid,
+    formKey: formKey,
   );
 }
