@@ -15,7 +15,8 @@ import 'workspace.dart' as _i3;
 import 'workspace_invitation.dart' as _i4;
 import 'workspace_member.dart' as _i5;
 import 'workspace_role.dart' as _i6;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i7;
+import 'package:hololine_client/src/protocol/workspace.dart' as _i7;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i8;
 export 'responses/response.dart';
 export 'workspace.dart';
 export 'workspace_invitation.dart';
@@ -74,8 +75,12 @@ class Protocol extends _i1.SerializationManager {
               .toList()
           : null) as T;
     }
+    if (t == List<_i7.Workspace>) {
+      return (data as List).map((e) => deserialize<_i7.Workspace>(e)).toList()
+          as T;
+    }
     try {
-      return _i7.Protocol().deserialize<T>(data, t);
+      return _i8.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -99,7 +104,7 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i6.WorkspaceRole) {
       return 'WorkspaceRole';
     }
-    className = _i7.Protocol().getClassNameForObject(data);
+    className = _i8.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -129,7 +134,7 @@ class Protocol extends _i1.SerializationManager {
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i7.Protocol().deserializeByClassName(data);
+      return _i8.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }

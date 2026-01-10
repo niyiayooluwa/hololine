@@ -1,35 +1,29 @@
 import 'package:serverpod/serverpod.dart';
-import 'package:hololine_server/src/generated/protocol.dart';
 
-/// A helper that wraps endpoint operations with consistent logging and error handling.
-Future<Response> withLogging(
+/// A generic wrapper that logs the start, success, and failure of an endpoint.
+/// It allows the return type [T] to pass through to the client.
+Future<T> runWithLogger<T>(
   Session session,
   String endpointName,
-  Future<String> Function() operation,
+  Future<T> Function() operation,
 ) async {
-  // Log the start of the operation
-  session.log('"$endpointName" endpoint called.', level: LogLevel.info);
+  session.log('Endpoint "$endpointName" called.', level: LogLevel.info);
   try {
-    // Execute the actual operation
-    final successMessage = await operation();
-
-    // Log the success
-    session.log('"$endpointName" succeeded: $successMessage', level: LogLevel.info);
-    return Response(
-      success: true,
-      message: successMessage,
-    );
+    final result = await operation();
+    
+    // Log success (we don't print the whole object to save log space)
+    session.log('Endpoint "$endpointName" succeeded.', level: LogLevel.info);
+    
+    return result;
   } catch (e, stackTrace) {
-    // Log the error
     session.log(
       '"$endpointName" failed.',
       level: LogLevel.error,
       exception: e,
       stackTrace: stackTrace,
     );
-    return Response(
-      success: false,
-      error: e.toString(),
-    );
+    // Rethrowing is CRITICAL. It lets Serverpod send the error code 
+    // to the client instead of a false "success".
+    rethrow; 
   }
 }

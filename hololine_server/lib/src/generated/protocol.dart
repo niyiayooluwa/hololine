@@ -17,6 +17,7 @@ import 'workspace.dart' as _i5;
 import 'workspace_invitation.dart' as _i6;
 import 'workspace_member.dart' as _i7;
 import 'workspace_role.dart' as _i8;
+import 'package:hololine_server/src/generated/workspace.dart' as _i9;
 export 'responses/response.dart';
 export 'workspace.dart';
 export 'workspace_invitation.dart';
@@ -382,6 +383,10 @@ class Protocol extends _i1.SerializationManagerServer {
               .map((e) => deserialize<_i7.WorkspaceMember>(e))
               .toList()
           : null) as T;
+    }
+    if (t == List<_i9.Workspace>) {
+      return (data as List).map((e) => deserialize<_i9.Workspace>(e)).toList()
+          as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
