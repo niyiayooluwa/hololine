@@ -397,7 +397,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<void> leaveWorkspace(
+  _i3.Future<_i5.WorkspaceMember> leaveWorkspace(
     _i1.TestSessionBuilder sessionBuilder, {
     required int workspaceId,
   }) async {
@@ -418,7 +418,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<void>);
+        ) as _i3.Future<_i5.WorkspaceMember>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

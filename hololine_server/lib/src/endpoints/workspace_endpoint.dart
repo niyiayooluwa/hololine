@@ -6,7 +6,7 @@ import 'package:hololine_server/src/utils/endpoint_helper.dart';
 import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:serverpod/serverpod.dart';
 
-// TODO: TECH DEBT - Add integration tests for WorkspaceEndpoint. 
+// TODO: TECH DEBT - Add integration tests for WorkspaceEndpoint.
 // Skipped on 2026-01-10 due to constraints.
 
 class WorkspaceEndpoint extends Endpoint {
@@ -148,7 +148,7 @@ class WorkspaceEndpoint extends Endpoint {
     });
   }
 
-  Future<void> leaveWorkspace(
+  Future<WorkspaceMember> leaveWorkspace(
     Session session, {
     required int workspaceId,
   }) async {
@@ -156,11 +156,7 @@ class WorkspaceEndpoint extends Endpoint {
     if (userId == null) throw AuthenticationException('User not authenticated');
 
     return runWithLogger(session, 'leaveWorkspace', () async {
-      await _memberService.leaveWorkspace(
-        session, 
-        workspaceId, 
-        userId
-      );
+      return await _memberService.leaveWorkspace(session, workspaceId, userId);
     });
   }
 
@@ -212,11 +208,8 @@ class WorkspaceEndpoint extends Endpoint {
     );
 
     return runWithLogger(session, 'acceptInvitation', () async {
-      return await invitationService.acceptInvitation(
-        session, 
-        token,
-        userId: userId
-      );
+      return await invitationService.acceptInvitation(session, token,
+          userId: userId);
     });
   }
 
@@ -235,12 +228,7 @@ class WorkspaceEndpoint extends Endpoint {
 
     return runWithLogger(session, 'updateWorkspaceDetails', () async {
       return await _workspaceService.updateWorkspaceDetails(
-        session, 
-        workspaceId, 
-        name, 
-        description, 
-        userId
-      );
+          session, workspaceId, name, description, userId);
     });
   }
 
@@ -252,7 +240,8 @@ class WorkspaceEndpoint extends Endpoint {
     if (userId == null) throw AuthenticationException('User not authenticated');
 
     return runWithLogger(session, 'archiveWorkspace', () async {
-      return await _workspaceService.archiveWorkspace(session, workspaceId, userId);
+      return await _workspaceService.archiveWorkspace(
+          session, workspaceId, userId);
     });
   }
 
@@ -264,7 +253,8 @@ class WorkspaceEndpoint extends Endpoint {
     if (userId == null) throw AuthenticationException('User not authenticated');
 
     return runWithLogger(session, 'restoreWorkspace', () async {
-      return await _workspaceService.restoreWorkspace(session, workspaceId, userId);
+      return await _workspaceService.restoreWorkspace(
+          session, workspaceId, userId);
     });
   }
 

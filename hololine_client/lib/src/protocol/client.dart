@@ -123,8 +123,8 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> leaveWorkspace({required int workspaceId}) =>
-      caller.callServerEndpoint<void>(
+  _i2.Future<_i4.WorkspaceMember> leaveWorkspace({required int workspaceId}) =>
+      caller.callServerEndpoint<_i4.WorkspaceMember>(
         'workspace',
         'leaveWorkspace',
         {'workspaceId': workspaceId},
