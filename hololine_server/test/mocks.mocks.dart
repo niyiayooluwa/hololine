@@ -14,12 +14,12 @@ import 'package:hololine_server/src/modules/workspace/usecase/invitation_service
     as _i8;
 import 'package:hololine_server/src/modules/workspace/usecase/member_service.dart'
     as _i7;
-import 'package:hololine_server/src/services/email_service.dart' as _i11;
+import 'package:hololine_server/src/services/email_service.dart' as _i12;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i10;
+import 'package:mockito/src/dummies.dart' as _i11;
 import 'package:serverpod/serverpod.dart' as _i3;
 import 'package:serverpod/src/cache/caches.dart' as _i4;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i2;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -243,7 +243,87 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
       ) as _i6.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<void> archiveWorkspace(
+  _i6.Future<_i2.Workspace> getWorkspaceDetails(
+    _i3.Session? session,
+    int? workspaceId,
+    int? actorId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getWorkspaceDetails,
+          [
+            session,
+            workspaceId,
+            actorId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+          this,
+          Invocation.method(
+            #getWorkspaceDetails,
+            [
+              session,
+              workspaceId,
+              actorId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Workspace>);
+
+  @override
+  _i6.Future<List<_i2.Workspace>> getChildWorkspaces(
+    _i3.Session? session,
+    int? parentWorkspaceId,
+    int? actorId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getChildWorkspaces,
+          [
+            session,
+            parentWorkspaceId,
+            actorId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
+      ) as _i6.Future<List<_i2.Workspace>>);
+
+  @override
+  _i6.Future<_i2.Workspace> updateWorkspaceDetails(
+    _i3.Session? session,
+    int? workspaceId,
+    String? name,
+    String? description,
+    int? actorId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateWorkspaceDetails,
+          [
+            session,
+            workspaceId,
+            name,
+            description,
+            actorId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+          this,
+          Invocation.method(
+            #updateWorkspaceDetails,
+            [
+              session,
+              workspaceId,
+              name,
+              description,
+              actorId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Workspace>);
+
+  @override
+  _i6.Future<_i2.Workspace> archiveWorkspace(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -257,12 +337,21 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+          this,
+          Invocation.method(
+            #archiveWorkspace,
+            [
+              session,
+              workspaceId,
+              actorId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<void> restoreWorkspace(
+  _i6.Future<_i2.Workspace> restoreWorkspace(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -276,12 +365,21 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+          this,
+          Invocation.method(
+            #restoreWorkspace,
+            [
+              session,
+              workspaceId,
+              actorId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<void> transferOwnership(
+  _i6.Future<bool> transferOwnership(
     _i3.Session? session,
     int? workspaceId,
     int? newOwnerId,
@@ -297,12 +395,11 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i6.Future<bool>.value(false),
+      ) as _i6.Future<bool>);
 
   @override
-  _i6.Future<void> initiateDeleteWorkspace(
+  _i6.Future<_i2.Workspace> initiateDeleteWorkspace(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -316,9 +413,18 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+          this,
+          Invocation.method(
+            #initiateDeleteWorkspace,
+            [
+              session,
+              workspaceId,
+              actorId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Workspace>);
 }
 
 /// A class which mocks [MemberService].
@@ -330,7 +436,23 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
   }
 
   @override
-  _i6.Future<void> updateMemberRole(
+  _i6.Future<List<_i2.Workspace>> getMyWorkspaces(
+    _i3.Session? session,
+    int? userId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getMyWorkspaces,
+          [
+            session,
+            userId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
+      ) as _i6.Future<List<_i2.Workspace>>);
+
+  @override
+  _i6.Future<_i2.WorkspaceMember> updateMemberRole(
     _i3.Session? session, {
     required int? memberId,
     required int? workspaceId,
@@ -348,12 +470,24 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
             #actorId: actorId,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue:
+            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+          this,
+          Invocation.method(
+            #updateMemberRole,
+            [session],
+            {
+              #memberId: memberId,
+              #workspaceId: workspaceId,
+              #role: role,
+              #actorId: actorId,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i2.WorkspaceMember>);
 
   @override
-  _i6.Future<void> removeMember(
+  _i6.Future<_i2.WorkspaceMember> removeMember(
     _i3.Session? session, {
     required int? memberId,
     required int? workspaceId,
@@ -369,9 +503,49 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
             #actorId: actorId,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue:
+            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+          this,
+          Invocation.method(
+            #removeMember,
+            [session],
+            {
+              #memberId: memberId,
+              #workspaceId: workspaceId,
+              #actorId: actorId,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i2.WorkspaceMember>);
+
+  @override
+  _i6.Future<_i2.WorkspaceMember> leaveWorkspace(
+    _i3.Session? session,
+    int? workspaceId,
+    int? actorId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #leaveWorkspace,
+          [
+            session,
+            workspaceId,
+            actorId,
+          ],
+        ),
+        returnValue:
+            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+          this,
+          Invocation.method(
+            #leaveWorkspace,
+            [
+              session,
+              workspaceId,
+              actorId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.WorkspaceMember>);
 }
 
 /// A class which mocks [InvitationService].
@@ -383,7 +557,7 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
   }
 
   @override
-  _i6.Future<void> inviteMember(
+  _i6.Future<_i2.WorkspaceInvitation> inviteMember(
     _i3.Session? session,
     String? email,
     int? workspaceId,
@@ -401,9 +575,21 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i6.Future<_i2.WorkspaceInvitation>.value(
+            _FakeWorkspaceInvitation_2(
+          this,
+          Invocation.method(
+            #inviteMember,
+            [
+              session,
+              email,
+              workspaceId,
+              role,
+              actorId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.WorkspaceInvitation>);
 
   @override
   _i6.Future<_i2.WorkspaceMember> acceptInvitation(
@@ -444,7 +630,7 @@ class MockWorkspaceRepo extends _i1.Mock implements _i9.WorkspaceRepo {
   }
 
   @override
-  _i6.Future<_i2.UserInfo?> getUserInfo(
+  _i6.Future<_i10.UserInfo?> getUserInfo(
     _i3.Session? session,
     int? userId,
   ) =>
@@ -456,8 +642,8 @@ class MockWorkspaceRepo extends _i1.Mock implements _i9.WorkspaceRepo {
             userId,
           ],
         ),
-        returnValue: _i6.Future<_i2.UserInfo?>.value(),
-      ) as _i6.Future<_i2.UserInfo?>);
+        returnValue: _i6.Future<_i10.UserInfo?>.value(),
+      ) as _i6.Future<_i10.UserInfo?>);
 
   @override
   _i6.Future<_i2.Workspace?> findByNameAndOwner(
@@ -520,6 +706,47 @@ class MockWorkspaceRepo extends _i1.Mock implements _i9.WorkspaceRepo {
         ),
         returnValue: _i6.Future<_i2.Workspace?>.value(),
       ) as _i6.Future<_i2.Workspace?>);
+
+  @override
+  _i6.Future<List<_i2.Workspace>> findChildWorkspaces(
+    _i3.Session? session,
+    int? parentId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findChildWorkspaces,
+          [
+            session,
+            parentId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
+      ) as _i6.Future<List<_i2.Workspace>>);
+
+  @override
+  _i6.Future<_i2.Workspace> update(
+    _i3.Session? session,
+    _i2.Workspace? workspace,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #update,
+          [
+            session,
+            workspace,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+          this,
+          Invocation.method(
+            #update,
+            [
+              session,
+              workspace,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Workspace>);
 
   @override
   _i6.Future<bool> doesChildWorkspaceExist(
@@ -631,6 +858,22 @@ class MockMemberRepo extends _i1.Mock implements _i9.MemberRepo {
       ) as _i6.Future<_i2.WorkspaceMember?>);
 
   @override
+  _i6.Future<List<_i2.Workspace>> findUserWorkspaces(
+    _i3.Session? session,
+    int? userId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findUserWorkspaces,
+          [
+            session,
+            userId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
+      ) as _i6.Future<List<_i2.Workspace>>);
+
+  @override
   _i6.Future<_i2.WorkspaceMember?> findMemberByEmail(
     _i3.Session? session,
     String? email,
@@ -690,7 +933,7 @@ class MockMemberRepo extends _i1.Mock implements _i9.MemberRepo {
       ) as _i6.Future<bool>);
 
   @override
-  _i6.Future<void> deactivateMember(
+  _i6.Future<_i2.WorkspaceMember> deactivateMember(
     _i3.Session? session,
     int? memberId,
     int? workspaceId,
@@ -704,9 +947,19 @@ class MockMemberRepo extends _i1.Mock implements _i9.MemberRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue:
+            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+          this,
+          Invocation.method(
+            #deactivateMember,
+            [
+              session,
+              memberId,
+              workspaceId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.WorkspaceMember>);
 }
 
 /// A class which mocks [InvitationRepo].
@@ -952,7 +1205,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   String get endpoint => (super.noSuchMethod(
         Invocation.getter(#endpoint),
-        returnValue: _i10.dummyValue<String>(
+        returnValue: _i11.dummyValue<String>(
           this,
           Invocation.getter(#endpoint),
         ),
@@ -1064,7 +1317,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
 /// A class which mocks [EmailHandler].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockEmailHandler extends _i1.Mock implements _i11.EmailHandler {
+class MockEmailHandler extends _i1.Mock implements _i12.EmailHandler {
   MockEmailHandler() {
     _i1.throwOnMissingStub(this);
   }
