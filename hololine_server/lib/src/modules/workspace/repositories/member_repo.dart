@@ -25,6 +25,22 @@ class MemberRepo {
     );
   }
 
+  Future<List<Workspace>> findUserWorkspaces(
+    Session session,
+    int userId,
+  ) async {
+    final members = await WorkspaceMember.db.find(
+      session,
+      where: (member) =>
+          member.userInfoId.equals(userId) & member.isActive.equals(true),
+      include: WorkspaceMember.include(
+        workspace: Workspace.include()
+      )
+    );
+
+    return members.map((m) => m.workspace).whereType<Workspace>().toList();
+  }
+
   /// Finds a workspace member by their [email] address and [workspaceId].
   ///
   /// This method first looks up the user by email, then checks if that user
@@ -136,7 +152,7 @@ class MemberRepo {
   /// Throws an [Exception] if the member is not found, does not belong to
   /// the specified workspace, or if deactivating the member would leave
   /// the workspace without any active owners.
-  Future<void> deactivateMember(
+  Future<WorkspaceMember> deactivateMember(
     Session session,
     int memberId,
     int workspaceId,
@@ -169,6 +185,8 @@ class MemberRepo {
     }
 
     member.isActive = false;
-    await WorkspaceMember.db.updateRow(session, member);
+    final result = await WorkspaceMember.db.updateRow(session, member);
+
+    return result;
   }
 }

@@ -128,6 +128,174 @@ class WorkspaceService {
     );
   }
 
+  /// Returns information about a workspace
+  /// 
+  /// The [workspaceId] must be a valid workspace identifier. This method
+  /// performs a simple lookup by primary key.
+  ///
+  /// Returns the workspace if found, or `null` if no workspace exists
+  /// with the given identifier.
+  /// 
+  /// Throws an [Exception] if:
+  /// - The actor is not a member of the repository
+  /// - The db call fails to return a valid response i.e null
+  Future<Workspace> getWorkspaceDetails(
+    Session session,
+    int workspaceId,
+    int actorId,
+  ) async {
+    final actor = await _memberRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      workspaceId,
+    );
+
+    if (actor == null) {
+      throw PermissionDeniedException(
+          'You are not a member of this repository');
+    }
+
+    if (actor.isActive == false) {
+      throw PermissionDeniedException(
+          'You are not a member of this repository');
+    }
+
+    final workspace = await _workspaceRepository.findWorkspaceById(
+      session,
+      workspaceId,
+    );
+
+    if (workspace == null) {
+      throw Exception('Failed to fetch workspace details');
+    }
+
+    return workspace;
+  }
+
+  /// Returns immediate children of a parent workspace.
+  /// Used for navigating nested folder structures.
+  ///
+  /// The [actorId] must have read access to the [parentWorkspaceId] to see its children.
+  Future<List<Workspace>> getChildWorkspaces(
+    Session session,
+    int parentWorkspaceId,
+    int actorId,
+  ) async {
+    await _assertWorkspaceIsMutable(session, parentWorkspaceId);
+
+    final actor = await _memberRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      parentWorkspaceId,
+    );
+
+    if (actor == null) {
+      throw PermissionDeniedException('You are not a member of the parent workspace');
+    }
+
+    if (!actor.isActive) {
+      throw PermissionDeniedException('Your membership is inactive');
+    }
+
+    return await _workspaceRepository.findChildWorkspaces(
+      session, 
+      parentWorkspaceId,
+    );
+  }
+
+  /// Updates the details (name, description) of a workspace.
+  ///
+  /// The [actorId] must be an active member with sufficient privileges 
+  /// (usually Owner or Admin) defined by [RolePolicy].
+  Future<Workspace> updateWorkspaceDetails(
+    Session session,
+    int workspaceId,
+    String? name,
+    String? description,
+    int actorId,
+  ) async {
+    var workspace = await _assertWorkspaceIsMutable(session, workspaceId);
+
+    final actor = await _memberRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      workspaceId,
+    );
+
+    if (actor == null) {
+      throw PermissionDeniedException('You are not a member of this workspace');
+    }
+
+    if (!actor.isActive) {
+      throw PermissionDeniedException('Your membership is inactive');
+    }
+
+    if (!RolePolicy.canUpdateWorkspace(actor.role)) {
+      throw PermissionDeniedException(
+          'Permission denied. Insufficient privileges to update details.');
+    }
+
+    workspace.name = name ?? workspace.name;
+    workspace.description = description ?? workspace.description;
+
+    await _workspaceRepository.update(session, workspace);
+    
+    // Fetch-After-Write (To be safe)
+    // Although 'workspace' variable is updated locally, fetching ensures 
+    // we return exactly what's in the DB (including any auto-generated timestamps if applicable)
+    final updatedWorkspace = await _workspaceRepository.findWorkspaceById(
+      session, 
+      workspaceId,
+    );
+    
+    if (updatedWorkspace == null) throw Exception('Failed to retrieve updated workspace');
+
+    return updatedWorkspace;
+  }
+
+  /*/// Updates the logo URL/Path for a workspace.
+  ///
+  /// The [actorId] must have the same privileges required for updating details.
+  Future<Workspace> updateWorkspaceLogo(
+    Session session,
+    int workspaceId,
+    String logoPath,
+    int actorId,
+  ) async {
+    // 1. Basic Mutability Check
+    var workspace = await _assertWorkspaceIsMutable(session, workspaceId);
+
+    // 2. Permission Check
+    final actor = await _memberRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      workspaceId,
+    );
+
+    if (actor == null) {
+      throw PermissionDeniedException('You are not a member of this workspace');
+    }
+
+    if (!actor.isActive) {
+      throw PermissionDeniedException('Your membership is inactive');
+    }
+
+    if (!RolePolicy.canUpdateWorkspace(actor.role)) {
+      throw PermissionDeniedException(
+          'Permission denied. Insufficient privileges to change logo.');
+    }
+
+    // 3. Update Logo
+    workspace.logoUrl = logoPath;
+
+    // 4. Save
+    await _workspaceRepository.update(session, workspace);
+
+    // 5. Return updated object
+    return workspace;
+  }*/
+
+
   /// Archives a workspace after verifying the actor's permissions.
   ///
   /// This service-layer method ensures that the user attempting to archive the
@@ -142,7 +310,7 @@ class WorkspaceService {
   /// Throws an [Exception] if:
   /// - The actor is not a member of the workspace.
   /// - The actor does not have sufficient privileges to archive the workspace.
-  Future<void> archiveWorkspace(
+  Future<Workspace> archiveWorkspace(
     Session session,
     int workspaceId,
     int actorId,
@@ -171,6 +339,17 @@ class WorkspaceService {
       throw Exception(
           'Failed to archive workspace: database transaction failed');
     }
+
+    final archivedWorkspace = await _workspaceRepository.findWorkspaceById(
+      session,
+      workspaceId,
+    );
+
+    if (archivedWorkspace == null) {
+      throw NotFoundException('Failed to fetch archived workspace details');
+    }
+
+    return archivedWorkspace;
   }
 
   /// Restores an archived workspace after verifying the actor's permissions.
@@ -188,7 +367,7 @@ class WorkspaceService {
   /// - The workspace is not currently archived.
   /// - The actor is not a member of the workspace.
   /// - The actor does not have sufficient privileges to restore the workspace.
-  Future<void> restoreWorkspace(
+  Future<Workspace> restoreWorkspace(
     Session session,
     int workspaceId,
     int actorId,
@@ -228,6 +407,17 @@ class WorkspaceService {
       throw Exception(
           'Failed to restore workspace: database transaction failed');
     }
+    
+    final restoredWorkspace = await _workspaceRepository.findWorkspaceById(
+      session,
+      workspaceId,
+    );
+
+    if (restoredWorkspace == null) {
+      throw NotFoundException('Failed to fetch restored workspace details');
+    }
+
+    return restoredWorkspace;
   }
 
   /// Transfers ownership of a workspace from the current owner to another member.
@@ -238,7 +428,7 @@ class WorkspaceService {
   /// Throws an [Exception] if the actor is not the owner, if the new owner
   /// is not a valid member, or if the owner attempts to transfer ownership
   /// to themselves.
-  Future<void> transferOwnership(
+  Future<bool> transferOwnership(
     Session session,
     int workspaceId,
     int newOwnerId,
@@ -291,6 +481,8 @@ class WorkspaceService {
       throw Exception(
           'Failed to transfer ownership: database transaction failed');
     }
+
+    return success;
   }
 
   /// Initiates the deletion process for a workspace.
@@ -316,7 +508,7 @@ class WorkspaceService {
   ///   - [InvalidStateException]: If the workspace is already deleted or
   ///     pending deletion
   ///   - [Exception]: If the database transaction fails during soft deletion
-  Future<void> initiateDeleteWorkspace(
+  Future<Workspace> initiateDeleteWorkspace(
     Session session,
     int workspaceId,
     int actorId,
@@ -358,5 +550,16 @@ class WorkspaceService {
       throw Exception(
           'Failed to initiate workspace deletion: database transaction failed');
     }
+
+    final deletedWorkspace = await _workspaceRepository.findWorkspaceById(
+      session,
+      workspaceId,
+    );
+
+    if (deletedWorkspace == null) {
+      throw NotFoundException('Failed to fetch deleted workspace details');
+    }
+
+    return deletedWorkspace;
   }
 }
