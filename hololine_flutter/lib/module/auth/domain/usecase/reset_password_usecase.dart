@@ -11,11 +11,11 @@ class ResetPasswordUsecase {
 
   Future<Either<Failure, bool>> call(String verificationCode, String password) async {
     if (verificationCode.isEmpty) {
-      return Left(InvalidStateFailure('Verification code cannot be empty.'));
+      return const Left(InvalidStateFailure('Verification code cannot be empty.'));
     }
 
     if (password.length < 8) {
-      return Left(InvalidStateFailure('Password must be at least 8 characters long.'));
+      return const Left(InvalidStateFailure('Password must be at least 8 characters long.'));
     }
 
     return await _authRepository.resetPassword(verificationCode, password);

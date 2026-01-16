@@ -29,10 +29,10 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
                   extra: emailController.text.trim());
             } else {
               ShadToaster.of(context).show(
-                ShadToast(
-                  title: const Text('Reset Failed'),
+                const ShadToast(
+                  title: Text('Reset Failed'),
                   description:
-                      const Text('Unable to process reset password request.'),
+                      Text('Unable to process reset password request.'),
                 ),
               );
             }
@@ -193,7 +193,7 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
                 ),
               ],
             ),
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         maxWidth: formMaxWidth,
       ),
       padding: EdgeInsets.all(isMobile ? 24 : 32),

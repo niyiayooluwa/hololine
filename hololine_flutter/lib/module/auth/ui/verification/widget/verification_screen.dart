@@ -193,7 +193,7 @@ class VerificationScreen extends HookConsumerWidget {
                 ),
               ],
             ),
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         maxWidth: formMaxWidth,
       ),
       padding: EdgeInsets.all(isMobile ? 24 : 32),

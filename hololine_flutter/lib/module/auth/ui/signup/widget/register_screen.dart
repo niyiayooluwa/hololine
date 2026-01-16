@@ -195,7 +195,7 @@ class SignupScreen extends HookConsumerWidget {
                 ),
               ],
             ),
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         maxWidth: formMaxWidth,
       ),
       padding: EdgeInsets.all(isMobile ? 24 : 32),
@@ -456,11 +456,11 @@ class SignupScreen extends HookConsumerWidget {
               context.go('/auth/login');
             },
             style: TextButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              minimumSize: Size(0, 36),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              minimumSize: const Size(0, 36),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: Text(
+            child: const Text(
               'Log in here',
               style: TextStyle(
                 fontWeight: FontWeight.bold,

@@ -195,7 +195,7 @@ class LoginScreen extends HookConsumerWidget {
                 ),
               ],
             ),
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         maxWidth: formMaxWidth,
       ),
       padding: EdgeInsets.all(isMobile ? 24 : 32),
@@ -416,7 +416,7 @@ class LoginScreen extends HookConsumerWidget {
               },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
-                minimumSize: Size(0, 36),
+                minimumSize: const Size(0, 36),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
@@ -458,7 +458,7 @@ class LoginScreen extends HookConsumerWidget {
           onPressed: () {
             context.go('/auth/forgot-password');
           },
-          child: Text('Forgot Password?'),
+          child: const Text('Forgot Password?'),
         ),
       ],
     );
@@ -482,11 +482,11 @@ class LoginScreen extends HookConsumerWidget {
               context.go('/auth/signup');
             },
             style: TextButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              minimumSize: Size(0, 36),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              minimumSize: const Size(0, 36),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: Text(
+            child: const Text(
               'Sign Up',
               style: TextStyle(
                 fontWeight: FontWeight.bold,

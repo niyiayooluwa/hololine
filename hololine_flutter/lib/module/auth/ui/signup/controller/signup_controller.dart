@@ -12,7 +12,7 @@ class SignupController extends _$SignupController {
 
   Future<bool?> signup(String userName, String email, String password) async {
     // Set state to loading
-    state = AsyncLoading();
+    state = const AsyncLoading();
 
     // execute the usecase
     final result = await registerUseCase.call(userName, email, password);
