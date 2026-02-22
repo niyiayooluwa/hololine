@@ -1,4 +1,5 @@
 import 'package:dart_either/dart_either.dart';
+import 'package:hololine_flutter/core/application/providers.dart';
 import 'package:hololine_flutter/module/auth/data/remote/auth_remote_data_source.dart';
 import 'package:hololine_flutter/module/auth/data/remote/auth_remote_data_source_impl.dart';
 import 'package:hololine_flutter/domain/failures/exception_handler.dart';
@@ -6,6 +7,7 @@ import 'package:hololine_flutter/domain/failures/failures.dart';
 import 'package:hololine_flutter/module/auth/domain/repository/auth_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';
+import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 /// Implementation of the [AuthRepository] that communicates with a remote
 /// data source to handle authentication-related operations.
@@ -16,9 +18,13 @@ import 'package:serverpod_auth_client/serverpod_auth_client.dart';
 class AuthRepositoryImpl implements AuthRepository {
   /// The remote data source for authentication.
   final AuthRemoteDataSource remoteDataSource;
+  final SessionManager sessionManager;
 
   /// Creates an instance of [AuthRepositoryImpl].
-  AuthRepositoryImpl({required this.remoteDataSource});
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.sessionManager,
+  });
 
   @override
   Future<Either<Failure, AuthenticationResponse>> login(
@@ -28,6 +34,14 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       // Attempt to log in using the remote data source.
       final response = await remoteDataSource.login(email, password);
+
+      if (response.keyId != null && response.success) {
+        await sessionManager.registerSignedInUser(
+          response.userInfo!,
+          response.keyId!,
+          response.key!,
+        );
+      }
 
       // On success, wrap the response in a `Right`.
       return Right(response);
@@ -106,5 +120,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final remoteDataSource = ref.watch(authRemoteDataSourceProvider);
-  return AuthRepositoryImpl(remoteDataSource: remoteDataSource);
+  final sessionManager = ref.watch(sessionProvider);
+  return AuthRepositoryImpl(
+    remoteDataSource: remoteDataSource,
+    sessionManager: sessionManager,
+  );
 });
