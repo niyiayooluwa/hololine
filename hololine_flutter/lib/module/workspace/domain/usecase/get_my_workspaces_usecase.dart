@@ -10,7 +10,7 @@ class GetMyWorkspacesUseCase {
 
   GetMyWorkspacesUseCase(this._workspaceRepository);
 
-  Future<Either<Failure, List<Workspace>>> call() async {
+  Future<Either<Failure, List<WorkspaceSummary>>> call() async {
     return await _workspaceRepository.getMyWorkspaces();
   }
 }

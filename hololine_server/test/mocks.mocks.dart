@@ -436,7 +436,7 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
   }
 
   @override
-  _i6.Future<List<_i2.Workspace>> getMyWorkspaces(
+  _i6.Future<List<_i2.WorkspaceSummary>> getMyWorkspaces(
     _i3.Session? session,
     int? userId,
   ) =>
@@ -448,8 +448,9 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
             userId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
-      ) as _i6.Future<List<_i2.Workspace>>);
+        returnValue: _i6.Future<List<_i2.WorkspaceSummary>>.value(
+            <_i2.WorkspaceSummary>[]),
+      ) as _i6.Future<List<_i2.WorkspaceSummary>>);
 
   @override
   _i6.Future<_i2.WorkspaceMember> updateMemberRole(
@@ -858,7 +859,7 @@ class MockMemberRepo extends _i1.Mock implements _i9.MemberRepo {
       ) as _i6.Future<_i2.WorkspaceMember?>);
 
   @override
-  _i6.Future<List<_i2.Workspace>> findUserWorkspaces(
+  _i6.Future<List<_i2.WorkspaceSummary>> findUserWorkspaces(
     _i3.Session? session,
     int? userId,
   ) =>
@@ -870,8 +871,9 @@ class MockMemberRepo extends _i1.Mock implements _i9.MemberRepo {
             userId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
-      ) as _i6.Future<List<_i2.Workspace>>);
+        returnValue: _i6.Future<List<_i2.WorkspaceSummary>>.value(
+            <_i2.WorkspaceSummary>[]),
+      ) as _i6.Future<List<_i2.WorkspaceSummary>>);
 
   @override
   _i6.Future<_i2.WorkspaceMember?> findMemberByEmail(

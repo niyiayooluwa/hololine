@@ -67,7 +67,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   }
 
   @override
-  Future<Either<Failure, List<Workspace>>> getMyWorkspaces() async {
+  Future<Either<Failure, List<WorkspaceSummary>>> getMyWorkspaces() async {
     try {
       final response = await remoteDataSource.getMyWorkspaces();
       return Right(response);

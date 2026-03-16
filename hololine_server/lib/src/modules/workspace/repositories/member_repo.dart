@@ -25,20 +25,28 @@ class MemberRepo {
     );
   }
 
-  Future<List<Workspace>> findUserWorkspaces(
+  Future<List<WorkspaceSummary>> findUserWorkspaces(
     Session session,
     int userId,
   ) async {
-    final members = await WorkspaceMember.db.find(
-      session,
-      where: (member) =>
-          member.userInfoId.equals(userId) & member.isActive.equals(true),
-      include: WorkspaceMember.include(
-        workspace: Workspace.include()
-      )
-    );
+    final members = await WorkspaceMember.db.find(session,
+        where: (member) =>
+            member.userInfoId.equals(userId) & member.isActive.equals(true),
+        include: WorkspaceMember.include(
+            workspace:
+                Workspace.include(members: WorkspaceMember.includeList())));
 
-    return members.map((m) => m.workspace).whereType<Workspace>().toList();
+    return members.map((member) {
+      final workspace = member.workspace;
+      return WorkspaceSummary(
+        id: workspace!.id!,
+        name: workspace.name,
+        description: workspace.description,
+        memberCount: workspace.members?.length ?? 0,
+        role: member.role,
+        lastActive: workspace.createdAt
+      );
+    }).toList();
   }
 
   /// Finds a workspace member by their [email] address and [workspaceId].

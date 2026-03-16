@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -42,10 +43,11 @@ abstract class WorkspaceInvitation
       workspaceId: jsonSerialization['workspaceId'] as int,
       inviteeEmail: jsonSerialization['inviteeEmail'] as String,
       inviterId: jsonSerialization['inviterId'] as int,
-      role: _i2.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
+      role: _i2.WorkspaceRole.fromJson((jsonSerialization['role'] as String)),
       token: jsonSerialization['token'] as String,
-      expiresAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['expiresAt']),
+      expiresAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['expiresAt'],
+      ),
       acceptedAt: jsonSerialization['acceptedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['acceptedAt']),
@@ -92,6 +94,7 @@ abstract class WorkspaceInvitation
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'WorkspaceInvitation',
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'inviteeEmail': inviteeEmail,
@@ -106,6 +109,7 @@ abstract class WorkspaceInvitation
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'WorkspaceInvitation',
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'inviteeEmail': inviteeEmail,
@@ -160,15 +164,15 @@ class _WorkspaceInvitationImpl extends WorkspaceInvitation {
     required DateTime expiresAt,
     DateTime? acceptedAt,
   }) : super._(
-          id: id,
-          workspaceId: workspaceId,
-          inviteeEmail: inviteeEmail,
-          inviterId: inviterId,
-          role: role,
-          token: token,
-          expiresAt: expiresAt,
-          acceptedAt: acceptedAt,
-        );
+         id: id,
+         workspaceId: workspaceId,
+         inviteeEmail: inviteeEmail,
+         inviterId: inviterId,
+         role: role,
+         token: token,
+         expiresAt: expiresAt,
+         acceptedAt: acceptedAt,
+       );
 
   /// Returns a shallow copy of this [WorkspaceInvitation]
   /// with some or all fields replaced by the given arguments.
@@ -197,9 +201,54 @@ class _WorkspaceInvitationImpl extends WorkspaceInvitation {
   }
 }
 
+class WorkspaceInvitationUpdateTable
+    extends _i1.UpdateTable<WorkspaceInvitationTable> {
+  WorkspaceInvitationUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> workspaceId(int value) => _i1.ColumnValue(
+    table.workspaceId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> inviteeEmail(String value) => _i1.ColumnValue(
+    table.inviteeEmail,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> inviterId(int value) => _i1.ColumnValue(
+    table.inviterId,
+    value,
+  );
+
+  _i1.ColumnValue<_i2.WorkspaceRole, _i2.WorkspaceRole> role(
+    _i2.WorkspaceRole value,
+  ) => _i1.ColumnValue(
+    table.role,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> token(String value) => _i1.ColumnValue(
+    table.token,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> expiresAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.expiresAt,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> acceptedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.acceptedAt,
+        value,
+      );
+}
+
 class WorkspaceInvitationTable extends _i1.Table<int?> {
   WorkspaceInvitationTable({super.tableRelation})
-      : super(tableName: 'invitation') {
+    : super(tableName: 'invitation') {
+    updateTable = WorkspaceInvitationUpdateTable(this);
     workspaceId = _i1.ColumnInt(
       'workspaceId',
       this,
@@ -215,7 +264,7 @@ class WorkspaceInvitationTable extends _i1.Table<int?> {
     role = _i1.ColumnEnum(
       'role',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     token = _i1.ColumnString(
       'token',
@@ -230,6 +279,8 @@ class WorkspaceInvitationTable extends _i1.Table<int?> {
       this,
     );
   }
+
+  late final WorkspaceInvitationUpdateTable updateTable;
 
   late final _i1.ColumnInt workspaceId;
 
@@ -247,15 +298,15 @@ class WorkspaceInvitationTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        workspaceId,
-        inviteeEmail,
-        inviterId,
-        role,
-        token,
-        expiresAt,
-        acceptedAt,
-      ];
+    id,
+    workspaceId,
+    inviteeEmail,
+    inviterId,
+    role,
+    token,
+    expiresAt,
+    acceptedAt,
+  ];
 }
 
 class WorkspaceInvitationInclude extends _i1.IncludeObject {
@@ -443,6 +494,48 @@ class WorkspaceInvitationRepository {
     return session.db.updateRow<WorkspaceInvitation>(
       row,
       columns: columns?.call(WorkspaceInvitation.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [WorkspaceInvitation] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<WorkspaceInvitation?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<WorkspaceInvitationUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<WorkspaceInvitation>(
+      id,
+      columnValues: columnValues(WorkspaceInvitation.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [WorkspaceInvitation]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<WorkspaceInvitation>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<WorkspaceInvitationUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<WorkspaceInvitationTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<WorkspaceInvitationTable>? orderBy,
+    _i1.OrderByListBuilder<WorkspaceInvitationTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<WorkspaceInvitation>(
+      columnValues: columnValues(WorkspaceInvitation.t.updateTable),
+      where: where(WorkspaceInvitation.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(WorkspaceInvitation.t),
+      orderByList: orderByList?.call(WorkspaceInvitation.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

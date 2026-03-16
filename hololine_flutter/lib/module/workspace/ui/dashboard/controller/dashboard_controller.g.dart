@@ -12,8 +12,8 @@ part of 'dashboard_controller.dart';
 @ProviderFor(DashboardController)
 const dashboardControllerProvider = DashboardControllerProvider._();
 
-final class DashboardControllerProvider
-    extends $AsyncNotifierProvider<DashboardController, List<Workspace>> {
+final class DashboardControllerProvider extends $AsyncNotifierProvider<
+    DashboardController, List<WorkspaceSummary>> {
   const DashboardControllerProvider._()
       : super(
           from: null,
@@ -34,18 +34,20 @@ final class DashboardControllerProvider
 }
 
 String _$dashboardControllerHash() =>
-    r'1f807885c5ce171792189fcf7c524a97746c5147';
+    r'a04e101167700e520004653be14dc6ff98d62dff';
 
-abstract class _$DashboardController extends $AsyncNotifier<List<Workspace>> {
-  FutureOr<List<Workspace>> build();
+abstract class _$DashboardController
+    extends $AsyncNotifier<List<WorkspaceSummary>> {
+  FutureOr<List<WorkspaceSummary>> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Workspace>>, List<Workspace>>;
+    final ref = this.ref
+        as $Ref<AsyncValue<List<WorkspaceSummary>>, List<WorkspaceSummary>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<Workspace>>, List<Workspace>>,
-        AsyncValue<List<Workspace>>,
+        AnyNotifier<AsyncValue<List<WorkspaceSummary>>, List<WorkspaceSummary>>,
+        AsyncValue<List<WorkspaceSummary>>,
         Object?,
         Object?>;
     element.handleValue(ref, created);

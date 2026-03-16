@@ -52,7 +52,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   }
 
   @override
-  Future<List<Workspace>> getMyWorkspaces() async {
+  Future<List<WorkspaceSummary>> getMyWorkspaces() async {
     return await _client.workspace.getMyWorkspaces();
   }
 

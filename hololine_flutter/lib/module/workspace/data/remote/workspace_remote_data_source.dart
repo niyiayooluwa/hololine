@@ -23,7 +23,7 @@ abstract class WorkspaceRemoteDataSource {
     int workspaceId,
   );
 
-  Future<List<Workspace>> getMyWorkspaces();
+  Future<List<WorkspaceSummary>> getMyWorkspaces();
 
   Future<List<Workspace>> getChildWorkspaces(
     int parentWorkspaceId,

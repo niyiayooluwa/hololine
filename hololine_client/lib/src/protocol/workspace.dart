@@ -7,10 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'workspace_member.dart' as _i2;
+import 'package:hololine_client/src/protocol/protocol.dart' as _i3;
 
 abstract class Workspace implements _i1.SerializableModel {
   Workspace._({
@@ -45,9 +47,10 @@ abstract class Workspace implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       parentId: jsonSerialization['parentId'] as int?,
-      isPremium: jsonSerialization['isPremium'] as bool,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      isPremium: jsonSerialization['isPremium'] as bool?,
+      createdAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['createdAt'],
+      ),
       deletedAt: jsonSerialization['deletedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['deletedAt']),
@@ -57,11 +60,13 @@ abstract class Workspace implements _i1.SerializableModel {
       pendingDeletionUntil: jsonSerialization['pendingDeletionUntil'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['pendingDeletionUntil']),
-      members: (jsonSerialization['members'] as List?)
-          ?.map(
-              (e) => _i2.WorkspaceMember.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+              jsonSerialization['pendingDeletionUntil'],
+            ),
+      members: jsonSerialization['members'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<_i2.WorkspaceMember>>(
+              jsonSerialization['members'],
+            ),
     );
   }
 
@@ -106,6 +111,7 @@ abstract class Workspace implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Workspace',
       if (id != null) 'id': id,
       'name': name,
       'description': description,
@@ -142,17 +148,17 @@ class _WorkspaceImpl extends Workspace {
     DateTime? pendingDeletionUntil,
     List<_i2.WorkspaceMember>? members,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          parentId: parentId,
-          isPremium: isPremium,
-          createdAt: createdAt,
-          deletedAt: deletedAt,
-          archivedAt: archivedAt,
-          pendingDeletionUntil: pendingDeletionUntil,
-          members: members,
-        );
+         id: id,
+         name: name,
+         description: description,
+         parentId: parentId,
+         isPremium: isPremium,
+         createdAt: createdAt,
+         deletedAt: deletedAt,
+         archivedAt: archivedAt,
+         pendingDeletionUntil: pendingDeletionUntil,
+         members: members,
+       );
 
   /// Returns a shallow copy of this [Workspace]
   /// with some or all fields replaced by the given arguments.

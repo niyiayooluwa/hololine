@@ -81,7 +81,7 @@ class WorkspaceEndpoint extends Endpoint {
     });
   }
 
-  Future<List<Workspace>> getMyWorkspaces(Session session) async {
+  Future<List<WorkspaceSummary>> getMyWorkspaces(Session session) async {
     final userId = (await session.authenticated)?.userId;
     if (userId == null) throw AuthenticationException('User not authenticated');
 

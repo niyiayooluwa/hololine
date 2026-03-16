@@ -34,7 +34,7 @@ class MemberService {
   ///
   /// This excludes any workspaces where the user's membership has been
   /// deactivated (Soft Delete).
-  Future<List<Workspace>> getMyWorkspaces(
+  Future<List<WorkspaceSummary>> getMyWorkspaces(
     Session session,
     int userId,
   ) async {

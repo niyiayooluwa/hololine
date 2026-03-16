@@ -26,7 +26,7 @@ abstract class WorkspaceRepository {
     int workspaceId,
   );
 
-  Future<Either<Failure, List<Workspace>>> getMyWorkspaces();
+  Future<Either<Failure, List<WorkspaceSummary>>> getMyWorkspaces();
 
   Future<Either<Failure, List<Workspace>>> getChildWorkspaces(
     int parentWorkspaceId,

@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -18,26 +19,27 @@ enum WorkspaceRole implements _i1.SerializableModel {
   member,
   viewer;
 
-  static WorkspaceRole fromJson(int index) {
-    switch (index) {
-      case 0:
+  static WorkspaceRole fromJson(String name) {
+    switch (name) {
+      case 'owner':
         return WorkspaceRole.owner;
-      case 1:
+      case 'admin':
         return WorkspaceRole.admin;
-      case 2:
+      case 'superadmin':
         return WorkspaceRole.superadmin;
-      case 3:
+      case 'member':
         return WorkspaceRole.member;
-      case 4:
+      case 'viewer':
         return WorkspaceRole.viewer;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "WorkspaceRole"');
+          'Value "$name" cannot be converted to "WorkspaceRole"',
+        );
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;
