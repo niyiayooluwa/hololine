@@ -7,7 +7,6 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -50,7 +49,6 @@ abstract class Response implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'Response',
       'success': success,
       if (error != null) 'error': error,
       if (message != null) 'message': message,
@@ -71,10 +69,10 @@ class _ResponseImpl extends Response {
     String? error,
     String? message,
   }) : super._(
-         success: success,
-         error: error,
-         message: message,
-       );
+          success: success,
+          error: error,
+          message: message,
+        );
 
   /// Returns a shallow copy of this [Response]
   /// with some or all fields replaced by the given arguments.

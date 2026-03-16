@@ -7,7 +7,6 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -39,10 +38,9 @@ abstract class WorkspaceSummary
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       memberCount: jsonSerialization['memberCount'] as int,
-      lastActive: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['lastActive'],
-      ),
-      role: _i2.WorkspaceRole.fromJson((jsonSerialization['role'] as String)),
+      lastActive:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['lastActive']),
+      role: _i2.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
     );
   }
 
@@ -72,7 +70,6 @@ abstract class WorkspaceSummary
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'WorkspaceSummary',
       'id': id,
       'name': name,
       'description': description,
@@ -85,7 +82,6 @@ abstract class WorkspaceSummary
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
-      '__className__': 'WorkspaceSummary',
       'id': id,
       'name': name,
       'description': description,
@@ -110,13 +106,13 @@ class _WorkspaceSummaryImpl extends WorkspaceSummary {
     required DateTime lastActive,
     required _i2.WorkspaceRole role,
   }) : super._(
-         id: id,
-         name: name,
-         description: description,
-         memberCount: memberCount,
-         lastActive: lastActive,
-         role: role,
-       );
+          id: id,
+          name: name,
+          description: description,
+          memberCount: memberCount,
+          lastActive: lastActive,
+          role: role,
+        );
 
   /// Returns a shallow copy of this [WorkspaceSummary]
   /// with some or all fields replaced by the given arguments.

@@ -7,7 +7,6 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -70,7 +69,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'role',
-          columnType: _i2.ColumnType.text,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'protocol:WorkspaceRole',
         ),
@@ -123,12 +122,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            ),
+            )
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        ),
+        )
       ],
       managed: true,
     ),
@@ -205,7 +204,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        ),
+        )
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -215,12 +214,12 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            ),
+            )
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        ),
+        )
       ],
       managed: true,
     ),
@@ -251,7 +250,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'role',
-          columnType: _i2.ColumnType.text,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'protocol:WorkspaceRole',
         ),
@@ -315,7 +314,7 @@ class Protocol extends _i1.SerializationManagerServer {
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'id',
-            ),
+            )
           ],
           type: 'btree',
           isUnique: true,
@@ -345,33 +344,12 @@ class Protocol extends _i1.SerializationManagerServer {
     ..._i2.Protocol.targetTableDefinitions,
   ];
 
-  static String? getClassNameFromObjectJson(dynamic data) {
-    if (data is! Map) return null;
-    final className = data['__className__'] as String?;
-    return className;
-  }
-
   @override
   T deserialize<T>(
     dynamic data, [
     Type? t,
   ]) {
     t ??= T;
-
-    final dataClassName = getClassNameFromObjectJson(data);
-    if (dataClassName != null && dataClassName != getClassNameForType(t)) {
-      try {
-        return deserializeByClassName({
-          'className': dataClassName,
-          'data': data,
-        });
-      } on FormatException catch (_) {
-        // If the className is not recognized (e.g., older client receiving
-        // data with a new subtype), fall back to deserializing without the
-        // className, using the expected type T.
-      }
-    }
-
     if (t == _i4.Response) {
       return _i4.Response.fromJson(data) as T;
     }
@@ -409,25 +387,17 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i9.WorkspaceRole?>()) {
       return (data != null ? _i9.WorkspaceRole.fromJson(data) : null) as T;
     }
-    if (t == List<_i8.WorkspaceMember>) {
-      return (data as List)
-              .map((e) => deserialize<_i8.WorkspaceMember>(e))
-              .toList()
-          as T;
-    }
     if (t == _i1.getType<List<_i8.WorkspaceMember>?>()) {
       return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_i8.WorkspaceMember>(e))
-                    .toList()
-              : null)
-          as T;
+          ? (data as List)
+              .map((e) => deserialize<_i8.WorkspaceMember>(e))
+              .toList()
+          : null) as T;
     }
     if (t == List<_i10.WorkspaceSummary>) {
       return (data as List)
-              .map((e) => deserialize<_i10.WorkspaceSummary>(e))
-              .toList()
-          as T;
+          .map((e) => deserialize<_i10.WorkspaceSummary>(e))
+          .toList() as T;
     }
     if (t == List<_i11.Workspace>) {
       return (data as List).map((e) => deserialize<_i11.Workspace>(e)).toList()
@@ -442,40 +412,27 @@ class Protocol extends _i1.SerializationManagerServer {
     return super.deserialize<T>(data, t);
   }
 
-  static String? getClassNameForType(Type type) {
-    return switch (type) {
-      _i4.Response => 'Response',
-      _i5.WorkspaceSummary => 'WorkspaceSummary',
-      _i6.Workspace => 'Workspace',
-      _i7.WorkspaceInvitation => 'WorkspaceInvitation',
-      _i8.WorkspaceMember => 'WorkspaceMember',
-      _i9.WorkspaceRole => 'WorkspaceRole',
-      _ => null,
-    };
-  }
-
   @override
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-
-    if (data is Map<String, dynamic> && data['__className__'] is String) {
-      return (data['__className__'] as String).replaceFirst('hololine.', '');
+    if (data is _i4.Response) {
+      return 'Response';
     }
-
-    switch (data) {
-      case _i4.Response():
-        return 'Response';
-      case _i5.WorkspaceSummary():
-        return 'WorkspaceSummary';
-      case _i6.Workspace():
-        return 'Workspace';
-      case _i7.WorkspaceInvitation():
-        return 'WorkspaceInvitation';
-      case _i8.WorkspaceMember():
-        return 'WorkspaceMember';
-      case _i9.WorkspaceRole():
-        return 'WorkspaceRole';
+    if (data is _i5.WorkspaceSummary) {
+      return 'WorkspaceSummary';
+    }
+    if (data is _i6.Workspace) {
+      return 'Workspace';
+    }
+    if (data is _i7.WorkspaceInvitation) {
+      return 'WorkspaceInvitation';
+    }
+    if (data is _i8.WorkspaceMember) {
+      return 'WorkspaceMember';
+    }
+    if (data is _i9.WorkspaceRole) {
+      return 'WorkspaceRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -554,19 +511,4 @@ class Protocol extends _i1.SerializationManagerServer {
 
   @override
   String getModuleName() => 'hololine';
-
-  /// Maps any `Record`s known to this [Protocol] to their JSON representation
-  ///
-  /// Throws in case the record type is not known.
-  ///
-  /// This method will return `null` (only) for `null` inputs.
-  Map<String, dynamic>? mapRecordToJson(Record? record) {
-    if (record == null) {
-      return null;
-    }
-    try {
-      return _i3.Protocol().mapRecordToJson(record);
-    } catch (_) {}
-    throw Exception('Unsupported record type ${record.runtimeType}');
-  }
 }

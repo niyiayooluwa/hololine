@@ -7,7 +7,6 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -42,11 +41,10 @@ abstract class WorkspaceInvitation implements _i1.SerializableModel {
       workspaceId: jsonSerialization['workspaceId'] as int,
       inviteeEmail: jsonSerialization['inviteeEmail'] as String,
       inviterId: jsonSerialization['inviterId'] as int,
-      role: _i2.WorkspaceRole.fromJson((jsonSerialization['role'] as String)),
+      role: _i2.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
       token: jsonSerialization['token'] as String,
-      expiresAt: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['expiresAt'],
-      ),
+      expiresAt:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['expiresAt']),
       acceptedAt: jsonSerialization['acceptedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['acceptedAt']),
@@ -88,7 +86,6 @@ abstract class WorkspaceInvitation implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'WorkspaceInvitation',
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'inviteeEmail': inviteeEmail,
@@ -119,15 +116,15 @@ class _WorkspaceInvitationImpl extends WorkspaceInvitation {
     required DateTime expiresAt,
     DateTime? acceptedAt,
   }) : super._(
-         id: id,
-         workspaceId: workspaceId,
-         inviteeEmail: inviteeEmail,
-         inviterId: inviterId,
-         role: role,
-         token: token,
-         expiresAt: expiresAt,
-         acceptedAt: acceptedAt,
-       );
+          id: id,
+          workspaceId: workspaceId,
+          inviteeEmail: inviteeEmail,
+          inviterId: inviterId,
+          role: role,
+          token: token,
+          expiresAt: expiresAt,
+          acceptedAt: acceptedAt,
+        );
 
   /// Returns a shallow copy of this [WorkspaceInvitation]
   /// with some or all fields replaced by the given arguments.

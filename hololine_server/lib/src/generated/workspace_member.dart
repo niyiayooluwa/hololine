@@ -7,14 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
+
 // ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'workspace.dart' as _i2;
 import 'workspace_role.dart' as _i3;
-import 'package:hololine_server/src/generated/protocol.dart' as _i4;
 
 abstract class WorkspaceMember
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -47,15 +46,13 @@ abstract class WorkspaceMember
       workspaceId: jsonSerialization['workspaceId'] as int,
       workspace: jsonSerialization['workspace'] == null
           ? null
-          : _i4.Protocol().deserialize<_i2.Workspace>(
-              jsonSerialization['workspace'],
-            ),
-      role: _i3.WorkspaceRole.fromJson((jsonSerialization['role'] as String)),
+          : _i2.Workspace.fromJson(
+              (jsonSerialization['workspace'] as Map<String, dynamic>)),
+      role: _i3.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
       invitedById: jsonSerialization['invitedById'] as int?,
-      joinedAt: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['joinedAt'],
-      ),
-      isActive: jsonSerialization['isActive'] as bool?,
+      joinedAt:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['joinedAt']),
+      isActive: jsonSerialization['isActive'] as bool,
     );
   }
 
@@ -99,7 +96,6 @@ abstract class WorkspaceMember
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'WorkspaceMember',
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'workspaceId': workspaceId,
@@ -114,7 +110,6 @@ abstract class WorkspaceMember
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
-      '__className__': 'WorkspaceMember',
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'workspaceId': workspaceId,
@@ -169,15 +164,15 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
     required DateTime joinedAt,
     bool? isActive,
   }) : super._(
-         id: id,
-         userInfoId: userInfoId,
-         workspaceId: workspaceId,
-         workspace: workspace,
-         role: role,
-         invitedById: invitedById,
-         joinedAt: joinedAt,
-         isActive: isActive,
-       );
+          id: id,
+          userInfoId: userInfoId,
+          workspaceId: workspaceId,
+          workspace: workspace,
+          role: role,
+          invitedById: invitedById,
+          joinedAt: joinedAt,
+          isActive: isActive,
+        );
 
   /// Returns a shallow copy of this [WorkspaceMember]
   /// with some or all fields replaced by the given arguments.
@@ -197,9 +192,8 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
       id: id is int? ? id : this.id,
       userInfoId: userInfoId ?? this.userInfoId,
       workspaceId: workspaceId ?? this.workspaceId,
-      workspace: workspace is _i2.Workspace?
-          ? workspace
-          : this.workspace?.copyWith(),
+      workspace:
+          workspace is _i2.Workspace? ? workspace : this.workspace?.copyWith(),
       role: role ?? this.role,
       invitedById: invitedById is int? ? invitedById : this.invitedById,
       joinedAt: joinedAt ?? this.joinedAt,
@@ -208,47 +202,9 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
   }
 }
 
-class WorkspaceMemberUpdateTable extends _i1.UpdateTable<WorkspaceMemberTable> {
-  WorkspaceMemberUpdateTable(super.table);
-
-  _i1.ColumnValue<int, int> userInfoId(int value) => _i1.ColumnValue(
-    table.userInfoId,
-    value,
-  );
-
-  _i1.ColumnValue<int, int> workspaceId(int value) => _i1.ColumnValue(
-    table.workspaceId,
-    value,
-  );
-
-  _i1.ColumnValue<_i3.WorkspaceRole, _i3.WorkspaceRole> role(
-    _i3.WorkspaceRole value,
-  ) => _i1.ColumnValue(
-    table.role,
-    value,
-  );
-
-  _i1.ColumnValue<int, int> invitedById(int? value) => _i1.ColumnValue(
-    table.invitedById,
-    value,
-  );
-
-  _i1.ColumnValue<DateTime, DateTime> joinedAt(DateTime value) =>
-      _i1.ColumnValue(
-        table.joinedAt,
-        value,
-      );
-
-  _i1.ColumnValue<bool, bool> isActive(bool value) => _i1.ColumnValue(
-    table.isActive,
-    value,
-  );
-}
-
 class WorkspaceMemberTable extends _i1.Table<int?> {
   WorkspaceMemberTable({super.tableRelation})
-    : super(tableName: 'workspace_member') {
-    updateTable = WorkspaceMemberUpdateTable(this);
+      : super(tableName: 'workspace_member') {
     userInfoId = _i1.ColumnInt(
       'userInfoId',
       this,
@@ -260,7 +216,7 @@ class WorkspaceMemberTable extends _i1.Table<int?> {
     role = _i1.ColumnEnum(
       'role',
       this,
-      _i1.EnumSerialization.byName,
+      _i1.EnumSerialization.byIndex,
     );
     invitedById = _i1.ColumnInt(
       'invitedById',
@@ -276,8 +232,6 @@ class WorkspaceMemberTable extends _i1.Table<int?> {
       hasDefault: true,
     );
   }
-
-  late final WorkspaceMemberUpdateTable updateTable;
 
   late final _i1.ColumnInt userInfoId;
 
@@ -308,14 +262,14 @@ class WorkspaceMemberTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-    id,
-    userInfoId,
-    workspaceId,
-    role,
-    invitedById,
-    joinedAt,
-    isActive,
-  ];
+        id,
+        userInfoId,
+        workspaceId,
+        role,
+        invitedById,
+        joinedAt,
+        isActive,
+      ];
 
   @override
   _i1.Table? getRelationTable(String relationField) {
@@ -523,48 +477,6 @@ class WorkspaceMemberRepository {
     return session.db.updateRow<WorkspaceMember>(
       row,
       columns: columns?.call(WorkspaceMember.t),
-      transaction: transaction,
-    );
-  }
-
-  /// Updates a single [WorkspaceMember] by its [id] with the specified [columnValues].
-  /// Returns the updated row or null if no row with the given id exists.
-  Future<WorkspaceMember?> updateById(
-    _i1.Session session,
-    int id, {
-    required _i1.ColumnValueListBuilder<WorkspaceMemberUpdateTable>
-    columnValues,
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.updateById<WorkspaceMember>(
-      id,
-      columnValues: columnValues(WorkspaceMember.t.updateTable),
-      transaction: transaction,
-    );
-  }
-
-  /// Updates all [WorkspaceMember]s matching the [where] expression with the specified [columnValues].
-  /// Returns the list of updated rows.
-  Future<List<WorkspaceMember>> updateWhere(
-    _i1.Session session, {
-    required _i1.ColumnValueListBuilder<WorkspaceMemberUpdateTable>
-    columnValues,
-    required _i1.WhereExpressionBuilder<WorkspaceMemberTable> where,
-    int? limit,
-    int? offset,
-    _i1.OrderByBuilder<WorkspaceMemberTable>? orderBy,
-    _i1.OrderByListBuilder<WorkspaceMemberTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.updateWhere<WorkspaceMember>(
-      columnValues: columnValues(WorkspaceMember.t.updateTable),
-      where: where(WorkspaceMember.t),
-      limit: limit,
-      offset: offset,
-      orderBy: orderBy?.call(WorkspaceMember.t),
-      orderByList: orderByList?.call(WorkspaceMember.t),
-      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

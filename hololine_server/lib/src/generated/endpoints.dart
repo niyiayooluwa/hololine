@@ -7,7 +7,6 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
@@ -40,13 +39,13 @@ class Endpoints extends _i1.EndpointDispatch {
         'checkAndPerformHardDeletes': _i1.MethodConnector(
           name: 'checkAndPerformHardDeletes',
           params: {},
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['cleanup'] as _i2.CleanupEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['cleanup'] as _i2.CleanupEndpoint)
                   .checkAndPerformHardDeletes(session),
-        ),
+        )
       },
     );
     connectors['workspace'] = _i1.EndpointConnector(
@@ -67,16 +66,16 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .createStandalone(
-                    session,
-                    params['name'],
-                    params['description'],
-                  ),
+            session,
+            params['name'],
+            params['description'],
+          ),
         ),
         'createChild': _i1.MethodConnector(
           name: 'createChild',
@@ -97,17 +96,16 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async =>
-                  (endpoints['workspace'] as _i3.WorkspaceEndpoint).createChild(
-                    session,
-                    params['name'],
-                    params['parentWorkspaceId'],
-                    params['description'],
-                  ),
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint).createChild(
+            session,
+            params['name'],
+            params['parentWorkspaceId'],
+            params['description'],
+          ),
         ),
         'getWorkspaceDetails': _i1.MethodConnector(
           name: 'getWorkspaceDetails',
@@ -116,26 +114,26 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'workspaceId',
               type: _i1.getType<int>(),
               nullable: false,
-            ),
+            )
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .getWorkspaceDetails(
-                    session,
-                    workspaceId: params['workspaceId'],
-                  ),
+            session,
+            workspaceId: params['workspaceId'],
+          ),
         ),
         'getMyWorkspaces': _i1.MethodConnector(
           name: 'getMyWorkspaces',
           params: {},
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .getMyWorkspaces(session),
         ),
         'getChildWorkspaces': _i1.MethodConnector(
@@ -145,17 +143,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'parentWorkspaceId',
               type: _i1.getType<int>(),
               nullable: false,
-            ),
+            )
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .getChildWorkspaces(
-                    session,
-                    parentWorkspaceId: params['parentWorkspaceId'],
-                  ),
+            session,
+            parentWorkspaceId: params['parentWorkspaceId'],
+          ),
         ),
         'updateMemberRole': _i1.MethodConnector(
           name: 'updateMemberRole',
@@ -176,17 +174,17 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .updateMemberRole(
-                    session,
-                    memberId: params['memberId'],
-                    workspaceId: params['workspaceId'],
-                    role: params['role'],
-                  ),
+            session,
+            memberId: params['memberId'],
+            workspaceId: params['workspaceId'],
+            role: params['role'],
+          ),
         ),
         'removeMember': _i1.MethodConnector(
           name: 'removeMember',
@@ -202,16 +200,15 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
-                  .removeMember(
-                    session,
-                    memberId: params['memberId'],
-                    workspaceId: params['workspaceId'],
-                  ),
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint).removeMember(
+            session,
+            memberId: params['memberId'],
+            workspaceId: params['workspaceId'],
+          ),
         ),
         'leaveWorkspace': _i1.MethodConnector(
           name: 'leaveWorkspace',
@@ -220,17 +217,16 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'workspaceId',
               type: _i1.getType<int>(),
               nullable: false,
-            ),
+            )
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
-                  .leaveWorkspace(
-                    session,
-                    workspaceId: params['workspaceId'],
-                  ),
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint).leaveWorkspace(
+            session,
+            workspaceId: params['workspaceId'],
+          ),
         ),
         'inviteMember': _i1.MethodConnector(
           name: 'inviteMember',
@@ -251,17 +247,16 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
-                  .inviteMember(
-                    session,
-                    params['email'],
-                    params['workspaceId'],
-                    params['role'],
-                  ),
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint).inviteMember(
+            session,
+            params['email'],
+            params['workspaceId'],
+            params['role'],
+          ),
         ),
         'acceptInvitation': _i1.MethodConnector(
           name: 'acceptInvitation',
@@ -270,17 +265,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'token',
               type: _i1.getType<String>(),
               nullable: false,
-            ),
+            )
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .acceptInvitation(
-                    session,
-                    params['token'],
-                  ),
+            session,
+            params['token'],
+          ),
         ),
         'updateWorkspaceDetails': _i1.MethodConnector(
           name: 'updateWorkspaceDetails',
@@ -301,17 +296,17 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: true,
             ),
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .updateWorkspaceDetails(
-                    session,
-                    workspaceId: params['workspaceId'],
-                    name: params['name'],
-                    description: params['description'],
-                  ),
+            session,
+            workspaceId: params['workspaceId'],
+            name: params['name'],
+            description: params['description'],
+          ),
         ),
         'archiveWorkspace': _i1.MethodConnector(
           name: 'archiveWorkspace',
@@ -320,17 +315,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'workspaceId',
               type: _i1.getType<int>(),
               nullable: false,
-            ),
+            )
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .archiveWorkspace(
-                    session,
-                    params['workspaceId'],
-                  ),
+            session,
+            params['workspaceId'],
+          ),
         ),
         'restoreWorkspace': _i1.MethodConnector(
           name: 'restoreWorkspace',
@@ -339,17 +334,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'workspaceId',
               type: _i1.getType<int>(),
               nullable: false,
-            ),
+            )
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .restoreWorkspace(
-                    session,
-                    params['workspaceId'],
-                  ),
+            session,
+            params['workspaceId'],
+          ),
         ),
         'transferOwnership': _i1.MethodConnector(
           name: 'transferOwnership',
@@ -365,16 +360,16 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .transferOwnership(
-                    session,
-                    params['workspaceId'],
-                    params['newOwnerId'],
-                  ),
+            session,
+            params['workspaceId'],
+            params['newOwnerId'],
+          ),
         ),
         'initiateDeleteWorkspace': _i1.MethodConnector(
           name: 'initiateDeleteWorkspace',
@@ -383,17 +378,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'workspaceId',
               type: _i1.getType<int>(),
               nullable: false,
-            ),
+            )
           },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['workspace'] as _i3.WorkspaceEndpoint)
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .initiateDeleteWorkspace(
-                    session,
-                    params['workspaceId'],
-                  ),
+            session,
+            params['workspaceId'],
+          ),
         ),
       },
     );

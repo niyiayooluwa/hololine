@@ -7,13 +7,11 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'workspace.dart' as _i2;
 import 'workspace_role.dart' as _i3;
-import 'package:hololine_client/src/protocol/protocol.dart' as _i4;
 
 abstract class WorkspaceMember implements _i1.SerializableModel {
   WorkspaceMember._({
@@ -45,15 +43,13 @@ abstract class WorkspaceMember implements _i1.SerializableModel {
       workspaceId: jsonSerialization['workspaceId'] as int,
       workspace: jsonSerialization['workspace'] == null
           ? null
-          : _i4.Protocol().deserialize<_i2.Workspace>(
-              jsonSerialization['workspace'],
-            ),
-      role: _i3.WorkspaceRole.fromJson((jsonSerialization['role'] as String)),
+          : _i2.Workspace.fromJson(
+              (jsonSerialization['workspace'] as Map<String, dynamic>)),
+      role: _i3.WorkspaceRole.fromJson((jsonSerialization['role'] as int)),
       invitedById: jsonSerialization['invitedById'] as int?,
-      joinedAt: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['joinedAt'],
-      ),
-      isActive: jsonSerialization['isActive'] as bool?,
+      joinedAt:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['joinedAt']),
+      isActive: jsonSerialization['isActive'] as bool,
     );
   }
 
@@ -92,7 +88,6 @@ abstract class WorkspaceMember implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'WorkspaceMember',
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'workspaceId': workspaceId,
@@ -123,15 +118,15 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
     required DateTime joinedAt,
     bool? isActive,
   }) : super._(
-         id: id,
-         userInfoId: userInfoId,
-         workspaceId: workspaceId,
-         workspace: workspace,
-         role: role,
-         invitedById: invitedById,
-         joinedAt: joinedAt,
-         isActive: isActive,
-       );
+          id: id,
+          userInfoId: userInfoId,
+          workspaceId: workspaceId,
+          workspace: workspace,
+          role: role,
+          invitedById: invitedById,
+          joinedAt: joinedAt,
+          isActive: isActive,
+        );
 
   /// Returns a shallow copy of this [WorkspaceMember]
   /// with some or all fields replaced by the given arguments.
@@ -151,9 +146,8 @@ class _WorkspaceMemberImpl extends WorkspaceMember {
       id: id is int? ? id : this.id,
       userInfoId: userInfoId ?? this.userInfoId,
       workspaceId: workspaceId ?? this.workspaceId,
-      workspace: workspace is _i2.Workspace?
-          ? workspace
-          : this.workspace?.copyWith(),
+      workspace:
+          workspace is _i2.Workspace? ? workspace : this.workspace?.copyWith(),
       role: role ?? this.role,
       invitedById: invitedById is int? ? invitedById : this.invitedById,
       joinedAt: joinedAt ?? this.joinedAt,

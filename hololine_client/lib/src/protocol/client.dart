@@ -7,7 +7,6 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
@@ -51,28 +50,30 @@ class EndpointWorkspace extends _i1.EndpointRef {
   _i2.Future<_i3.Workspace> createStandalone(
     String name,
     String description,
-  ) => caller.callServerEndpoint<_i3.Workspace>(
-    'workspace',
-    'createStandalone',
-    {
-      'name': name,
-      'description': description,
-    },
-  );
+  ) =>
+      caller.callServerEndpoint<_i3.Workspace>(
+        'workspace',
+        'createStandalone',
+        {
+          'name': name,
+          'description': description,
+        },
+      );
 
   _i2.Future<_i3.Workspace> createChild(
     String name,
     int parentWorkspaceId,
     String description,
-  ) => caller.callServerEndpoint<_i3.Workspace>(
-    'workspace',
-    'createChild',
-    {
-      'name': name,
-      'parentWorkspaceId': parentWorkspaceId,
-      'description': description,
-    },
-  );
+  ) =>
+      caller.callServerEndpoint<_i3.Workspace>(
+        'workspace',
+        'createChild',
+        {
+          'name': name,
+          'parentWorkspaceId': parentWorkspaceId,
+          'description': description,
+        },
+      );
 
   _i2.Future<_i3.Workspace> getWorkspaceDetails({required int workspaceId}) =>
       caller.callServerEndpoint<_i3.Workspace>(
@@ -88,39 +89,41 @@ class EndpointWorkspace extends _i1.EndpointRef {
         {},
       );
 
-  _i2.Future<List<_i3.Workspace>> getChildWorkspaces({
-    required int parentWorkspaceId,
-  }) => caller.callServerEndpoint<List<_i3.Workspace>>(
-    'workspace',
-    'getChildWorkspaces',
-    {'parentWorkspaceId': parentWorkspaceId},
-  );
+  _i2.Future<List<_i3.Workspace>> getChildWorkspaces(
+          {required int parentWorkspaceId}) =>
+      caller.callServerEndpoint<List<_i3.Workspace>>(
+        'workspace',
+        'getChildWorkspaces',
+        {'parentWorkspaceId': parentWorkspaceId},
+      );
 
   _i2.Future<_i5.WorkspaceMember> updateMemberRole({
     required int memberId,
     required int workspaceId,
     required _i6.WorkspaceRole role,
-  }) => caller.callServerEndpoint<_i5.WorkspaceMember>(
-    'workspace',
-    'updateMemberRole',
-    {
-      'memberId': memberId,
-      'workspaceId': workspaceId,
-      'role': role,
-    },
-  );
+  }) =>
+      caller.callServerEndpoint<_i5.WorkspaceMember>(
+        'workspace',
+        'updateMemberRole',
+        {
+          'memberId': memberId,
+          'workspaceId': workspaceId,
+          'role': role,
+        },
+      );
 
   _i2.Future<_i5.WorkspaceMember> removeMember({
     required int memberId,
     required int workspaceId,
-  }) => caller.callServerEndpoint<_i5.WorkspaceMember>(
-    'workspace',
-    'removeMember',
-    {
-      'memberId': memberId,
-      'workspaceId': workspaceId,
-    },
-  );
+  }) =>
+      caller.callServerEndpoint<_i5.WorkspaceMember>(
+        'workspace',
+        'removeMember',
+        {
+          'memberId': memberId,
+          'workspaceId': workspaceId,
+        },
+      );
 
   _i2.Future<_i5.WorkspaceMember> leaveWorkspace({required int workspaceId}) =>
       caller.callServerEndpoint<_i5.WorkspaceMember>(
@@ -133,15 +136,16 @@ class EndpointWorkspace extends _i1.EndpointRef {
     String email,
     int workspaceId,
     _i6.WorkspaceRole role,
-  ) => caller.callServerEndpoint<_i7.WorkspaceInvitation>(
-    'workspace',
-    'inviteMember',
-    {
-      'email': email,
-      'workspaceId': workspaceId,
-      'role': role,
-    },
-  );
+  ) =>
+      caller.callServerEndpoint<_i7.WorkspaceInvitation>(
+        'workspace',
+        'inviteMember',
+        {
+          'email': email,
+          'workspaceId': workspaceId,
+          'role': role,
+        },
+      );
 
   _i2.Future<_i5.WorkspaceMember> acceptInvitation(String token) =>
       caller.callServerEndpoint<_i5.WorkspaceMember>(
@@ -154,15 +158,16 @@ class EndpointWorkspace extends _i1.EndpointRef {
     required int workspaceId,
     String? name,
     String? description,
-  }) => caller.callServerEndpoint<_i3.Workspace>(
-    'workspace',
-    'updateWorkspaceDetails',
-    {
-      'workspaceId': workspaceId,
-      'name': name,
-      'description': description,
-    },
-  );
+  }) =>
+      caller.callServerEndpoint<_i3.Workspace>(
+        'workspace',
+        'updateWorkspaceDetails',
+        {
+          'workspaceId': workspaceId,
+          'name': name,
+          'description': description,
+        },
+      );
 
   _i2.Future<_i3.Workspace> archiveWorkspace(int workspaceId) =>
       caller.callServerEndpoint<_i3.Workspace>(
@@ -181,14 +186,15 @@ class EndpointWorkspace extends _i1.EndpointRef {
   _i2.Future<bool> transferOwnership(
     int workspaceId,
     int newOwnerId,
-  ) => caller.callServerEndpoint<bool>(
-    'workspace',
-    'transferOwnership',
-    {
-      'workspaceId': workspaceId,
-      'newOwnerId': newOwnerId,
-    },
-  );
+  ) =>
+      caller.callServerEndpoint<bool>(
+        'workspace',
+        'transferOwnership',
+        {
+          'workspaceId': workspaceId,
+          'newOwnerId': newOwnerId,
+        },
+      );
 
   _i2.Future<_i3.Workspace> initiateDeleteWorkspace(int workspaceId) =>
       caller.callServerEndpoint<_i3.Workspace>(
@@ -210,31 +216,28 @@ class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
     dynamic securityContext,
-    @Deprecated(
-      'Use authKeyProvider instead. This will be removed in future releases.',
-    )
-    super.authenticationKeyManager,
+    _i1.AuthenticationKeyManager? authenticationKeyManager,
     Duration? streamingConnectionTimeout,
     Duration? connectionTimeout,
     Function(
       _i1.MethodCallContext,
       Object,
       StackTrace,
-    )?
-    onFailedCall,
+    )? onFailedCall,
     Function(_i1.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
-         host,
-         _i9.Protocol(),
-         securityContext: securityContext,
-         streamingConnectionTimeout: streamingConnectionTimeout,
-         connectionTimeout: connectionTimeout,
-         onFailedCall: onFailedCall,
-         onSucceededCall: onSucceededCall,
-         disconnectStreamsOnLostInternetConnection:
-             disconnectStreamsOnLostInternetConnection,
-       ) {
+          host,
+          _i9.Protocol(),
+          securityContext: securityContext,
+          authenticationKeyManager: authenticationKeyManager,
+          streamingConnectionTimeout: streamingConnectionTimeout,
+          connectionTimeout: connectionTimeout,
+          onFailedCall: onFailedCall,
+          onSucceededCall: onSucceededCall,
+          disconnectStreamsOnLostInternetConnection:
+              disconnectStreamsOnLostInternetConnection,
+        ) {
     cleanup = EndpointCleanup(this);
     workspace = EndpointWorkspace(this);
     modules = Modules(this);
@@ -248,12 +251,11 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
-    'cleanup': cleanup,
-    'workspace': workspace,
-  };
+        'cleanup': cleanup,
+        'workspace': workspace,
+      };
 
   @override
-  Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {
-    'auth': modules.auth,
-  };
+  Map<String, _i1.ModuleEndpointCaller> get moduleLookup =>
+      {'auth': modules.auth};
 }
