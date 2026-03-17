@@ -2,17 +2,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:hololine_client/hololine_client.dart';
-import 'package:hololine_flutter/module/workspace/ui/dashboard/controller/dashboard_controller.dart';
+import 'package:hololine_flutter/module/workspace/ui/workspacelist/controller/workspace_list_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class DashboardScreen extends HookConsumerWidget {
-  const DashboardScreen({super.key});
+class WorkspaceListScreen extends HookConsumerWidget {
+  const WorkspaceListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Watch the controller state directly
-    final dashboardState = ref.watch(dashboardControllerProvider);
+    final workspaceListState = ref.watch(workspaceListControllerProvider);
 
     final List<Workspace> workspaces = [
       Workspace(

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'dashboard_controller.dart';
+part of 'workspace_list_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,34 +9,34 @@ part of 'dashboard_controller.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(DashboardController)
-const dashboardControllerProvider = DashboardControllerProvider._();
+@ProviderFor(WorkspaceListController)
+const workspaceListControllerProvider = WorkspaceListControllerProvider._();
 
-final class DashboardControllerProvider extends $AsyncNotifierProvider<
-    DashboardController, List<WorkspaceSummary>> {
-  const DashboardControllerProvider._()
+final class WorkspaceListControllerProvider extends $AsyncNotifierProvider<
+    WorkspaceListController, List<WorkspaceSummary>> {
+  const WorkspaceListControllerProvider._()
       : super(
           from: null,
           argument: null,
           retry: null,
-          name: r'dashboardControllerProvider',
+          name: r'workspaceListControllerProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$dashboardControllerHash();
+  String debugGetCreateSourceHash() => _$workspaceListControllerHash();
 
   @$internal
   @override
-  DashboardController create() => DashboardController();
+  WorkspaceListController create() => WorkspaceListController();
 }
 
-String _$dashboardControllerHash() =>
-    r'a04e101167700e520004653be14dc6ff98d62dff';
+String _$workspaceListControllerHash() =>
+    r'3983b992f1f568603046225a07db72c3d4cf6b3e';
 
-abstract class _$DashboardController
+abstract class _$WorkspaceListController
     extends $AsyncNotifier<List<WorkspaceSummary>> {
   FutureOr<List<WorkspaceSummary>> build();
   @$mustCallSuper

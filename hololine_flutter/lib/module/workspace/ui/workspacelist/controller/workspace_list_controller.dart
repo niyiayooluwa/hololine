@@ -3,10 +3,10 @@ import 'package:hololine_flutter/module/workspace/domain/usecase/create_standalo
 import 'package:hololine_flutter/module/workspace/domain/usecase/get_my_workspaces_usecase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'dashboard_controller.g.dart';
+part 'workspace_list_controller.g.dart';
 
 @riverpod
-class DashboardController extends _$DashboardController {
+class WorkspaceListController extends _$WorkspaceListController {
   @override
   Future<List<WorkspaceSummary>> build() async {
     return _fetchWorkspaces();

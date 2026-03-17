@@ -34,7 +34,7 @@ class VerificationScreen extends HookConsumerWidget {
                   description: Text('You have been verified successfully.'),
                 ),
               );
-              context.go('/dashboard');
+              context.go('/workspaccelist');
             }
           },
           error: (error, stackTrace) {

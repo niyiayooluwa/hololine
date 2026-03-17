@@ -5,7 +5,7 @@ import 'package:hololine_flutter/module/auth/ui/reset_password/widget/reset_pass
 import 'package:hololine_flutter/module/auth/ui/reset_password_request/widget/reset_password_request_screen.dart';
 import 'package:hololine_flutter/module/auth/ui/signup/widget/register_screen.dart';
 import 'package:hololine_flutter/module/auth/ui/verification/widget/verification_screen.dart';
-import 'package:hololine_flutter/module/workspace/ui/dashboard/widgets/dashboard_screen.dart';
+import 'package:hololine_flutter/module/workspace/ui/workspacelist/widgets/workspace_list_screen.dart';
 import 'package:hololine_flutter/preview.dart';
 import 'package:hololine_flutter/shared_ui/index.dart'; // Keep for showcase if needed later
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -58,8 +58,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/dashboard',
-        builder: (context, state) => const DashboardScreen(),
+        path: '/workspacelist',
+        builder: (context, state) => const WorkspaceListScreen(),
       ),
     ],
   );

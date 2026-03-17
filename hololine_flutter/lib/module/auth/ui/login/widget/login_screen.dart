@@ -34,7 +34,7 @@ class LoginScreen extends HookConsumerWidget {
                 ),
               );
 
-              context.go('/dashboard');
+              context.go('/workspacelist');
             }
           },
           error: (error, stackTrace) {
