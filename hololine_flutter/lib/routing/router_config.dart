@@ -14,6 +14,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     //initialLocation: '/preview',
     initialLocation: '/auth/login',
+    //initialLocation: '/workspacelist',
     routes: [
       GoRoute(
         path: '/preview',
