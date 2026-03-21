@@ -1,6 +1,7 @@
 class: WorkspaceSummary
 fields:
     id: int
+    publicId: String
     name: String
     description: String
     memberCount: int

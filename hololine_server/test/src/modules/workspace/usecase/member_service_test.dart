@@ -42,7 +42,7 @@ void main() {
     // Happy Path
     test('Should update the member role', () async {
       // ARRANGE
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -92,7 +92,7 @@ void main() {
         'Throws PermissionDeniedException because actor is not a member of the workspace',
         () async {
       // ARRANGE
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -130,7 +130,7 @@ void main() {
     test('Throws PermissionDeniedException because actor is inactive',
         () async {
       // ARRANGE
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -174,7 +174,7 @@ void main() {
         'Throws NotFoundException because target member not found in workspace',
         () async {
       // ARRANGE
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -211,7 +211,7 @@ void main() {
 
     test('Throws InvalidStateException because member is inactive', () async {
       // ARRANGE
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -256,7 +256,7 @@ void main() {
         'Throws PermissionDeniedException because actor and target member is owner',
         () async {
       // ARRANGE
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -303,7 +303,7 @@ void main() {
           'Should throw PermissionDeniedException when actor has insufficient privileges',
           () async {
         // ARRANGE
-        expectedWorkspace = Workspace(
+        expectedWorkspace = Workspace(publicId: 'test-uuid', 
           id: workspaceId,
           name: workspaceName,
           description: workspaceDesc,
@@ -350,7 +350,7 @@ void main() {
           'Should throw PermissionDeniedException when actor has insufficient privileges',
           () async {
         // ARRANGE
-        expectedWorkspace = Workspace(
+        expectedWorkspace = Workspace(publicId: 'test-uuid', 
           id: workspaceId,
           name: workspaceName,
           description: workspaceDesc,
@@ -398,7 +398,7 @@ void main() {
           'Should throw PermissionDeniedException when actor has insufficient privileges',
           () async {
         // ARRANGE
-        expectedWorkspace = Workspace(
+        expectedWorkspace = Workspace(publicId: 'test-uuid', 
           id: workspaceId,
           name: workspaceName,
           description: workspaceDesc,
@@ -458,7 +458,7 @@ void main() {
       actorId = 1;
       memberId = 2;
       workspaceId = 55;
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,

@@ -16,6 +16,7 @@ abstract class WorkspaceSummary
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   WorkspaceSummary._({
     required this.id,
+    required this.publicId,
     required this.name,
     required this.description,
     required this.memberCount,
@@ -25,6 +26,7 @@ abstract class WorkspaceSummary
 
   factory WorkspaceSummary({
     required int id,
+    required String publicId,
     required String name,
     required String description,
     required int memberCount,
@@ -35,6 +37,7 @@ abstract class WorkspaceSummary
   factory WorkspaceSummary.fromJson(Map<String, dynamic> jsonSerialization) {
     return WorkspaceSummary(
       id: jsonSerialization['id'] as int,
+      publicId: jsonSerialization['publicId'] as String,
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       memberCount: jsonSerialization['memberCount'] as int,
@@ -45,6 +48,8 @@ abstract class WorkspaceSummary
   }
 
   int id;
+
+  String publicId;
 
   String name;
 
@@ -61,6 +66,7 @@ abstract class WorkspaceSummary
   @_i1.useResult
   WorkspaceSummary copyWith({
     int? id,
+    String? publicId,
     String? name,
     String? description,
     int? memberCount,
@@ -71,6 +77,7 @@ abstract class WorkspaceSummary
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'publicId': publicId,
       'name': name,
       'description': description,
       'memberCount': memberCount,
@@ -83,6 +90,7 @@ abstract class WorkspaceSummary
   Map<String, dynamic> toJsonForProtocol() {
     return {
       'id': id,
+      'publicId': publicId,
       'name': name,
       'description': description,
       'memberCount': memberCount,
@@ -100,6 +108,7 @@ abstract class WorkspaceSummary
 class _WorkspaceSummaryImpl extends WorkspaceSummary {
   _WorkspaceSummaryImpl({
     required int id,
+    required String publicId,
     required String name,
     required String description,
     required int memberCount,
@@ -107,6 +116,7 @@ class _WorkspaceSummaryImpl extends WorkspaceSummary {
     required _i2.WorkspaceRole role,
   }) : super._(
           id: id,
+          publicId: publicId,
           name: name,
           description: description,
           memberCount: memberCount,
@@ -120,6 +130,7 @@ class _WorkspaceSummaryImpl extends WorkspaceSummary {
   @override
   WorkspaceSummary copyWith({
     int? id,
+    String? publicId,
     String? name,
     String? description,
     int? memberCount,
@@ -128,6 +139,7 @@ class _WorkspaceSummaryImpl extends WorkspaceSummary {
   }) {
     return WorkspaceSummary(
       id: id ?? this.id,
+      publicId: publicId ?? this.publicId,
       name: name ?? this.name,
       description: description ?? this.description,
       memberCount: memberCount ?? this.memberCount,

@@ -43,6 +43,7 @@ class WorkspaceListController extends _$WorkspaceListController {
         // Map the new Workspace to a WorkspaceSummary
         final newSummary = WorkspaceSummary(
           id: workspace.id!,
+          publicId: workspace.publicId,
           name: workspace.name,
           description: workspace.description,
           memberCount: 1, // Creator is the first member
@@ -70,6 +71,7 @@ class WorkspaceListController extends _$WorkspaceListController {
         
         final newSummary = WorkspaceSummary(
           id: workspace.id!,
+          publicId: workspace.publicId,
           name: workspace.name,
           description: workspace.description,
           memberCount: workspace.members?.length ?? 1,

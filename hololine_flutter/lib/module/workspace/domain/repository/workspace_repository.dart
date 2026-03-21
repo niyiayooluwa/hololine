@@ -23,7 +23,7 @@ abstract class WorkspaceRepository {
   // ===========================================================================
 
   Future<Either<Failure, Workspace>> getWorkspaceDetails(
-    int workspaceId,
+    String publicId,
   );
 
   Future<Either<Failure, List<WorkspaceSummary>>> getMyWorkspaces();

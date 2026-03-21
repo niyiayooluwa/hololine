@@ -49,12 +49,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/workspace/:id',
+        path: '/workspace/:publicId',
         builder: (context, state) {
-          final id = state.pathParameters['id'];
+          final publicId = state.pathParameters['publicId'];
           return Scaffold(
-            appBar: AppBar(title: Text('Workspace $id')),
-            body: Center(child: Text('Workspace $id Details')),
+            appBar: AppBar(title: Text('Workspace $publicId')),
+            body: Center(child: Text('Workspace $publicId Details')),
           );
         },
       ),

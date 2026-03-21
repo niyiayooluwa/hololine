@@ -49,6 +49,7 @@ class WorkspaceService {
     String description,
   ) async {
     final newWorkspace = Workspace(
+      publicId: const Uuid().v4(),
       name: name,
       description: description,
       createdAt: DateTime.now().toUtc(),
@@ -115,6 +116,7 @@ class WorkspaceService {
     }
 
     final newChildWorkspace = Workspace(
+      publicId: const Uuid().v4(),
       name: name,
       description: description,
       parentId: parentWorkspaceId,
@@ -141,13 +143,22 @@ class WorkspaceService {
   /// - The db call fails to return a valid response i.e null
   Future<Workspace> getWorkspaceDetails(
     Session session,
-    int workspaceId,
+    String publicId,
     int actorId,
   ) async {
+    final workspace = await _workspaceRepository.findWorkspaceByPublicId(
+      session,
+      publicId,
+    );
+
+    if (workspace == null) {
+      throw Exception('Failed to fetch workspace details');
+    }
+
     final actor = await _memberRepository.findMemberByWorkspaceId(
       session,
       actorId,
-      workspaceId,
+      workspace.id!,
     );
 
     if (actor == null) {
@@ -158,15 +169,6 @@ class WorkspaceService {
     if (actor.isActive == false) {
       throw PermissionDeniedException(
           'You are not a member of this repository');
-    }
-
-    final workspace = await _workspaceRepository.findWorkspaceById(
-      session,
-      workspaceId,
-    );
-
-    if (workspace == null) {
-      throw Exception('Failed to fetch workspace details');
     }
 
     return workspace;

@@ -245,7 +245,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
   @override
   _i6.Future<_i2.Workspace> getWorkspaceDetails(
     _i3.Session? session,
-    int? workspaceId,
+    String? publicId,
     int? actorId,
   ) =>
       (super.noSuchMethod(
@@ -253,7 +253,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
           #getWorkspaceDetails,
           [
             session,
-            workspaceId,
+            publicId,
             actorId,
           ],
         ),
@@ -263,7 +263,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             #getWorkspaceDetails,
             [
               session,
-              workspaceId,
+              publicId,
               actorId,
             ],
           ),
@@ -703,6 +703,22 @@ class MockWorkspaceRepo extends _i1.Mock implements _i9.WorkspaceRepo {
           [
             session,
             workspaceId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Workspace?>.value(),
+      ) as _i6.Future<_i2.Workspace?>);
+
+  @override
+  _i6.Future<_i2.Workspace?> findWorkspaceByPublicId(
+    _i3.Session? session,
+    String? publicId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findWorkspaceByPublicId,
+          [
+            session,
+            publicId,
           ],
         ),
         returnValue: _i6.Future<_i2.Workspace?>.value(),

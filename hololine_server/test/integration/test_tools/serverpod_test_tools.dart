@@ -247,7 +247,7 @@ class _WorkspaceEndpoint {
 
   _i3.Future<_i4.Workspace> getWorkspaceDetails(
     _i1.TestSessionBuilder sessionBuilder, {
-    required int workspaceId,
+    required String publicId,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -260,7 +260,7 @@ class _WorkspaceEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'workspace',
           methodName: 'getWorkspaceDetails',
-          parameters: _i1.testObjectToJson({'workspaceId': workspaceId}),
+          parameters: _i1.testObjectToJson({'publicId': publicId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(

@@ -44,10 +44,10 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   // ===========================================================================
   @override
   Future<Workspace> getWorkspaceDetails(
-    int workspaceId,
+    String publicId,
   ) async {
     return await _client.workspace.getWorkspaceDetails(
-      workspaceId: workspaceId,
+      publicId: publicId,
     );
   }
 

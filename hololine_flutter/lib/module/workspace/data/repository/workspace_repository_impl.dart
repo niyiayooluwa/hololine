@@ -56,10 +56,10 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
   @override
   Future<Either<Failure, Workspace>> getWorkspaceDetails(
-    int workspaceId,
+    String publicId,
   ) async {
     try {
-      final response = await remoteDataSource.getWorkspaceDetails(workspaceId);
+      final response = await remoteDataSource.getWorkspaceDetails(publicId);
       return Right(response);
     } catch (e) {
       return Left(ExceptionHandler.handleException(e));

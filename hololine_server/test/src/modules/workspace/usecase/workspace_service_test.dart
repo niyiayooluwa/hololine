@@ -29,7 +29,7 @@ void main() {
       const workspaceName = 'Test Workspace';
       const workspaceDesc = 'A workspace for testing';
       const userId = 1;
-      final expectedWorkspace = Workspace(
+      final expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: 1,
         name: workspaceName,
         description: workspaceDesc,
@@ -81,7 +81,7 @@ void main() {
       const workspaceDesc = 'A workspace for testing';
       const userId = 1;
       const parentId = 55;
-      final expectedWorkspace = Workspace(
+      final expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: 1,
         name: workspaceName,
         parentId: parentId,
@@ -102,7 +102,7 @@ void main() {
               joinedAt: DateTime.now().toUtc()));
 
       when(mockWorkspaceRepo.findWorkspaceById(any, any))
-          .thenAnswer((_) async => Workspace(
+          .thenAnswer((_) async => Workspace(publicId: 'test-uuid', 
                 name: 'Parent Workspace',
                 id: parentId,
                 description: 'Parent workspace description',
@@ -131,7 +131,7 @@ void main() {
       const workspaceDesc = 'A workspace for testing';
       const userId = 1;
       const parentId = 55;
-      final expectedWorkspace = Workspace(
+      final expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: 1,
         name: workspaceName,
         parentId: parentId,
@@ -166,7 +166,7 @@ void main() {
       const workspaceDesc = 'A workspace for testing';
       const userId = 1;
       const parentId = 55;
-      final expectedWorkspace = Workspace(
+      final expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: 1,
         name: workspaceName,
         parentId: parentId,
@@ -208,7 +208,7 @@ void main() {
       const workspaceDesc = 'A workspace for testing';
       const userId = 1;
       const parentId = 55;
-      final expectedWorkspace = Workspace(
+      final expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: 1,
         name: workspaceName,
         parentId: parentId,
@@ -249,7 +249,7 @@ void main() {
       const workspaceDesc = 'A workspace for testing';
       const userId = 1;
       const parentId = 55;
-      final expectedWorkspace = Workspace(
+      final expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: 1,
         name: workspaceName,
         parentId: parentId,
@@ -293,7 +293,7 @@ void main() {
       const workspaceDesc = 'A workspace for testing';
       const userId = 1;
       const parentId = 55;
-      final expectedWorkspace = Workspace(
+      final expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: 1,
         name: workspaceName,
         parentId: parentId,
@@ -315,7 +315,7 @@ void main() {
               ));
 
       when(mockWorkspaceRepo.findWorkspaceById(any, any))
-          .thenAnswer((_) async => Workspace(
+          .thenAnswer((_) async => Workspace(publicId: 'test-uuid', 
                 name: 'Parent Workspace',
                 id: parentId,
                 parentId: 88,
@@ -348,7 +348,7 @@ void main() {
       workspaceDesc = 'A workspace for testing';
       actorId = 1;
       workspaceId = 55;
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -449,7 +449,7 @@ void main() {
       workspaceDesc = 'A workspace for testing';
       actorId = 1;
       workspaceId = 55;
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
           id: workspaceId,
           name: workspaceName,
           description: workspaceDesc,
@@ -518,7 +518,7 @@ void main() {
         'Should return InvalidStateException beacause workspace is not archived',
         () async {
       when(mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId))
-          .thenAnswer((_) async => Workspace(
+          .thenAnswer((_) async => Workspace(publicId: 'test-uuid', 
                 id: workspaceId,
                 name: workspaceName,
                 description: workspaceDesc,
@@ -619,7 +619,7 @@ void main() {
       actorId = 1;
       memberId = 2;
       workspaceId = 55;
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -927,7 +927,7 @@ void main() {
       actorId = 1;
       memberId = 2;
       workspaceId = 55;
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -1077,7 +1077,7 @@ void main() {
     test('Should throw InvalidStateException if workspace is marked as deleted',
         () async {
       when(mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId))
-          .thenAnswer((_) async => Workspace(
+          .thenAnswer((_) async => Workspace(publicId: 'test-uuid', 
                 name: workspaceName,
                 description: workspaceDesc,
                 createdAt: DateTime.now().toUtc(),
@@ -1108,7 +1108,7 @@ void main() {
       when(
         mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId),
       ).thenAnswer(
-        (_) async => Workspace(
+        (_) async => Workspace(publicId: 'test-uuid', 
           name: workspaceName,
           description: workspaceDesc,
           createdAt: DateTime.now().toUtc(),

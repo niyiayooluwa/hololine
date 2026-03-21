@@ -20,7 +20,7 @@ abstract class WorkspaceRemoteDataSource {
   // READ OPERATIONS
   // ===========================================================================
   Future<Workspace> getWorkspaceDetails(
-    int workspaceId,
+    String publicId,
   );
 
   Future<List<WorkspaceSummary>> getMyWorkspaces();

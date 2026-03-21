@@ -75,11 +75,11 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.Workspace> getWorkspaceDetails({required int workspaceId}) =>
+  _i2.Future<_i3.Workspace> getWorkspaceDetails({required String publicId}) =>
       caller.callServerEndpoint<_i3.Workspace>(
         'workspace',
         'getWorkspaceDetails',
-        {'workspaceId': workspaceId},
+        {'publicId': publicId},
       );
 
   _i2.Future<List<_i4.WorkspaceSummary>> getMyWorkspaces() =>

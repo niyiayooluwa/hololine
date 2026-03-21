@@ -110,9 +110,9 @@ class Endpoints extends _i1.EndpointDispatch {
         'getWorkspaceDetails': _i1.MethodConnector(
           name: 'getWorkspaceDetails',
           params: {
-            'workspaceId': _i1.ParameterDescription(
-              name: 'workspaceId',
-              type: _i1.getType<int>(),
+            'publicId': _i1.ParameterDescription(
+              name: 'publicId',
+              type: _i1.getType<String>(),
               nullable: false,
             )
           },
@@ -123,7 +123,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['workspace'] as _i3.WorkspaceEndpoint)
                   .getWorkspaceDetails(
             session,
-            workspaceId: params['workspaceId'],
+            publicId: params['publicId'],
           ),
         ),
         'getMyWorkspaces': _i1.MethodConnector(

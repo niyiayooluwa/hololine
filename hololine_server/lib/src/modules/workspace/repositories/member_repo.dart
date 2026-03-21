@@ -40,6 +40,7 @@ class MemberRepo {
       final workspace = member.workspace;
       return WorkspaceSummary(
         id: workspace!.id!,
+        publicId: workspace.publicId,
         name: workspace.name,
         description: workspace.description,
         memberCount: workspace.members?.length ?? 0,

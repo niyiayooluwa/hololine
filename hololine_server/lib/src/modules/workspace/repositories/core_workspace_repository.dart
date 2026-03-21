@@ -117,6 +117,17 @@ class WorkspaceRepo {
     );
   }
 
+  /// Finds a workspace by its [publicId].
+  Future<Workspace?> findWorkspaceByPublicId(
+    Session session,
+    String publicId,
+  ) async {
+    return Workspace.db.findFirstRow(
+      session,
+      where: (workspace) => workspace.publicId.equals(publicId),
+    );
+  }
+
   Future<List<Workspace>> findChildWorkspaces(
     Session session,
     int parentId,
