@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:hololine_flutter/domain/failures/failures.dart';
+import 'package:hololine_client/hololine_client.dart';
 
 class ExceptionHandler {
   static Failure handleException(dynamic exception) {
@@ -66,7 +67,11 @@ class ExceptionHandler {
 
         // Serverpod client may throw a verbose client exception like
         // "Serverpod client exception: unknown server response code ...".
-        // Normalize those to a simple user-facing message.
+        // But we must pass through the real message for the UI to display it logically.
+        if (exception is ServerpodClientException) {
+          return ServerFailure(exception.message);
+        }
+
         if (exceptionType.toLowerCase().contains('serverpod') ||
             lower.contains('unknown server response') ||
             lower.contains('serverpod client exception')) {
