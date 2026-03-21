@@ -56,8 +56,9 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
         );
       },
     );
+    final shadTheme = ShadTheme.of(context);
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: shadTheme.colorScheme.background,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth;
@@ -179,19 +180,14 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
       ResetPasswordRequestController controller,
       AsyncValue<bool?> state,
       {required bool isMobile}) {
+    final shadTheme = ShadTheme.of(context);
     return Container(
       decoration: isMobile
           ? null
           : BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
+              color: shadTheme.cardTheme.backgroundColor,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              border: Border.all(color: shadTheme.colorScheme.border),
             ),
       constraints: const BoxConstraints(
         maxWidth: formMaxWidth,
@@ -301,7 +297,14 @@ class ResetPasswordRequestScreen extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const SizedBox(height: 8),
+        Text(
+          'Hololine',
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        const SizedBox(height: 32),
         Text(
           "Forgot your password?",
           style: theme.textTheme.headlineSmall?.copyWith(

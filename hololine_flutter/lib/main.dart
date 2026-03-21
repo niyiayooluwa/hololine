@@ -43,9 +43,9 @@ class MyApp extends ConsumerWidget {
       theme: ShadThemeData(
         colorScheme: const ShadBlueColorScheme.light(),
       ),
-      //darkTheme: ShadThemeData(colorScheme: const ShadBlueColorScheme.dark()),
+      darkTheme: ShadThemeData(colorScheme: const ShadBlueColorScheme.dark()),
       themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: true,
+      //debugShowCheckedModeBanner: true,
       routerConfig: router,
     );
   }

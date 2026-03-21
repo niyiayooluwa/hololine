@@ -12,7 +12,8 @@ class WorkspaceListScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the controller state directly
+    final theme = Theme.of(context);
+    final shadTheme = ShadTheme.of(context);
     final wState = ref.watch(workspaceListControllerProvider);
 
     ref.listen(workspaceListControllerProvider, (previous, next) {
@@ -23,43 +24,45 @@ class WorkspaceListScreen extends HookConsumerWidget {
       });
     });
 
-    final List<WorkspaceSummary> workspaces = [
-      WorkspaceSummary(
-        id: 24,
-        name: 'Hololine',
-        description: 'Description',
-        memberCount: 4,
-        lastActive: DateTime.now(),
-        role: WorkspaceRole.owner,
-      ),
-      WorkspaceSummary(
-        id: 25,
-        name: 'Hololine 2',
-        description: 'Description',
-        memberCount: 4,
-        lastActive: DateTime.now(),
-        role: WorkspaceRole.admin,
-      ),
-      WorkspaceSummary(
-        id: 26,
-        name: 'Hololine',
-        description: 'Description',
-        memberCount: 4,
-        lastActive: DateTime.now(),
-        role: WorkspaceRole.member,
-      ),
-      WorkspaceSummary(
-        id: 27,
-        name: 'Hololine',
-        description: 'Description',
-        memberCount: 4,
-        lastActive: DateTime.now(),
-        role: WorkspaceRole.viewer,
-      ),
-    ];
-
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      // 1. Subtle Background
+      backgroundColor: shadTheme.colorScheme.background,
+      // 2. Fixed Top Bar (The "Roof")
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(64),
+        child: Container(
+          decoration: BoxDecoration(
+            color: shadTheme.colorScheme.secondary,
+            border: Border(
+              bottom: BorderSide(
+                color: shadTheme.colorScheme.border,
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Hololine',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  const ShadAvatar(
+                    'https://avatars.githubusercontent.com/u/124599?v=4',
+                    placeholder: Text("NY"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
       body: wState.when(
         data: (workspaces) {
           if (workspaces.isEmpty) {
@@ -82,52 +85,32 @@ class WorkspaceListScreen extends HookConsumerWidget {
     required WidgetRef ref,
     required List<WorkspaceSummary> workspaces,
   }) {
+    final theme = Theme.of(context);
+
     return Center(
-      //Centers everything on the screen
       child: ConstrainedBox(
-        // Max width of 600px on the Web, but 100% width on Mobile
         constraints: const BoxConstraints(maxWidth: 600),
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Hololine',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                const ShadAvatar(
-                  'https://github.com/shadcn.png',
-                  placeholder: Text("NY"),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 48),
-
-            // ---SUB-HEADER
             Text(
               'Your Workspaces',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
-
             const SizedBox(height: 24),
-
-            ...workspaces.map(
-              (ws) => _buildWorkspaceCard(context: context, workspace: ws),
-            ),
-
+            ...workspaces
+                .map(
+                  (ws) => _buildWorkspaceCard(context: context, workspace: ws),
+                )
+                .toList(),
             const SizedBox(height: 24),
-
             ShadButton.outline(
               width: double.infinity,
-              onPressed: () {},
+              onPressed: () {
+                // Show create dialog logic will go here
+              },
               child: const Text("+ Create New Workspace"),
             ),
           ],
@@ -149,22 +132,23 @@ class WorkspaceListScreen extends HookConsumerWidget {
     required WorkspaceSummary workspace,
   }) {
     final theme = Theme.of(context);
+    final shadTheme = ShadTheme.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: ShadButton.outline(
-        width:
-            double.infinity, //Makes the button fill the 600px container width
+        width: double.infinity,
         padding: const EdgeInsets.all(16),
+        backgroundColor: shadTheme
+            .cardTheme
+            .backgroundColor, // Ensure card stands out from grey bg
         onPressed: () {
           context.go('/workspace/${workspace.id}');
         },
         child: Align(
-          // Forces the content to the left side
           alignment: Alignment.centerLeft,
           child: Row(
             children: [
-              // ICON: Workspace Initial
               Container(
                 width: 44,
                 height: 44,
@@ -183,13 +167,11 @@ class WorkspaceListScreen extends HookConsumerWidget {
                   ),
                 ),
               ),
-
               const SizedBox(width: 16),
-
               Expanded(
                 child: Column(
-                  crossAxisAlignment: .start,
-                  mainAxisSize: .min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       workspace.name,
@@ -197,7 +179,6 @@ class WorkspaceListScreen extends HookConsumerWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     Text(
                       '${workspace.memberCount} members',
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -209,7 +190,6 @@ class WorkspaceListScreen extends HookConsumerWidget {
                   ],
                 ),
               ),
-
               Icon(
                 Icons.chevron_right,
                 size: 20,
@@ -224,66 +204,62 @@ class WorkspaceListScreen extends HookConsumerWidget {
 
   Widget _buildZeroState({required BuildContext context}) {
     final theme = Theme.of(context);
+    final shadTheme = ShadTheme.of(context);
 
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
+        constraints: const BoxConstraints(maxWidth: 420),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            mainAxisAlignment: .center,
-            children: [
-              // ICON
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
+          padding: const EdgeInsets.all(24),
+          // 3. Grounded Zero State (Card wrapper)
+          child: ShadCard(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+            backgroundColor: theme.colorScheme.surface,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.business,
+                    size: 64,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
-                child: Icon(
-                  Icons.business,
-                  size: 64,
-                  color: theme.colorScheme.primary,
+                const SizedBox(height: 32),
+                Text(
+                  "No workspaces found",
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 32),
-
-              // ---HEADLINE
-              Text(
-                "No workspaces found",
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 12),
+                Text(
+                  "Create your first workspace to get started or enter a code to join an existing one.",
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 12),
-
-              // ---SUBHEADLINE
-              Text(
-                "Create your first workspace to get started or enter a code to join an existing one.",
-                textAlign: .center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                const SizedBox(height: 48),
+                ShadButton(
+                  width: double.infinity,
+                  onPressed: () {},
+                  child: const Text("Create Workspace"),
                 ),
-              ),
-
-              const SizedBox(height: 48),
-
-              ShadButton(
-                width: double.infinity,
-                onPressed: () {},
-                child: const Text("Create Workspace"),
-              ),
-
-              const SizedBox(height: 12),
-
-              ShadButton.outline(
-                width: double.infinity,
-                onPressed: () {},
-                child: const Text("Join with Code"),
-              ),
-            ],
+                const SizedBox(height: 12),
+                ShadButton.outline(
+                  width: double.infinity,
+                  onPressed: () {},
+                  child: const Text("Join with Code"),
+                ),
+              ],
+            ),
           ),
         ),
       ),
