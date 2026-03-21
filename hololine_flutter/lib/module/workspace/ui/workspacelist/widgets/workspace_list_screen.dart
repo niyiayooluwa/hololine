@@ -123,7 +123,38 @@ class WorkspaceListScreen extends HookConsumerWidget {
   }
 
   Widget _buildError({required String error}) {
-    return Center(child: Text('Error: $error'));
+    // Clean up the raw dart Exception string formatting
+    final cleanError =
+        error.replaceAll('Exception: ', '').replaceAll('Error: ', '');
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.error_outline,
+            color: Colors.red,
+            size: 48,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Could not load workspaces',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            cleanError,
+            style: const TextStyle(
+              color: Colors.red,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildLoading() {

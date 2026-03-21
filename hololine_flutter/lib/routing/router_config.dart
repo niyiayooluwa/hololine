@@ -8,6 +8,7 @@ import 'package:hololine_flutter/module/auth/ui/verification/widget/verification
 import 'package:hololine_flutter/module/workspace/ui/workspacelist/widgets/workspace_list_screen.dart';
 import 'package:hololine_flutter/preview.dart';
 import 'package:hololine_flutter/shared_ui/index.dart'; // Keep for showcase if needed later
+import 'package:hololine_flutter/core/layout/responsive_layout_shell.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -49,18 +50,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/workspace/:publicId',
-        builder: (context, state) {
-          final publicId = state.pathParameters['publicId'];
-          return Scaffold(
-            appBar: AppBar(title: Text('Workspace $publicId')),
-            body: Center(child: Text('Workspace $publicId Details')),
-          );
-        },
-      ),
-      GoRoute(
         path: '/workspacelist',
         builder: (context, state) => const WorkspaceListScreen(),
+      ),
+      ShellRoute(
+        builder: (context, state, child) {
+          return ResponsiveLayoutShell(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: '/workspace/:publicId',
+            builder: (context, state) {
+              final publicId = state.pathParameters['publicId'];
+              return Scaffold(
+                appBar: AppBar(title: Text('Workspace $publicId')),
+                body: Center(child: Text('Workspace $publicId Details')),
+              );
+            },
+          ),
+        ],
       ),
     ],
   );
