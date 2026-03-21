@@ -21,7 +21,7 @@ class WorkspaceListScreen extends HookConsumerWidget {
     ref.listen(workspaceListControllerProvider, (previous, next) {
       next.whenData((workspaces) {
         if (workspaces.length == 1) {
-          context.go('/workspace/${workspaces[0].id}');
+          context.go('/workspace/${workspaces[0].publicId}');
         }
       });
     });
@@ -102,11 +102,9 @@ class WorkspaceListScreen extends HookConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-            ...workspaces
-                .map(
-                  (ws) => _buildWorkspaceCard(context: context, workspace: ws),
-                )
-                .toList(),
+            ...workspaces.map(
+              (ws) => _buildWorkspaceCard(context: context, workspace: ws),
+            ),
             const SizedBox(height: 24),
             ShadButton.outline(
               width: double.infinity,
@@ -148,7 +146,7 @@ class WorkspaceListScreen extends HookConsumerWidget {
             .cardTheme
             .backgroundColor, // Ensure card stands out from grey bg
         onPressed: () {
-          context.go('/workspace/${workspace.id}');
+          context.go('/workspace/${workspace.publicId}');
         },
         child: Align(
           alignment: Alignment.centerLeft,
@@ -209,7 +207,6 @@ class WorkspaceListScreen extends HookConsumerWidget {
 
   Widget _buildZeroState({required BuildContext context}) {
     final theme = Theme.of(context);
-    final shadTheme = ShadTheme.of(context);
 
     return Center(
       child: ConstrainedBox(

@@ -10,43 +10,11 @@ class CreateWorkspaceDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formKey = GlobalKey<ShadFormState>();
-    final theme = Theme.of(context);
 
     return ShadDialog(
       title: const Text('Create Workspace'),
       description: const Text(
           "Set up a new workspace for your team. You'll be the owner of this workspace."),
-      child: Container(
-        width: 400,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: ShadForm(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ShadInputFormField(
-                id: 'name',
-                label: const Text('Workspace Name'),
-                placeholder: const Text('e.g. Acme Corp'),
-                validator: (v) {
-                  if (v.isEmpty) {
-                    return 'Workspace name is required';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              ShadInputFormField(
-                id: 'description',
-                label: const Text('Description (Optional)'),
-                placeholder: const Text('What is this workspace for?'),
-                maxLines: 3,
-              ),
-            ],
-          ),
-        ),
-      ),
       actions: [
         ShadButton.outline(
           child: const Text('Cancel'),
@@ -88,6 +56,37 @@ class CreateWorkspaceDialog extends HookConsumerWidget {
           },
         ),
       ],
+      child: Container(
+        width: 400,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: ShadForm(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ShadInputFormField(
+                id: 'name',
+                label: const Text('Workspace Name'),
+                placeholder: const Text('e.g. Acme Corp'),
+                validator: (v) {
+                  if (v.isEmpty) {
+                    return 'Workspace name is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              ShadInputFormField(
+                id: 'description',
+                label: const Text('Description (Optional)'),
+                placeholder: const Text('What is this workspace for?'),
+                maxLines: 3,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

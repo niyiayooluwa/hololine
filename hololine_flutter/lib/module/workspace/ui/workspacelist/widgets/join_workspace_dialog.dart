@@ -15,30 +15,6 @@ class JoinWorkspaceDialog extends HookConsumerWidget {
       title: const Text('Join Workspace'),
       description: const Text(
           "Enter the invitation token you received via email to join an existing workspace."),
-      child: Container(
-        width: 400,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: ShadForm(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ShadInputFormField(
-                id: 'token',
-                label: const Text('Invitation Token'),
-                placeholder: const Text('Paste your token here'),
-                validator: (v) {
-                  if (v.isEmpty) {
-                    return 'Invitation token is required';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
       actions: [
         ShadButton.outline(
           child: const Text('Cancel'),
@@ -79,6 +55,30 @@ class JoinWorkspaceDialog extends HookConsumerWidget {
           },
         ),
       ],
+      child: Container(
+        width: 400,
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: ShadForm(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ShadInputFormField(
+                id: 'token',
+                label: const Text('Invitation Token'),
+                placeholder: const Text('Paste your token here'),
+                validator: (v) {
+                  if (v.isEmpty) {
+                    return 'Invitation token is required';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
