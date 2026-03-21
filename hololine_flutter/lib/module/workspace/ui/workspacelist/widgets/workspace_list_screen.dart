@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_client/hololine_client.dart';
 import 'package:hololine_flutter/module/workspace/ui/workspacelist/controller/workspace_list_controller.dart';
+import 'package:hololine_flutter/module/workspace/ui/workspacelist/widgets/create_workspace_dialog.dart';
+import 'package:hololine_flutter/module/workspace/ui/workspacelist/widgets/join_workspace_dialog.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -109,7 +111,10 @@ class WorkspaceListScreen extends HookConsumerWidget {
             ShadButton.outline(
               width: double.infinity,
               onPressed: () {
-                // Show create dialog logic will go here
+                showShadDialog(
+                  context: context,
+                  builder: (context) => const CreateWorkspaceDialog(),
+                );
               },
               child: const Text("+ Create New Workspace"),
             ),
@@ -249,13 +254,23 @@ class WorkspaceListScreen extends HookConsumerWidget {
                 const SizedBox(height: 48),
                 ShadButton(
                   width: double.infinity,
-                  onPressed: () {},
+                  onPressed: () {
+                    showShadDialog(
+                      context: context,
+                      builder: (context) => const CreateWorkspaceDialog(),
+                    );
+                  },
                   child: const Text("Create Workspace"),
                 ),
                 const SizedBox(height: 12),
                 ShadButton.outline(
                   width: double.infinity,
-                  onPressed: () {},
+                  onPressed: () {
+                    showShadDialog(
+                      context: context,
+                      builder: (context) => const JoinWorkspaceDialog(),
+                    );
+                  },
                   child: const Text("Join with Code"),
                 ),
               ],

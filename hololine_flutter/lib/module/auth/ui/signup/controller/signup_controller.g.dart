@@ -15,15 +15,15 @@ const signupControllerProvider = SignupControllerProvider._();
 final class SignupControllerProvider
     extends $AsyncNotifierProvider<SignupController, bool> {
   const SignupControllerProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'signupControllerProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'signupControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$signupControllerHash();
@@ -42,11 +42,14 @@ abstract class _$SignupController extends $AsyncNotifier<bool> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<bool>, bool>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<bool>, bool>,
-        AsyncValue<bool>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<bool>, bool>,
+              AsyncValue<bool>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:hololine_client/hololine_client.dart';
 import 'package:hololine_flutter/module/workspace/domain/usecase/create_standalone_workspace_usecase.dart';
 import 'package:hololine_flutter/module/workspace/domain/usecase/get_my_workspaces_usecase.dart';
+import 'package:hololine_flutter/module/workspace/domain/usecase/join_workspace_usecase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'workspace_list_controller.g.dart';
@@ -17,6 +18,9 @@ class WorkspaceListController extends _$WorkspaceListController {
 
   CreateStandaloneWorkspaceUseCase get _createWorkspaceUseCase =>
       ref.read(createStandaloneWorkspaceUseCaseProvider);
+
+  JoinWorkspaceUseCase get _joinWorkspaceUseCase =>
+      ref.read(joinWorkspaceUseCaseProvider);
 
   Future<List<WorkspaceSummary>> _fetchWorkspaces() async {
     final result = await _myWorkspacesUseCase.call();
@@ -47,6 +51,33 @@ class WorkspaceListController extends _$WorkspaceListController {
         );
 
         // Update state optimistically if we have data
+        state.whenData((currentList) {
+          state = AsyncData([...currentList, newSummary]);
+        });
+      },
+    );
+  }
+
+  Future<void> joinWorkspace(String token) async {
+    final result = await _joinWorkspaceUseCase.call(token);
+
+    result.fold(
+      ifLeft: (failure) => throw Exception(failure.message),
+      ifRight: (workspaceMember) {
+        // Map the joined Workspace to a WorkspaceSummary
+        // Ensure the workspace object is not null from the backend response
+        final workspace = workspaceMember.workspace!;
+        
+        final newSummary = WorkspaceSummary(
+          id: workspace.id!,
+          name: workspace.name,
+          description: workspace.description,
+          memberCount: workspace.members?.length ?? 1,
+          lastActive: DateTime.now(),
+          role: workspaceMember.role,
+        );
+
+        // Update state optimistically
         state.whenData((currentList) {
           state = AsyncData([...currentList, newSummary]);
         });

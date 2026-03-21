@@ -16,15 +16,15 @@ const resetPasswordRequestControllerProvider =
 final class ResetPasswordRequestControllerProvider
     extends $AsyncNotifierProvider<ResetPasswordRequestController, bool> {
   const ResetPasswordRequestControllerProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'resetPasswordRequestControllerProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'resetPasswordRequestControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$resetPasswordRequestControllerHash();
@@ -44,11 +44,14 @@ abstract class _$ResetPasswordRequestController extends $AsyncNotifier<bool> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<bool>, bool>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<bool>, bool>,
-        AsyncValue<bool>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<bool>, bool>,
+              AsyncValue<bool>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
