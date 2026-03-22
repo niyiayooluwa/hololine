@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:hololine_flutter/core/layout/workspace_sidebar.dart';
+import 'package:hololine_flutter/core/layout/workspace_top_bar.dart';
 
 class MobileScaffold extends StatelessWidget {
   final Widget child;
@@ -9,45 +9,25 @@ class MobileScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ShadTheme.of(context);
-    final String currentPath = GoRouterState.of(context).uri.path;
-    
-    final int currentIndex = currentPath.startsWith('/workspace') ? 0 : 1;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
-      body: child,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: theme.colorScheme.border),
-          ),
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: theme.colorScheme.background,
-          selectedItemColor: theme.colorScheme.primary,
-          unselectedItemColor: theme.colorScheme.mutedForeground,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          elevation: 0,
-          currentIndex: currentIndex,
-          onTap: (index) {
-            if (index == 0) {
-              context.go('/workspacelist');
-            } else {
-              // context.go('/settings');
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(LucideIcons.layoutGrid),
-              label: 'Workspaces',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(LucideIcons.settings),
-              label: 'Settings',
-            ),
-          ],
+      backgroundColor: colorScheme.surface,
+      drawer: const Drawer(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        child: WorkspaceSidebar(),
+      ),
+      body: SafeArea(
+        bottom: false,
+        child: Container(
+           margin: EdgeInsets.zero, // Full edge-to-edge on mobile viewport
+           color: colorScheme.surface,
+           child: Column(
+             children: [
+               const WorkspaceTopBar(isMobile: true),
+               Expanded(child: child),
+             ],
+           ),
         ),
       ),
     );
