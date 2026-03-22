@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hololine_flutter/core/application/providers.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class WorkspaceTopBar extends StatelessWidget {
+class WorkspaceTopBar extends ConsumerWidget {
   final bool isMobile;
 
   const WorkspaceTopBar({super.key, this.isMobile = false});
@@ -18,10 +20,13 @@ class WorkspaceTopBar extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final String currentPath = GoRouterState.of(context).uri.path;
     final pageTitle = _getPageTitle(currentPath);
+
+    final user = ref.watch(sessionProvider).signedInUser;
+    final userName = user?.userName ?? "User";
 
     return Padding(
       padding: EdgeInsets.fromLTRB(isMobile ? 12 : 32, isMobile ? 12 : 24, isMobile ? 12 : 24, 16),
@@ -55,10 +60,28 @@ class WorkspaceTopBar extends StatelessWidget {
                 icon: Icon(Icons.notifications_outlined, color: colorScheme.onSurface, size: 28),
                 onPressed: () {},
               ),
-              const SizedBox(width: 16),
-              const CircleAvatar(
-                radius: 18,
-                child: Text('NY', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    userName,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
+                    child: Text(
+                      userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

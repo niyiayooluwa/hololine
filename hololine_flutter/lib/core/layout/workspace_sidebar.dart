@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hololine_flutter/module/workspace/ui/provider/workspace_detail_provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class WorkspaceSidebar extends HookWidget {
+class WorkspaceSidebar extends HookConsumerWidget {
   final bool isMobile;
   const WorkspaceSidebar({super.key, this.isMobile = false});
 
@@ -24,7 +26,7 @@ class WorkspaceSidebar extends HookWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final String currentPath = GoRouterState.of(context).uri.path;
     
@@ -34,7 +36,20 @@ class WorkspaceSidebar extends HookWidget {
     final isCollapsed = useState(false);
     final double width = isCollapsed.value ? 80.0 : 240.0;
     
-    const workspaceName = "Acme Corp";
+    const workspaceNamePlaceholder = "Acme Corp";
+    final workspaceAsync = ref.watch(workspaceDetailProvider(publicId));
+
+    final String workspaceName = workspaceAsync.when(
+      data: (w) => w.name,
+      loading: () => "Loading...",
+      error: (e, s) => workspaceNamePlaceholder,
+    );
+
+    final String memberCount = workspaceAsync.when(
+      data: (w) => "${w.members?.length ?? 0} members",
+      loading: () => "...",
+      error: (e, s) => "0 members",
+    );
 
     // Dynamic contrast constraints driven solely by Theme.of(), completely removing 'isDark' unreliability:
     // 1. Sidebar is always strictly darker than the Content Area:
@@ -205,7 +220,7 @@ class WorkspaceSidebar extends HookWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                "12 members",
+                                memberCount,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   // ignore: deprecated_member_use

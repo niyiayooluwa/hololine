@@ -38,7 +38,7 @@ final class WorkspaceListControllerProvider
 }
 
 String _$workspaceListControllerHash() =>
-    r'840619ae90d02f80e95eb91ef41edb8dec31aed4';
+    r'b0d7b546b53296dddccf68317b64d95f939ca9e2';
 
 abstract class _$WorkspaceListController
     extends $AsyncNotifier<List<WorkspaceSummary>> {
