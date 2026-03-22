@@ -43,7 +43,7 @@ class MemberRepo {
         publicId: workspace.publicId,
         name: workspace.name,
         description: workspace.description,
-        memberCount: workspace.members?.length ?? 0,
+        memberCount: workspace.members?.where((m) => m.isActive).length ?? 0,
         role: member.role,
         lastActive: workspace.createdAt
       );

@@ -22,40 +22,40 @@ class VerificationScreen extends HookConsumerWidget {
     final controller = ref.read(verificationControllerProvider.notifier);
     final state = ref.watch(verificationControllerProvider);
 
-    ref.listen<AsyncValue<UserInfo?>>(
-      verificationControllerProvider,
-      (previous, next) {
-        next.when(
-          data: (user) {
-            if (user != null) {
-              ShadToaster.of(context).show(
-                const ShadToast(
-                  title: Text('Verification Successful'),
-                  description: Text('You have been verified successfully.'),
-                ),
-              );
-              context.go('/workspaccelist');
-            }
-          },
-          error: (error, stackTrace) {
-            String message;
-            if (error is Failure) {
-              message = error.message;
-            } else {
-              message = error.toString();
-            }
-
+    ref.listen<AsyncValue<UserInfo?>>(verificationControllerProvider, (
+      previous,
+      next,
+    ) {
+      next.when(
+        data: (user) {
+          if (user != null) {
             ShadToaster.of(context).show(
-              ShadToast.destructive(
-                title: const Text('Login Failed'),
-                description: Text(message),
+              const ShadToast(
+                title: Text('Verification Successful'),
+                description: Text('You have been verified successfully.'),
               ),
             );
-          },
-          loading: () {},
-        );
-      },
-    );
+            context.go('/workspacelist');
+          }
+        },
+        error: (error, stackTrace) {
+          String message;
+          if (error is Failure) {
+            message = error.message;
+          } else {
+            message = error.toString();
+          }
+
+          ShadToaster.of(context).show(
+            ShadToast.destructive(
+              title: const Text('Login Failed'),
+              description: Text(message),
+            ),
+          );
+        },
+        loading: () {},
+      );
+    });
     final shadTheme = ShadTheme.of(context);
     return Scaffold(
       backgroundColor: shadTheme.colorScheme.background,
@@ -175,11 +175,12 @@ class VerificationScreen extends HookConsumerWidget {
 */
   // FORM CONTAINER (Used in all layouts)
   Widget _buildFormContainer(
-      BuildContext context,
-      TextEditingController otpController,
-      VerificationController controller,
-      AsyncValue<UserInfo?> state,
-      {required bool isMobile}) {
+    BuildContext context,
+    TextEditingController otpController,
+    VerificationController controller,
+    AsyncValue<UserInfo?> state, {
+    required bool isMobile,
+  }) {
     final shadTheme = ShadTheme.of(context);
     return Container(
       decoration: isMobile
@@ -189,9 +190,7 @@ class VerificationScreen extends HookConsumerWidget {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: shadTheme.colorScheme.border),
             ),
-      constraints: const BoxConstraints(
-        maxWidth: formMaxWidth,
-      ),
+      constraints: const BoxConstraints(maxWidth: formMaxWidth),
       padding: EdgeInsets.all(isMobile ? 24 : 32),
       child: _buildForm(
         context,
@@ -204,9 +203,13 @@ class VerificationScreen extends HookConsumerWidget {
   }
 
   // MAIN FORM
-  Widget _buildForm(BuildContext context, TextEditingController otpController,
-      VerificationController controller, AsyncValue<UserInfo?> state,
-      {required bool isMobile}) {
+  Widget _buildForm(
+    BuildContext context,
+    TextEditingController otpController,
+    VerificationController controller,
+    AsyncValue<UserInfo?> state, {
+    required bool isMobile,
+  }) {
     // Responsive values
     final titleFontSize = isMobile ? 24.0 : 28.0;
     final subtitleFontSize = isMobile ? 14.0 : 16.0;

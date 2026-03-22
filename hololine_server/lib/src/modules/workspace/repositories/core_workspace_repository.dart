@@ -117,7 +117,6 @@ class WorkspaceRepo {
     );
   }
 
-  /// Finds a workspace by its [publicId].
   Future<Workspace?> findWorkspaceByPublicId(
     Session session,
     String publicId,
@@ -125,6 +124,9 @@ class WorkspaceRepo {
     return Workspace.db.findFirstRow(
       session,
       where: (workspace) => workspace.publicId.equals(publicId),
+      include: Workspace.include(
+        members: WorkspaceMember.includeList(),
+      ),
     );
   }
 

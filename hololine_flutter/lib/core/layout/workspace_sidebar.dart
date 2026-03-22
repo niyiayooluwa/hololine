@@ -46,7 +46,7 @@ class WorkspaceSidebar extends HookConsumerWidget {
     );
 
     final String memberCount = workspaceAsync.when(
-      data: (w) => "${w.members?.length ?? 0} members",
+      data: (w) => "${w.members?.where((m) => m.isActive).length ?? 0} members",
       loading: () => "...",
       error: (e, s) => "0 members",
     );
