@@ -10,7 +10,7 @@ fields:
     deletedAt: DateTime?
     archivedAt: DateTime?
     pendingDeletionUntil: DateTime?
-    members: List<WorkspaceMember>?, relation(name=workspace_members_relation)
+    members: List<WorkspaceMember>?, relation(name=workspace_members)
 indexes:
   workspace_public_id_idx:
     fields: publicId
