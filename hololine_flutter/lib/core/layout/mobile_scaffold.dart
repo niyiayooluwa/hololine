@@ -10,17 +10,18 @@ class MobileScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final Color layoutBg = Color.lerp(colorScheme.surface, Colors.black, 0.03)!;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: layoutBg,
       drawer: const Drawer(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        child: WorkspaceSidebar(),
+        child: WorkspaceSidebar(isMobile: true),
       ),
       body: SafeArea(
         bottom: false,
         child: Container(
-           margin: EdgeInsets.zero, // Full edge-to-edge on mobile viewport
+           margin: const EdgeInsets.only(top: 12), // Tweak for mobile margins
            color: colorScheme.surface,
            child: Column(
              children: [

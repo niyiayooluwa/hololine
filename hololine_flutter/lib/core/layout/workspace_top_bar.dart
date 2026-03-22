@@ -52,7 +52,7 @@ class WorkspaceTopBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: Icon(Icons.notifications_outlined, color: colorScheme.onSurface),
+                icon: Icon(Icons.notifications_outlined, color: colorScheme.onSurface, size: 28),
                 onPressed: () {},
               ),
               const SizedBox(width: 16),
