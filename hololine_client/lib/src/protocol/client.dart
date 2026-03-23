@@ -12,13 +12,29 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:hololine_client/src/protocol/workspace.dart' as _i3;
-import 'package:hololine_client/src/protocol/responses/workspace_summary.dart'
+import 'package:hololine_client/src/protocol/workspace_dashboard_data.dart'
     as _i4;
-import 'package:hololine_client/src/protocol/workspace_member.dart' as _i5;
-import 'package:hololine_client/src/protocol/workspace_role.dart' as _i6;
-import 'package:hololine_client/src/protocol/workspace_invitation.dart' as _i7;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i8;
-import 'protocol.dart' as _i9;
+import 'package:hololine_client/src/protocol/responses/workspace_summary.dart'
+    as _i5;
+import 'package:hololine_client/src/protocol/workspace_member.dart' as _i6;
+import 'package:hololine_client/src/protocol/workspace_role.dart' as _i7;
+import 'package:hololine_client/src/protocol/workspace_invitation.dart' as _i8;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i9;
+import 'protocol.dart' as _i10;
+
+/// {@category Endpoint}
+class EndpointCron extends _i1.EndpointRef {
+  EndpointCron(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'cron';
+
+  _i2.Future<void> executeJob() => caller.callServerEndpoint<void>(
+        'cron',
+        'executeJob',
+        {},
+      );
+}
 
 /// [WorkspaceCleanupJob] is responsible for performing hard deletes on workspaces
 /// that have been soft deleted and their grace period has expired.
@@ -82,8 +98,16 @@ class EndpointWorkspace extends _i1.EndpointRef {
         {'publicId': publicId},
       );
 
-  _i2.Future<List<_i4.WorkspaceSummary>> getMyWorkspaces() =>
-      caller.callServerEndpoint<List<_i4.WorkspaceSummary>>(
+  _i2.Future<_i4.WorkspaceDashboardData> getDashboardData(
+          {required String publicId}) =>
+      caller.callServerEndpoint<_i4.WorkspaceDashboardData>(
+        'workspace',
+        'getDashboardData',
+        {'publicId': publicId},
+      );
+
+  _i2.Future<List<_i5.WorkspaceSummary>> getMyWorkspaces() =>
+      caller.callServerEndpoint<List<_i5.WorkspaceSummary>>(
         'workspace',
         'getMyWorkspaces',
         {},
@@ -97,12 +121,12 @@ class EndpointWorkspace extends _i1.EndpointRef {
         {'parentWorkspaceId': parentWorkspaceId},
       );
 
-  _i2.Future<_i5.WorkspaceMember> updateMemberRole({
+  _i2.Future<_i6.WorkspaceMember> updateMemberRole({
     required int memberId,
     required int workspaceId,
-    required _i6.WorkspaceRole role,
+    required _i7.WorkspaceRole role,
   }) =>
-      caller.callServerEndpoint<_i5.WorkspaceMember>(
+      caller.callServerEndpoint<_i6.WorkspaceMember>(
         'workspace',
         'updateMemberRole',
         {
@@ -112,11 +136,11 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i5.WorkspaceMember> removeMember({
+  _i2.Future<_i6.WorkspaceMember> removeMember({
     required int memberId,
     required int workspaceId,
   }) =>
-      caller.callServerEndpoint<_i5.WorkspaceMember>(
+      caller.callServerEndpoint<_i6.WorkspaceMember>(
         'workspace',
         'removeMember',
         {
@@ -125,19 +149,19 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i5.WorkspaceMember> leaveWorkspace({required int workspaceId}) =>
-      caller.callServerEndpoint<_i5.WorkspaceMember>(
+  _i2.Future<_i6.WorkspaceMember> leaveWorkspace({required int workspaceId}) =>
+      caller.callServerEndpoint<_i6.WorkspaceMember>(
         'workspace',
         'leaveWorkspace',
         {'workspaceId': workspaceId},
       );
 
-  _i2.Future<_i7.WorkspaceInvitation> inviteMember(
+  _i2.Future<_i8.WorkspaceInvitation> inviteMember(
     String email,
     int workspaceId,
-    _i6.WorkspaceRole role,
+    _i7.WorkspaceRole role,
   ) =>
-      caller.callServerEndpoint<_i7.WorkspaceInvitation>(
+      caller.callServerEndpoint<_i8.WorkspaceInvitation>(
         'workspace',
         'inviteMember',
         {
@@ -147,8 +171,8 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i5.WorkspaceMember> acceptInvitation(String token) =>
-      caller.callServerEndpoint<_i5.WorkspaceMember>(
+  _i2.Future<_i6.WorkspaceMember> acceptInvitation(String token) =>
+      caller.callServerEndpoint<_i6.WorkspaceMember>(
         'workspace',
         'acceptInvitation',
         {'token': token},
@@ -206,10 +230,10 @@ class EndpointWorkspace extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i8.Caller(client);
+    auth = _i9.Caller(client);
   }
 
-  late final _i8.Caller auth;
+  late final _i9.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -228,7 +252,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i9.Protocol(),
+          _i10.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -238,10 +262,13 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    cron = EndpointCron(this);
     cleanup = EndpointCleanup(this);
     workspace = EndpointWorkspace(this);
     modules = Modules(this);
   }
+
+  late final EndpointCron cron;
 
   late final EndpointCleanup cleanup;
 
@@ -251,6 +278,7 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'cron': cron,
         'cleanup': cleanup,
         'workspace': workspace,
       };

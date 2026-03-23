@@ -198,4 +198,38 @@ class MemberRepo {
 
     return result;
   }
+
+  /// Finds all active members of a workspace and includes their user profile info.
+  ///
+  /// This uses a direct SQL JOIN between workspace_member and serverpod_user_info
+  /// to efficiently fetch everything in a single trip.
+  Future<List<WorkspaceMemberInfo>> findMembersWithUserInfoByWorkspaceId(
+    Session session,
+    int workspaceId,
+  ) async {
+    final result = await session.db.unsafeQuery(
+      'SELECT m.id, m."userInfoId", m."workspaceId", m.role, m."invitedById", m."joinedAt", m."isActive", u."userName", u.email '
+      'FROM workspace_member m '
+      'JOIN serverpod_user_info u ON m."userInfoId" = u.id '
+      'WHERE m."workspaceId" = $workspaceId AND m."isActive" = true '
+      'ORDER BY m."joinedAt" ASC',
+    );
+
+    return result.map((row) {
+      final member = WorkspaceMember(
+        id: row[0] as int,
+        userInfoId: row[1] as int,
+        workspaceId: row[2] as int,
+        role: WorkspaceRole.values[row[3] as int],
+        invitedById: row[4] as int?,
+        joinedAt: row[5] as DateTime,
+        isActive: row[6] as bool,
+      );
+      return WorkspaceMemberInfo(
+        member: member,
+        userName: row[7] as String,
+        email: row[8] as String,
+      );
+    }).toList();
+  }
 }

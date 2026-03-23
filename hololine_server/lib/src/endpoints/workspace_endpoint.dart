@@ -1,6 +1,8 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart';
 import 'package:hololine_server/src/modules/workspace/usecase/services.dart';
+import 'package:hololine_server/src/modules/catalog/repositories/product_repo.dart';
+import 'package:hololine_server/src/modules/catalog/usecase/catalog_service.dart';
 import 'package:hololine_server/src/services/email_service.dart';
 import 'package:hololine_server/src/utils/endpoint_helper.dart';
 import 'package:hololine_server/src/utils/exceptions.dart';
@@ -16,6 +18,7 @@ class WorkspaceEndpoint extends Endpoint {
   final WorkspaceRepo _coreWorkspaceRepo = WorkspaceRepo();
   final MemberRepo _memberRepo = MemberRepo();
   final InvitationRepo _invitationRepo = InvitationRepo();
+  final ProductRepo _productRepo = ProductRepo();
 
   late final WorkspaceService _workspaceService = WorkspaceService(
     _memberRepo,
@@ -25,6 +28,7 @@ class WorkspaceEndpoint extends Endpoint {
     _memberRepo,
     _coreWorkspaceRepo,
   );
+  late final CatalogService _catalogService = CatalogService(_productRepo);
 
   // ===========================================================================
   // CREATION
@@ -77,6 +81,41 @@ class WorkspaceEndpoint extends Endpoint {
         session,
         publicId,
         userId,
+      );
+    });
+  }
+
+  Future<WorkspaceDashboardData> getDashboardData(
+    Session session, {
+    required String publicId,
+  }) async {
+    final userId = (await session.authenticated)?.userId;
+    if (userId == null) throw AuthenticationException('User not authenticated');
+
+    return runWithLogger(session, 'getDashboardData', () async {
+      // 1. Get workspace details
+      final workspace = await _workspaceService.getWorkspaceDetails(
+        session,
+        publicId,
+        userId,
+      );
+
+      // 2. Get rich member info
+      final members = await _memberRepo.findMembersWithUserInfoByWorkspaceId(
+        session,
+        workspace.id!,
+      );
+
+      // 3. Get catalog snapshot
+      final catalog = await _catalogService.getCatalogSnapshot(
+        session,
+        workspace.id!,
+      );
+
+      return WorkspaceDashboardData(
+        workspace: workspace,
+        members: members,
+        catalog: catalog,
       );
     });
   }

@@ -1,9 +1,12 @@
+cron:
+  - executeJob:
 cleanup:
   - checkAndPerformHardDeletes:
 workspace:
   - createStandalone:
   - createChild:
   - getWorkspaceDetails:
+  - getDashboardData:
   - getMyWorkspaces:
   - getChildWorkspaces:
   - updateMemberRole:

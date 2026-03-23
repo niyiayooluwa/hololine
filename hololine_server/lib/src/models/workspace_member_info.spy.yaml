@@ -1,0 +1,5 @@
+class: WorkspaceMemberInfo
+fields:
+  member: WorkspaceMember
+  userName: String
+  email: String
