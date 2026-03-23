@@ -32,6 +32,10 @@ abstract class WorkspaceRepository {
     int parentWorkspaceId,
   );
 
+  Future<Either<Failure, WorkspaceDashboardData>> getDashboardData(
+    String publicId,
+  );
+
   // ===========================================================================
   // MEMBER MANAGEMENT
   // ===========================================================================

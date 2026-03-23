@@ -29,6 +29,10 @@ abstract class WorkspaceRemoteDataSource {
     int parentWorkspaceId,
   );
 
+  Future<WorkspaceDashboardData> getDashboardData(
+    String publicId,
+  );
+
   // ===========================================================================
   // MEMBER MANAGEMENT
   // ===========================================================================

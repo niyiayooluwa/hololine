@@ -63,7 +63,7 @@ final class WorkspaceDetailProvider
   }
 }
 
-String _$workspaceDetailHash() => r'ff079273d33c3bcdf39f5d57a7f7ea66bc8543c0';
+String _$workspaceDetailHash() => r'58784c85a9faa771bcc28ccec7dfb727e2a6d308';
 
 final class WorkspaceDetailFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Workspace>, String> {

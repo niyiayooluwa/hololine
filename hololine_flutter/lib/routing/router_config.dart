@@ -9,6 +9,7 @@ import 'package:hololine_flutter/preview.dart';
 import 'package:hololine_flutter/shared_ui/index.dart'; // Keep for showcase if needed later
 import 'package:hololine_flutter/core/layout/responsive_layout_shell.dart';
 import 'package:hololine_flutter/core/widgets/empty_screen.dart';
+import 'package:hololine_flutter/module/workspace/ui/workspace_dashboard_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -71,7 +72,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: 'dashboard',
-                builder: (context, state) => const EmptyScreen(title: 'Dashboard'),
+                builder: (context, state) => WorkspaceDashboardScreen(
+                  publicId: state.pathParameters['publicId']!,
+                ),
               ),
               GoRoute(
                 path: 'catalog',

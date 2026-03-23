@@ -245,6 +245,18 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       return Left(ExceptionHandler.handleException(e));
     }
   }
+
+  @override
+  Future<Either<Failure, WorkspaceDashboardData>> getDashboardData(
+    String publicId,
+  ) async {
+    try {
+      final response = await remoteDataSource.getDashboardData(publicId);
+      return Right(response);
+    } catch (e) {
+      return Left(ExceptionHandler.handleException(e));
+    }
+  }
 }
 
 // ===========================================================================

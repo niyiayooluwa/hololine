@@ -177,6 +177,15 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       workspaceId,
     );
   }
+
+  @override
+  Future<WorkspaceDashboardData> getDashboardData(
+    String publicId,
+  ) async {
+    return await _client.workspace.getDashboardData(
+      publicId: publicId,
+    );
+  }
 }
 
 final workspaceRemoteDataSourceProvider =
