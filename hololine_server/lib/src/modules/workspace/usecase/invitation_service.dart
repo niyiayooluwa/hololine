@@ -52,7 +52,7 @@ class InvitationService {
   /// Throws an [Exception] if the workspace is not found, the actor lacks
   /// permissions, the user is already a member, a valid invitation already
   /// exists, or if email delivery fails.
-  Future<void> inviteMember(
+  Future<WorkspaceInvitation> inviteMember(
     Session session,
     String email,
     int workspaceId,
@@ -171,7 +171,7 @@ class InvitationService {
       expiresAt: DateTime.now().toUtc().add(const Duration(minutes: 15)),
     );
 
-    await _invitationRepository.createInvitation(session, invitation);
+    return await _invitationRepository.createInvitation(session, invitation);
   }
 
   /// Accepts a workspace invitation using a unique [token].

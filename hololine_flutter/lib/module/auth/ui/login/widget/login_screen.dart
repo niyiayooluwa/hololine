@@ -34,7 +34,7 @@ class LoginScreen extends HookConsumerWidget {
                 ),
               );
 
-              context.go('/dashboard');
+              context.go('/workspacelist');
             }
           },
           error: (error, stackTrace) {
@@ -55,8 +55,9 @@ class LoginScreen extends HookConsumerWidget {
           loading: () {});
     });
 
+    final shadTheme = ShadTheme.of(context);
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: shadTheme.colorScheme.background,
       body: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth;
@@ -194,21 +195,16 @@ class LoginScreen extends HookConsumerWidget {
   Widget _buildFormContainer(BuildContext context, LoginFormState formState,
       LoginController controller, AsyncValue<AuthenticationResponse?> state,
       {required bool isMobile}) {
+    final shadTheme = ShadTheme.of(context);
     return Container(
       decoration: isMobile
           ? null
           : BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
+              color: shadTheme.cardTheme.backgroundColor,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              border: Border.all(color: shadTheme.colorScheme.border),
             ),
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         maxWidth: formMaxWidth,
       ),
       padding: EdgeInsets.all(isMobile ? 24 : 32),
@@ -363,6 +359,14 @@ class LoginScreen extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
+          'Hololine',
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        const SizedBox(height: 32),
+        Text(
           "Welcome back!",
           style: theme.textTheme.titleMedium?.copyWith(
             color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
@@ -429,7 +433,7 @@ class LoginScreen extends HookConsumerWidget {
               },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
-                minimumSize: Size(0, 36),
+                minimumSize: const Size(0, 36),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
@@ -471,7 +475,7 @@ class LoginScreen extends HookConsumerWidget {
           onPressed: () {
             context.go('/auth/forgot-password');
           },
-          child: Text('Forgot Password?'),
+          child: const Text('Forgot Password?'),
         ),
       ],
     );
@@ -495,11 +499,11 @@ class LoginScreen extends HookConsumerWidget {
               context.go('/auth/signup');
             },
             style: TextButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              minimumSize: Size(0, 36),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              minimumSize: const Size(0, 36),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: Text(
+            child: const Text(
               'Sign Up',
               style: TextStyle(
                 fontWeight: FontWeight.bold,

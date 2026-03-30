@@ -25,6 +25,31 @@ class MemberRepo {
     );
   }
 
+  Future<List<WorkspaceSummary>> findUserWorkspaces(
+    Session session,
+    int userId,
+  ) async {
+    final members = await WorkspaceMember.db.find(session,
+        where: (member) =>
+            member.userInfoId.equals(userId) & member.isActive.equals(true),
+        include: WorkspaceMember.include(
+            workspace:
+                Workspace.include(members: WorkspaceMember.includeList())));
+
+    return members.map((member) {
+      final workspace = member.workspace;
+      return WorkspaceSummary(
+        id: workspace!.id!,
+        publicId: workspace.publicId,
+        name: workspace.name,
+        description: workspace.description,
+        memberCount: workspace.members?.where((m) => m.isActive).length ?? 0,
+        role: member.role,
+        lastActive: workspace.createdAt
+      );
+    }).toList();
+  }
+
   /// Finds a workspace member by their [email] address and [workspaceId].
   ///
   /// This method first looks up the user by email, then checks if that user
@@ -136,7 +161,7 @@ class MemberRepo {
   /// Throws an [Exception] if the member is not found, does not belong to
   /// the specified workspace, or if deactivating the member would leave
   /// the workspace without any active owners.
-  Future<void> deactivateMember(
+  Future<WorkspaceMember> deactivateMember(
     Session session,
     int memberId,
     int workspaceId,
@@ -169,6 +194,42 @@ class MemberRepo {
     }
 
     member.isActive = false;
-    await WorkspaceMember.db.updateRow(session, member);
+    final result = await WorkspaceMember.db.updateRow(session, member);
+
+    return result;
+  }
+
+  /// Finds all active members of a workspace and includes their user profile info.
+  ///
+  /// This uses a direct SQL JOIN between workspace_member and serverpod_user_info
+  /// to efficiently fetch everything in a single trip.
+  Future<List<WorkspaceMemberInfo>> findMembersWithUserInfoByWorkspaceId(
+    Session session,
+    int workspaceId,
+  ) async {
+    final result = await session.db.unsafeQuery(
+      'SELECT m.id, m."userInfoId", m."workspaceId", m.role, m."invitedById", m."joinedAt", m."isActive", u."userName", u.email '
+      'FROM workspace_member m '
+      'JOIN serverpod_user_info u ON m."userInfoId" = u.id '
+      'WHERE m."workspaceId" = $workspaceId AND m."isActive" = true '
+      'ORDER BY m."joinedAt" ASC',
+    );
+
+    return result.map((row) {
+      final member = WorkspaceMember(
+        id: row[0] as int,
+        userInfoId: row[1] as int,
+        workspaceId: row[2] as int,
+        role: WorkspaceRole.values[row[3] as int],
+        invitedById: row[4] as int?,
+        joinedAt: row[5] as DateTime,
+        isActive: row[6] as bool,
+      );
+      return WorkspaceMemberInfo(
+        member: member,
+        userName: row[7] as String,
+        email: row[8] as String,
+      );
+    }).toList();
   }
 }

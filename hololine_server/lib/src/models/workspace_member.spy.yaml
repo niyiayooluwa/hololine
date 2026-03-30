@@ -3,8 +3,8 @@ table: workspace_member
 fields:
     # Links to the user who is the member.
     userInfoId: int, relation(parent=serverpod_user_info)
-    # Links to the workspace they are a member of.
-    workspace: Workspace?, relation(name=workspace_members_relation)
+    workspaceId: int
+    workspace: Workspace?, relation(field=workspaceId, name=workspace_members, onDelete=cascade)
     # Use the enum for type safety.
     role: WorkspaceRole
     # Good for auditing

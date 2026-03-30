@@ -18,6 +18,7 @@ abstract class Workspace
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Workspace._({
     this.id,
+    required this.publicId,
     required this.name,
     required this.description,
     this.parentId,
@@ -31,6 +32,7 @@ abstract class Workspace
 
   factory Workspace({
     int? id,
+    required String publicId,
     required String name,
     required String description,
     int? parentId,
@@ -45,6 +47,7 @@ abstract class Workspace
   factory Workspace.fromJson(Map<String, dynamic> jsonSerialization) {
     return Workspace(
       id: jsonSerialization['id'] as int?,
+      publicId: jsonSerialization['publicId'] as String,
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String,
       parentId: jsonSerialization['parentId'] as int?,
@@ -75,6 +78,8 @@ abstract class Workspace
   @override
   int? id;
 
+  String publicId;
+
   String name;
 
   String description;
@@ -101,6 +106,7 @@ abstract class Workspace
   @_i1.useResult
   Workspace copyWith({
     int? id,
+    String? publicId,
     String? name,
     String? description,
     int? parentId,
@@ -115,6 +121,7 @@ abstract class Workspace
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'publicId': publicId,
       'name': name,
       'description': description,
       if (parentId != null) 'parentId': parentId,
@@ -133,6 +140,7 @@ abstract class Workspace
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
+      'publicId': publicId,
       'name': name,
       'description': description,
       if (parentId != null) 'parentId': parentId,
@@ -182,6 +190,7 @@ class _Undefined {}
 class _WorkspaceImpl extends Workspace {
   _WorkspaceImpl({
     int? id,
+    required String publicId,
     required String name,
     required String description,
     int? parentId,
@@ -193,6 +202,7 @@ class _WorkspaceImpl extends Workspace {
     List<_i2.WorkspaceMember>? members,
   }) : super._(
           id: id,
+          publicId: publicId,
           name: name,
           description: description,
           parentId: parentId,
@@ -210,6 +220,7 @@ class _WorkspaceImpl extends Workspace {
   @override
   Workspace copyWith({
     Object? id = _Undefined,
+    String? publicId,
     String? name,
     String? description,
     Object? parentId = _Undefined,
@@ -222,6 +233,7 @@ class _WorkspaceImpl extends Workspace {
   }) {
     return Workspace(
       id: id is int? ? id : this.id,
+      publicId: publicId ?? this.publicId,
       name: name ?? this.name,
       description: description ?? this.description,
       parentId: parentId is int? ? parentId : this.parentId,
@@ -241,6 +253,10 @@ class _WorkspaceImpl extends Workspace {
 
 class WorkspaceTable extends _i1.Table<int?> {
   WorkspaceTable({super.tableRelation}) : super(tableName: 'workspace') {
+    publicId = _i1.ColumnString(
+      'publicId',
+      this,
+    );
     name = _i1.ColumnString(
       'name',
       this,
@@ -275,6 +291,8 @@ class WorkspaceTable extends _i1.Table<int?> {
       this,
     );
   }
+
+  late final _i1.ColumnString publicId;
 
   late final _i1.ColumnString name;
 
@@ -330,6 +348,7 @@ class WorkspaceTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        publicId,
         name,
         description,
         parentId,

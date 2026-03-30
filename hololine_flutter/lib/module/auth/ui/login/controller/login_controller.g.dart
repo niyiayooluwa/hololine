@@ -15,15 +15,15 @@ const loginControllerProvider = LoginControllerProvider._();
 final class LoginControllerProvider
     extends $AsyncNotifierProvider<LoginController, AuthenticationResponse?> {
   const LoginControllerProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'loginControllerProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'loginControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$loginControllerHash();
@@ -42,14 +42,23 @@ abstract class _$LoginController
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref
-        as $Ref<AsyncValue<AuthenticationResponse?>, AuthenticationResponse?>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<AuthenticationResponse?>,
-            AuthenticationResponse?>,
-        AsyncValue<AuthenticationResponse?>,
-        Object?,
-        Object?>;
+    final ref =
+        this.ref
+            as $Ref<
+              AsyncValue<AuthenticationResponse?>,
+              AuthenticationResponse?
+            >;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<AuthenticationResponse?>,
+                AuthenticationResponse?
+              >,
+              AsyncValue<AuthenticationResponse?>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

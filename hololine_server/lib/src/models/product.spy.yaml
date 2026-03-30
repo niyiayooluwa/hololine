@@ -1,0 +1,8 @@
+class: Product
+table: product
+fields:
+  workspaceId: int, relation(parent=workspace, onDelete=cascade)
+  name: String
+  description: String?
+  price: double
+  createdAt: DateTime

@@ -15,15 +15,15 @@ const verificationControllerProvider = VerificationControllerProvider._();
 final class VerificationControllerProvider
     extends $AsyncNotifierProvider<VerificationController, UserInfo?> {
   const VerificationControllerProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'verificationControllerProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'verificationControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$verificationControllerHash();
@@ -43,11 +43,14 @@ abstract class _$VerificationController extends $AsyncNotifier<UserInfo?> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<UserInfo?>, UserInfo?>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<UserInfo?>, UserInfo?>,
-        AsyncValue<UserInfo?>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<UserInfo?>, UserInfo?>,
+              AsyncValue<UserInfo?>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

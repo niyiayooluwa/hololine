@@ -117,6 +117,36 @@ class WorkspaceRepo {
     );
   }
 
+  Future<Workspace?> findWorkspaceByPublicId(
+    Session session,
+    String publicId,
+  ) async {
+    return Workspace.db.findFirstRow(
+      session,
+      where: (workspace) => workspace.publicId.equals(publicId),
+      include: Workspace.include(
+        members: WorkspaceMember.includeList(),
+      ),
+    );
+  }
+
+  Future<List<Workspace>> findChildWorkspaces(
+    Session session,
+    int parentId,
+  ) async {
+    return Workspace.db.find(
+      session,
+      where: (workspace) => workspace.parentId.equals(parentId),
+    );
+  }
+
+  Future<Workspace> update(Session session, Workspace workspace) async {
+    return Workspace.db.updateRow(
+      session,
+      workspace
+    );
+  }
+
   /// Checks if a child workspace with the given [name] exists under [parentId].
   ///
   /// The [name] is checked for exact match under the specified [parentId].

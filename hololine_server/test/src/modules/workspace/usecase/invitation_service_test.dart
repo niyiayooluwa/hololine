@@ -52,7 +52,7 @@ void main() {
       inviteeId = 2;
       workspaceId = 55;
 
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,
@@ -325,7 +325,7 @@ void main() {
       inviterId = 2;
       workspaceId = 55;
 
-      expectedWorkspace = Workspace(
+      expectedWorkspace = Workspace(publicId: 'test-uuid', 
         id: workspaceId,
         name: workspaceName,
         description: workspaceDesc,

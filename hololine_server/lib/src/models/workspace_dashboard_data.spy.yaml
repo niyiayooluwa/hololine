@@ -1,0 +1,5 @@
+class: WorkspaceDashboardData
+fields:
+  workspace: Workspace
+  members: List<WorkspaceMemberInfo>
+  catalog: CatalogSnapshot

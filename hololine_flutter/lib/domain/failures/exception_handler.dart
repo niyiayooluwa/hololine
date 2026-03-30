@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:hololine_flutter/domain/failures/failures.dart';
+import 'package:hololine_client/hololine_client.dart';
 
 class ExceptionHandler {
   static Failure handleException(dynamic exception) {
@@ -18,21 +20,23 @@ class ExceptionHandler {
         return PermissionDeniedFailure(message);
       case 'ConflictException':
         return ConflictFailure(message);
+      case 'ExternalServiceException':
+        return ServerFailure(message);
       case 'InvalidStateException':
         return InvalidStateFailure(message);
       default:
         // Handle common network and parsing exceptions with user-friendly messages
         if (exception is SocketException) {
-          return ServerFailure(
+          return const ServerFailure(
               'No internet connection. Please check your network.');
         }
 
         if (exception is FormatException) {
-          return ServerFailure('Received unexpected data from server.');
+          return const ServerFailure('Received unexpected data from server.');
         }
 
         if (exception is TimeoutException) {
-          return ServerFailure('Request timed out. Please try again.');
+          return const ServerFailure('Request timed out. Please try again.');
         }
 
         // Normalize common network-related messages to a clear offline message.
@@ -57,21 +61,25 @@ class ExceptionHandler {
             networkIndicators.any((s) => lower.contains(s)) ||
             ((lower.contains('statuscode') || lower.contains('status code')) &&
                 lower.contains('-1'))) {
-          return ServerFailure(
+          return const ServerFailure(
               'No internet connection. Please check your network.');
         }
 
         // Serverpod client may throw a verbose client exception like
         // "Serverpod client exception: unknown server response code ...".
-        // Normalize those to a simple user-facing message.
+        // But we must pass through the real message for the UI to display it logically.
+        if (exception is ServerpodClientException) {
+          return ServerFailure(exception.message);
+        }
+
         if (exceptionType.toLowerCase().contains('serverpod') ||
             lower.contains('unknown server response') ||
             lower.contains('serverpod client exception')) {
-          return ServerFailure('Hmm.. Something went wrong on our end');
+          return const ServerFailure('Hmm.. Something went wrong on our end');
         }
 
         // Fallback for unknown exceptions: use the friendly generic message.
-        return ServerFailure('Hmm.. Something went wrong on our end');
+        return const ServerFailure('Hmm.. Something went wrong on our end');
     }
   }
 }

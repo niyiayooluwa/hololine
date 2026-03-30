@@ -1,6 +1,7 @@
 class: Workspace
 table: workspace
 fields:
+    publicId: String
     name: String
     description: String
     parentId: int?, relation(parent=workspace)
@@ -9,4 +10,8 @@ fields:
     deletedAt: DateTime?
     archivedAt: DateTime?
     pendingDeletionUntil: DateTime?
-    members: List<WorkspaceMember>?, relation(name=workspace_members_relation)
+    members: List<WorkspaceMember>?, relation(name=workspace_members)
+indexes:
+  workspace_public_id_idx:
+    fields: publicId
+    unique: true
