@@ -1,6 +1,6 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:hololine_server/src/generated/workspace_role.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 import 'package:serverpod/serverpod.dart';
 
 class EmailHandler {
@@ -8,6 +8,44 @@ class EmailHandler {
 
   EmailHandler(this.session);
 
+  // --- CORE HTTP SENDER (Bypasses Hugging Face SMTP Firewall) ---
+  Future<bool> _sendViaResendApi(String toEmail, String subject, String htmlBody) async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://api.resend.com/emails'),
+        headers: {
+          'Authorization': 'Bearer ${_getResendApiKey()}',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'from': 'Hololine Team <onboarding@resend.dev>',
+          'to': [toEmail],
+          'subject': subject,
+          'html': htmlBody,
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      } else {
+        session.log(
+          'Resend API Error: \${response.statusCode} - \${response.body}',
+          level: LogLevel.error,
+        );
+        return false;
+      }
+    } catch (e, stackTrace) {
+      session.log(
+        'HTTP Post Exception while sending email',
+        level: LogLevel.error,
+        exception: e,
+        stackTrace: stackTrace,
+      );
+      return false;
+    }
+  }
+
+  // --- VERIFICATION EMAIL ---
   Future<bool> sendVerificationEmail({
     required String email,
     required String verificationCode,
@@ -21,35 +59,18 @@ class EmailHandler {
       return true;
     }
 
-    try {
-      final smtpServer = SmtpServer(
-        'smtp.resend.com',
-        username: 'resend',
-        password: _getResendApiKey(),
-        port: 465,
-        ssl: true,
-      );
+    final html = _sendVerificationEmail(userName, verificationCode);
+    final success = await _sendViaResendApi(email, 'Verify your Hololine account', html);
 
-      final message = Message()
-        ..from = Address('onboarding@resend.dev', 'Hololine Team')
-        ..recipients.add(email)
-        ..subject = 'Verify your Hololine account'
-        ..html = _sendVerificationEmail(userName, verificationCode);
-      final sendReport = await send(message, smtpServer);
-      session
-          .log('Verification email sent to $email: ${sendReport.toString()}');
-      return true;
-    } catch (e, stackTrace) {
-      session.log(
-        'Failed to send verification email to $email',
-        level: LogLevel.error,
-        exception: e,
-        stackTrace: stackTrace,
-      );
-      return false;
+    if (success) {
+      session.log('Verification email sent to $email');
+    } else {
+      session.log('Failed to send verification email to $email', level: LogLevel.error);
     }
+    return success;
   }
 
+  // --- PASSWORD RESET EMAIL ---
   Future<bool> sendPasswordResetEmail({
     required String email,
     required String resetCode,
@@ -63,36 +84,18 @@ class EmailHandler {
       return true;
     }
 
-    try {
-      final smtpServer = SmtpServer(
-        'smtp.resend.com',
-        username: 'resend',
-        password: _getResendApiKey(),
-        port: 465,
-        ssl: true,
-      );
+    final html = _passwordResetEmail(userName, resetCode);
+    final success = await _sendViaResendApi(email, 'Reset your Hololine password', html);
 
-      final message = Message()
-        ..from = Address('onboarding@resend.dev', 'Hololine Team')
-        ..recipients.add(email)
-        ..subject = 'Reset your Hololine password'
-        ..html = _passwordResetEmail(userName, resetCode);
-
-      final sendReport = await send(message, smtpServer);
-      session
-          .log('Password reset email sent to $email: ${sendReport.toString()}');
-      return true;
-    } catch (e, stackTrace) {
-      session.log(
-        'Failed to send password reset email to $email',
-        level: LogLevel.error,
-        exception: e,
-        stackTrace: stackTrace,
-      );
-      return false;
+    if (success) {
+      session.log('Password reset email sent to $email');
+    } else {
+      session.log('Failed to send password reset email to $email', level: LogLevel.error);
     }
+    return success;
   }
 
+  // --- INVITATION EMAIL ---
   Future<bool> sendInvitation(
     String email,
     String token,
@@ -106,39 +109,26 @@ class EmailHandler {
       );
       return true;
     }
-    try {
-      final smtpServer = SmtpServer(
-        'smtp.resend.com',
-        username: 'resend',
-        password: _getResendApiKey(),
-        port: 465,
-        ssl: true,
-      );
 
-      final message = Message()
-        ..from = Address('onboarding@resend.dev', 'Hololine Team')
-        ..recipients.add(email)
-        ..subject = 'Invitation to join $workspaceName'
-        ..html = _workspaceInviteEmail(workspaceName, token, role.toString());
+    final html = _workspaceInviteEmail(workspaceName, token, role.toString());
+    final success = await _sendViaResendApi(email, 'Invitation to join $workspaceName', html);
 
-      final sendReport = await send(message, smtpServer);
-      session.log('Invitation email sent to $email: ${sendReport.toString()}');
-      return true;
-    } catch (e, stackTrace) {
-      session.log(
-        'Failed to send invitation email to $email',
-        level: LogLevel.error,
-        exception: e,
-        stackTrace: stackTrace,
-      );
-      return false;
+    if (success) {
+      session.log('Invitation email sent to $email');
+    } else {
+      session.log('Failed to send invitation email to $email', level: LogLevel.error);
     }
+    return success;
   }
 
   String _getResendApiKey() {
     // Try environment variable first, then fallback to config
     return const String.fromEnvironment('RESEND_API_KEY');
   }
+
+  // ==========================================
+  // HTML TEMPLATES (Unchanged)
+  // ==========================================
 
   String _sendVerificationEmail(String userName, String verificationCode) {
     final string = '''<!DOCTYPE html>
@@ -464,16 +454,6 @@ class EmailHandler {
             border-radius: 6px;
             font-size: 14px;
             color: #92400e;
-        }
-        
-        .info {
-            background: #e0e7ff;
-            border-left: 4px solid #667eea;
-            padding: 15px 20px;
-            margin: 25px 0;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #3730a3;
         }
         
         .footer { 
