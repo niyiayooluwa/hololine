@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:hololine_server/src/generated/workspace_role.dart';
 import 'package:serverpod/serverpod.dart';
@@ -29,7 +30,7 @@ class EmailHandler {
         return true;
       } else {
         session.log(
-          'Resend API Error: \${response.statusCode} - \${response.body}',
+          'Resend API Error: ${response.statusCode} - ${response.body}',
           level: LogLevel.error,
         );
         return false;
@@ -122,8 +123,12 @@ class EmailHandler {
   }
 
   String _getResendApiKey() {
-    // Try environment variable first, then fallback to config
-    return const String.fromEnvironment('RESEND_API_KEY');
+    // This reads the secret directly from Hugging Face's runtime environment
+    final key = Platform.environment['RESEND_API_KEY'];
+    if (key == null || key.isEmpty) {
+      session.log('WARNING: RESEND_API_KEY is missing from environment variables!', level: LogLevel.warning);
+    }
+    return key ?? '';
   }
 
   // ==========================================
