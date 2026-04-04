@@ -1,0 +1,25 @@
+class: Inventory
+table: inventory
+fields:
+  workspaceId:          int
+  catalogId:            int
+  currentQty:           double
+  availableQty:         double
+  totalValue:           double
+  location:             String?
+  lowStockThreshold:    double?
+  lastRestockedAt:      DateTime?
+  lastRestockedByName:  String?
+  lastRestockedById:    int?
+  lastDeductedAt:       DateTime?
+  lastDeductedByName:   String?
+  lastDeductedById:     int?
+  createdAt:            DateTime
+  lastModifiedAt:       DateTime
+
+indexes:
+  inventory_workspace_idx:
+    fields: workspaceId
+  inventory_catalog_idx:
+    fields: catalogId
+    unique: true

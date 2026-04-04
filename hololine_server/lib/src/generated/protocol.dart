@@ -12,20 +12,28 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
-import 'catalog_snapshot.dart' as _i4;
-import 'product.dart' as _i5;
-import 'responses/response.dart' as _i6;
-import 'responses/workspace_summary.dart' as _i7;
-import 'workspace.dart' as _i8;
-import 'workspace_dashboard_data.dart' as _i9;
-import 'workspace_invitation.dart' as _i10;
-import 'workspace_member.dart' as _i11;
-import 'workspace_member_info.dart' as _i12;
-import 'workspace_role.dart' as _i13;
+import 'catalog.dart' as _i4;
+import 'catalog_snapshot.dart' as _i5;
+import 'inventory.dart' as _i6;
+import 'ledger.dart' as _i7;
+import 'ledger_line_item.dart' as _i8;
+import 'product.dart' as _i9;
+import 'responses/response.dart' as _i10;
+import 'responses/workspace_summary.dart' as _i11;
+import 'workspace.dart' as _i12;
+import 'workspace_dashboard_data.dart' as _i13;
+import 'workspace_invitation.dart' as _i14;
+import 'workspace_member.dart' as _i15;
+import 'workspace_member_info.dart' as _i16;
+import 'workspace_role.dart' as _i17;
 import 'package:hololine_server/src/generated/responses/workspace_summary.dart'
-    as _i14;
-import 'package:hololine_server/src/generated/workspace.dart' as _i15;
+    as _i18;
+import 'package:hololine_server/src/generated/workspace.dart' as _i19;
+export 'catalog.dart';
 export 'catalog_snapshot.dart';
+export 'inventory.dart';
+export 'ledger.dart';
+export 'ledger_line_item.dart';
 export 'product.dart';
 export 'responses/response.dart';
 export 'responses/workspace_summary.dart';
@@ -44,6 +52,308 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'catalog',
+      dartName: 'Catalog',
+      schema: 'public',
+      module: 'hololine',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'catalog_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'workspaceId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'type',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sku',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'unit',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'category',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'weight',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'minOrderQty',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'price',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'currency',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'NGN\'::text',
+        ),
+        _i2.ColumnDefinition(
+          name: 'status',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'active\'::text',
+        ),
+        _i2.ColumnDefinition(
+          name: 'addedByName',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'addedById',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastModifiedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'catalog_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'catalog_workspace_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'workspaceId',
+            )
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'catalog_sku_workspace_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'workspaceId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'sku',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'inventory',
+      dartName: 'Inventory',
+      schema: 'public',
+      module: 'hololine',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'inventory_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'workspaceId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'catalogId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'currentQty',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'availableQty',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'totalValue',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'location',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lowStockThreshold',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastRestockedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastRestockedByName',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastRestockedById',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastDeductedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastDeductedByName',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastDeductedById',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastModifiedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'inventory_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'inventory_workspace_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'workspaceId',
+            )
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'inventory_catalog_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'catalogId',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     _i2.TableDefinition(
       name: 'invitation',
       dartName: 'WorkspaceInvitation',
@@ -136,6 +446,262 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: true,
           isPrimary: true,
         )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'ledger',
+      dartName: 'Ledger',
+      schema: 'public',
+      module: 'hololine',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'ledger_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'workspaceId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'referenceNumber',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'transactionType',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'paymentStatus',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'totalAmount',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'notes',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'transactionAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdByName',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdById',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'counterpartyName',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastModifiedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'ledger_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'ledger_workspace_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'workspaceId',
+            )
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'ledger_type_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'workspaceId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'transactionType',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'ledger_line_item',
+      dartName: 'LedgerLineItem',
+      schema: 'public',
+      module: 'hololine',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'ledger_line_item_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'workspaceId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'ledgerId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'catalogId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'catalogName',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'catalogSku',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'unitPrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'quantity',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'unit',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'subtotal',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'ledger_line_item_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'ledger_line_item_ledger_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'ledgerId',
+            )
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'ledger_line_item_workspace_catalog_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'workspaceId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'catalogId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
       ],
       managed: true,
     ),
@@ -450,88 +1016,112 @@ class Protocol extends _i1.SerializationManagerServer {
     Type? t,
   ]) {
     t ??= T;
-    if (t == _i4.CatalogSnapshot) {
-      return _i4.CatalogSnapshot.fromJson(data) as T;
+    if (t == _i4.Catalog) {
+      return _i4.Catalog.fromJson(data) as T;
     }
-    if (t == _i5.Product) {
-      return _i5.Product.fromJson(data) as T;
+    if (t == _i5.CatalogSnapshot) {
+      return _i5.CatalogSnapshot.fromJson(data) as T;
     }
-    if (t == _i6.Response) {
-      return _i6.Response.fromJson(data) as T;
+    if (t == _i6.Inventory) {
+      return _i6.Inventory.fromJson(data) as T;
     }
-    if (t == _i7.WorkspaceSummary) {
-      return _i7.WorkspaceSummary.fromJson(data) as T;
+    if (t == _i7.Ledger) {
+      return _i7.Ledger.fromJson(data) as T;
     }
-    if (t == _i8.Workspace) {
-      return _i8.Workspace.fromJson(data) as T;
+    if (t == _i8.LedgerLineItem) {
+      return _i8.LedgerLineItem.fromJson(data) as T;
     }
-    if (t == _i9.WorkspaceDashboardData) {
-      return _i9.WorkspaceDashboardData.fromJson(data) as T;
+    if (t == _i9.Product) {
+      return _i9.Product.fromJson(data) as T;
     }
-    if (t == _i10.WorkspaceInvitation) {
-      return _i10.WorkspaceInvitation.fromJson(data) as T;
+    if (t == _i10.Response) {
+      return _i10.Response.fromJson(data) as T;
     }
-    if (t == _i11.WorkspaceMember) {
-      return _i11.WorkspaceMember.fromJson(data) as T;
+    if (t == _i11.WorkspaceSummary) {
+      return _i11.WorkspaceSummary.fromJson(data) as T;
     }
-    if (t == _i12.WorkspaceMemberInfo) {
-      return _i12.WorkspaceMemberInfo.fromJson(data) as T;
+    if (t == _i12.Workspace) {
+      return _i12.Workspace.fromJson(data) as T;
     }
-    if (t == _i13.WorkspaceRole) {
-      return _i13.WorkspaceRole.fromJson(data) as T;
+    if (t == _i13.WorkspaceDashboardData) {
+      return _i13.WorkspaceDashboardData.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i4.CatalogSnapshot?>()) {
-      return (data != null ? _i4.CatalogSnapshot.fromJson(data) : null) as T;
+    if (t == _i14.WorkspaceInvitation) {
+      return _i14.WorkspaceInvitation.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.Product?>()) {
-      return (data != null ? _i5.Product.fromJson(data) : null) as T;
+    if (t == _i15.WorkspaceMember) {
+      return _i15.WorkspaceMember.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i6.Response?>()) {
-      return (data != null ? _i6.Response.fromJson(data) : null) as T;
+    if (t == _i16.WorkspaceMemberInfo) {
+      return _i16.WorkspaceMemberInfo.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i7.WorkspaceSummary?>()) {
-      return (data != null ? _i7.WorkspaceSummary.fromJson(data) : null) as T;
+    if (t == _i17.WorkspaceRole) {
+      return _i17.WorkspaceRole.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i8.Workspace?>()) {
-      return (data != null ? _i8.Workspace.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.Catalog?>()) {
+      return (data != null ? _i4.Catalog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.WorkspaceDashboardData?>()) {
-      return (data != null ? _i9.WorkspaceDashboardData.fromJson(data) : null)
+    if (t == _i1.getType<_i5.CatalogSnapshot?>()) {
+      return (data != null ? _i5.CatalogSnapshot.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i6.Inventory?>()) {
+      return (data != null ? _i6.Inventory.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i7.Ledger?>()) {
+      return (data != null ? _i7.Ledger.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i8.LedgerLineItem?>()) {
+      return (data != null ? _i8.LedgerLineItem.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i9.Product?>()) {
+      return (data != null ? _i9.Product.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i10.Response?>()) {
+      return (data != null ? _i10.Response.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i11.WorkspaceSummary?>()) {
+      return (data != null ? _i11.WorkspaceSummary.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i12.Workspace?>()) {
+      return (data != null ? _i12.Workspace.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i13.WorkspaceDashboardData?>()) {
+      return (data != null ? _i13.WorkspaceDashboardData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i10.WorkspaceInvitation?>()) {
-      return (data != null ? _i10.WorkspaceInvitation.fromJson(data) : null)
+    if (t == _i1.getType<_i14.WorkspaceInvitation?>()) {
+      return (data != null ? _i14.WorkspaceInvitation.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i11.WorkspaceMember?>()) {
-      return (data != null ? _i11.WorkspaceMember.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.WorkspaceMember?>()) {
+      return (data != null ? _i15.WorkspaceMember.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.WorkspaceMemberInfo?>()) {
-      return (data != null ? _i12.WorkspaceMemberInfo.fromJson(data) : null)
+    if (t == _i1.getType<_i16.WorkspaceMemberInfo?>()) {
+      return (data != null ? _i16.WorkspaceMemberInfo.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i13.WorkspaceRole?>()) {
-      return (data != null ? _i13.WorkspaceRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.WorkspaceRole?>()) {
+      return (data != null ? _i17.WorkspaceRole.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<_i11.WorkspaceMember>?>()) {
+    if (t == _i1.getType<List<_i15.WorkspaceMember>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i11.WorkspaceMember>(e))
+              .map((e) => deserialize<_i15.WorkspaceMember>(e))
               .toList()
           : null) as T;
     }
-    if (t == List<_i12.WorkspaceMemberInfo>) {
+    if (t == List<_i16.WorkspaceMemberInfo>) {
       return (data as List)
-          .map((e) => deserialize<_i12.WorkspaceMemberInfo>(e))
+          .map((e) => deserialize<_i16.WorkspaceMemberInfo>(e))
           .toList() as T;
     }
-    if (t == List<_i14.WorkspaceSummary>) {
+    if (t == List<_i18.WorkspaceSummary>) {
       return (data as List)
-          .map((e) => deserialize<_i14.WorkspaceSummary>(e))
+          .map((e) => deserialize<_i18.WorkspaceSummary>(e))
           .toList() as T;
     }
-    if (t == List<_i15.Workspace>) {
-      return (data as List).map((e) => deserialize<_i15.Workspace>(e)).toList()
+    if (t == List<_i19.Workspace>) {
+      return (data as List).map((e) => deserialize<_i19.Workspace>(e)).toList()
           as T;
     }
     try {
@@ -547,34 +1137,46 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i4.CatalogSnapshot) {
+    if (data is _i4.Catalog) {
+      return 'Catalog';
+    }
+    if (data is _i5.CatalogSnapshot) {
       return 'CatalogSnapshot';
     }
-    if (data is _i5.Product) {
+    if (data is _i6.Inventory) {
+      return 'Inventory';
+    }
+    if (data is _i7.Ledger) {
+      return 'Ledger';
+    }
+    if (data is _i8.LedgerLineItem) {
+      return 'LedgerLineItem';
+    }
+    if (data is _i9.Product) {
       return 'Product';
     }
-    if (data is _i6.Response) {
+    if (data is _i10.Response) {
       return 'Response';
     }
-    if (data is _i7.WorkspaceSummary) {
+    if (data is _i11.WorkspaceSummary) {
       return 'WorkspaceSummary';
     }
-    if (data is _i8.Workspace) {
+    if (data is _i12.Workspace) {
       return 'Workspace';
     }
-    if (data is _i9.WorkspaceDashboardData) {
+    if (data is _i13.WorkspaceDashboardData) {
       return 'WorkspaceDashboardData';
     }
-    if (data is _i10.WorkspaceInvitation) {
+    if (data is _i14.WorkspaceInvitation) {
       return 'WorkspaceInvitation';
     }
-    if (data is _i11.WorkspaceMember) {
+    if (data is _i15.WorkspaceMember) {
       return 'WorkspaceMember';
     }
-    if (data is _i12.WorkspaceMemberInfo) {
+    if (data is _i16.WorkspaceMemberInfo) {
       return 'WorkspaceMemberInfo';
     }
-    if (data is _i13.WorkspaceRole) {
+    if (data is _i17.WorkspaceRole) {
       return 'WorkspaceRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -594,35 +1196,47 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'Catalog') {
+      return deserialize<_i4.Catalog>(data['data']);
+    }
     if (dataClassName == 'CatalogSnapshot') {
-      return deserialize<_i4.CatalogSnapshot>(data['data']);
+      return deserialize<_i5.CatalogSnapshot>(data['data']);
+    }
+    if (dataClassName == 'Inventory') {
+      return deserialize<_i6.Inventory>(data['data']);
+    }
+    if (dataClassName == 'Ledger') {
+      return deserialize<_i7.Ledger>(data['data']);
+    }
+    if (dataClassName == 'LedgerLineItem') {
+      return deserialize<_i8.LedgerLineItem>(data['data']);
     }
     if (dataClassName == 'Product') {
-      return deserialize<_i5.Product>(data['data']);
+      return deserialize<_i9.Product>(data['data']);
     }
     if (dataClassName == 'Response') {
-      return deserialize<_i6.Response>(data['data']);
+      return deserialize<_i10.Response>(data['data']);
     }
     if (dataClassName == 'WorkspaceSummary') {
-      return deserialize<_i7.WorkspaceSummary>(data['data']);
+      return deserialize<_i11.WorkspaceSummary>(data['data']);
     }
     if (dataClassName == 'Workspace') {
-      return deserialize<_i8.Workspace>(data['data']);
+      return deserialize<_i12.Workspace>(data['data']);
     }
     if (dataClassName == 'WorkspaceDashboardData') {
-      return deserialize<_i9.WorkspaceDashboardData>(data['data']);
+      return deserialize<_i13.WorkspaceDashboardData>(data['data']);
     }
     if (dataClassName == 'WorkspaceInvitation') {
-      return deserialize<_i10.WorkspaceInvitation>(data['data']);
+      return deserialize<_i14.WorkspaceInvitation>(data['data']);
     }
     if (dataClassName == 'WorkspaceMember') {
-      return deserialize<_i11.WorkspaceMember>(data['data']);
+      return deserialize<_i15.WorkspaceMember>(data['data']);
     }
     if (dataClassName == 'WorkspaceMemberInfo') {
-      return deserialize<_i12.WorkspaceMemberInfo>(data['data']);
+      return deserialize<_i16.WorkspaceMemberInfo>(data['data']);
     }
     if (dataClassName == 'WorkspaceRole') {
-      return deserialize<_i13.WorkspaceRole>(data['data']);
+      return deserialize<_i17.WorkspaceRole>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -650,14 +1264,22 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i5.Product:
-        return _i5.Product.t;
-      case _i8.Workspace:
-        return _i8.Workspace.t;
-      case _i10.WorkspaceInvitation:
-        return _i10.WorkspaceInvitation.t;
-      case _i11.WorkspaceMember:
-        return _i11.WorkspaceMember.t;
+      case _i4.Catalog:
+        return _i4.Catalog.t;
+      case _i6.Inventory:
+        return _i6.Inventory.t;
+      case _i7.Ledger:
+        return _i7.Ledger.t;
+      case _i8.LedgerLineItem:
+        return _i8.LedgerLineItem.t;
+      case _i9.Product:
+        return _i9.Product.t;
+      case _i12.Workspace:
+        return _i12.Workspace.t;
+      case _i14.WorkspaceInvitation:
+        return _i14.WorkspaceInvitation.t;
+      case _i15.WorkspaceMember:
+        return _i15.WorkspaceMember.t;
     }
     return null;
   }

@@ -1,0 +1,19 @@
+class: LedgerLineItem
+table: ledger_line_item
+fields:
+  workspaceId:   int
+  ledgerId:      int
+  catalogId:     int
+  catalogName:   String
+  catalogSku:    String?
+  unitPrice:     double
+  quantity:      double
+  unit:          String
+  subtotal:      double
+  createdAt:     DateTime
+
+indexes:
+  ledger_line_item_ledger_idx:
+    fields: ledgerId
+  ledger_line_item_workspace_catalog_idx:
+    fields: workspaceId, catalogId

@@ -1,0 +1,21 @@
+class: Ledger
+table: ledger
+fields:
+  workspaceId:      int
+  referenceNumber:  String?
+  transactionType:  String
+  paymentStatus:    String
+  totalAmount:      double
+  notes:            String?
+  transactionAt:    DateTime
+  createdByName:    String
+  createdById:      int?
+  counterpartyName: String?
+  createdAt:        DateTime
+  lastModifiedAt:   DateTime
+
+indexes:
+  ledger_workspace_idx:
+    fields: workspaceId
+  ledger_type_idx:
+    fields: workspaceId, transactionType

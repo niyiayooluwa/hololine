@@ -1,0 +1,25 @@
+class: Catalog
+table: catalog
+fields:
+  workspaceId:    int
+  name:           String
+  type:           String
+  sku:            String?
+  unit:           String
+  category:       String?
+  weight:         double?
+  minOrderQty:    int?
+  price:          double
+  currency:       String,       default="NGN"
+  status:       String,       default="active"
+  addedByName:    String
+  addedById:      int?
+  createdAt:      DateTime
+  lastModifiedAt: DateTime
+
+indexes:
+  catalog_workspace_idx:
+    fields: workspaceId
+  catalog_sku_workspace_idx:
+    fields: workspaceId, sku
+    unique: true
