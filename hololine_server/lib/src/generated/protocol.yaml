@@ -3,6 +3,10 @@ catalog:
   - listProducts:
   - updateProduct:
   - archiveProduct:
+inventory:
+  - listInventory:
+  - getLowStockItems:
+  - updateThreshold:
 cron:
   - executeJob:
 cleanup:

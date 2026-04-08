@@ -8,8 +8,11 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'inventory.dart' as _i2;
 
 abstract class Catalog
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -30,6 +33,7 @@ abstract class Catalog
     this.addedById,
     required this.createdAt,
     required this.lastModifiedAt,
+    this.inventory,
   })  : currency = currency ?? 'NGN',
         status = status ?? 'active';
 
@@ -50,6 +54,7 @@ abstract class Catalog
     int? addedById,
     required DateTime createdAt,
     required DateTime lastModifiedAt,
+    List<_i2.Inventory>? inventory,
   }) = _CatalogImpl;
 
   factory Catalog.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -72,6 +77,9 @@ abstract class Catalog
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       lastModifiedAt: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['lastModifiedAt']),
+      inventory: (jsonSerialization['inventory'] as List?)
+          ?.map((e) => _i2.Inventory.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -112,6 +120,8 @@ abstract class Catalog
 
   DateTime lastModifiedAt;
 
+  List<_i2.Inventory>? inventory;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -135,6 +145,7 @@ abstract class Catalog
     int? addedById,
     DateTime? createdAt,
     DateTime? lastModifiedAt,
+    List<_i2.Inventory>? inventory,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -155,6 +166,8 @@ abstract class Catalog
       if (addedById != null) 'addedById': addedById,
       'createdAt': createdAt.toJson(),
       'lastModifiedAt': lastModifiedAt.toJson(),
+      if (inventory != null)
+        'inventory': inventory?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -177,11 +190,14 @@ abstract class Catalog
       if (addedById != null) 'addedById': addedById,
       'createdAt': createdAt.toJson(),
       'lastModifiedAt': lastModifiedAt.toJson(),
+      if (inventory != null)
+        'inventory':
+            inventory?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static CatalogInclude include() {
-    return CatalogInclude._();
+  static CatalogInclude include({_i2.InventoryIncludeList? inventory}) {
+    return CatalogInclude._(inventory: inventory);
   }
 
   static CatalogIncludeList includeList({
@@ -230,6 +246,7 @@ class _CatalogImpl extends Catalog {
     int? addedById,
     required DateTime createdAt,
     required DateTime lastModifiedAt,
+    List<_i2.Inventory>? inventory,
   }) : super._(
           id: id,
           workspaceId: workspaceId,
@@ -247,6 +264,7 @@ class _CatalogImpl extends Catalog {
           addedById: addedById,
           createdAt: createdAt,
           lastModifiedAt: lastModifiedAt,
+          inventory: inventory,
         );
 
   /// Returns a shallow copy of this [Catalog]
@@ -270,6 +288,7 @@ class _CatalogImpl extends Catalog {
     Object? addedById = _Undefined,
     DateTime? createdAt,
     DateTime? lastModifiedAt,
+    Object? inventory = _Undefined,
   }) {
     return Catalog(
       id: id is int? ? id : this.id,
@@ -288,6 +307,9 @@ class _CatalogImpl extends Catalog {
       addedById: addedById is int? ? addedById : this.addedById,
       createdAt: createdAt ?? this.createdAt,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+      inventory: inventory is List<_i2.Inventory>?
+          ? inventory
+          : this.inventory?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -388,6 +410,41 @@ class CatalogTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime lastModifiedAt;
 
+  _i2.InventoryTable? ___inventory;
+
+  _i1.ManyRelation<_i2.InventoryTable>? _inventory;
+
+  _i2.InventoryTable get __inventory {
+    if (___inventory != null) return ___inventory!;
+    ___inventory = _i1.createRelationTable(
+      relationFieldName: '__inventory',
+      field: Catalog.t.id,
+      foreignField: _i2.Inventory.t.catalogId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.InventoryTable(tableRelation: foreignTableRelation),
+    );
+    return ___inventory!;
+  }
+
+  _i1.ManyRelation<_i2.InventoryTable> get inventory {
+    if (_inventory != null) return _inventory!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'inventory',
+      field: Catalog.t.id,
+      foreignField: _i2.Inventory.t.catalogId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.InventoryTable(tableRelation: foreignTableRelation),
+    );
+    _inventory = _i1.ManyRelation<_i2.InventoryTable>(
+      tableWithRelations: relationTable,
+      table: _i2.InventoryTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _inventory!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -407,13 +464,25 @@ class CatalogTable extends _i1.Table<int?> {
         createdAt,
         lastModifiedAt,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'inventory') {
+      return __inventory;
+    }
+    return null;
+  }
 }
 
 class CatalogInclude extends _i1.IncludeObject {
-  CatalogInclude._();
+  CatalogInclude._({_i2.InventoryIncludeList? inventory}) {
+    _inventory = inventory;
+  }
+
+  _i2.InventoryIncludeList? _inventory;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'inventory': _inventory};
 
   @override
   _i1.Table<int?> get table => Catalog.t;
@@ -441,6 +510,14 @@ class CatalogIncludeList extends _i1.IncludeList {
 
 class CatalogRepository {
   const CatalogRepository._();
+
+  final attach = const CatalogAttachRepository._();
+
+  final attachRow = const CatalogAttachRowRepository._();
+
+  final detach = const CatalogDetachRepository._();
+
+  final detachRow = const CatalogDetachRowRepository._();
 
   /// Returns a list of [Catalog]s matching the given query parameters.
   ///
@@ -473,6 +550,7 @@ class CatalogRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<CatalogTable>? orderByList,
     _i1.Transaction? transaction,
+    CatalogInclude? include,
   }) async {
     return session.db.find<Catalog>(
       where: where?.call(Catalog.t),
@@ -482,6 +560,7 @@ class CatalogRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -510,6 +589,7 @@ class CatalogRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<CatalogTable>? orderByList,
     _i1.Transaction? transaction,
+    CatalogInclude? include,
   }) async {
     return session.db.findFirstRow<Catalog>(
       where: where?.call(Catalog.t),
@@ -518,6 +598,7 @@ class CatalogRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -526,10 +607,12 @@ class CatalogRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    CatalogInclude? include,
   }) async {
     return session.db.findById<Catalog>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -647,6 +730,113 @@ class CatalogRepository {
     return session.db.count<Catalog>(
       where: where?.call(Catalog.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class CatalogAttachRepository {
+  const CatalogAttachRepository._();
+
+  /// Creates a relation between this [Catalog] and the given [Inventory]s
+  /// by setting each [Inventory]'s foreign key `catalogId` to refer to this [Catalog].
+  Future<void> inventory(
+    _i1.Session session,
+    Catalog catalog,
+    List<_i2.Inventory> inventory, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (inventory.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('inventory.id');
+    }
+    if (catalog.id == null) {
+      throw ArgumentError.notNull('catalog.id');
+    }
+
+    var $inventory =
+        inventory.map((e) => e.copyWith(catalogId: catalog.id)).toList();
+    await session.db.update<_i2.Inventory>(
+      $inventory,
+      columns: [_i2.Inventory.t.catalogId],
+      transaction: transaction,
+    );
+  }
+}
+
+class CatalogAttachRowRepository {
+  const CatalogAttachRowRepository._();
+
+  /// Creates a relation between this [Catalog] and the given [Inventory]
+  /// by setting the [Inventory]'s foreign key `catalogId` to refer to this [Catalog].
+  Future<void> inventory(
+    _i1.Session session,
+    Catalog catalog,
+    _i2.Inventory inventory, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (inventory.id == null) {
+      throw ArgumentError.notNull('inventory.id');
+    }
+    if (catalog.id == null) {
+      throw ArgumentError.notNull('catalog.id');
+    }
+
+    var $inventory = inventory.copyWith(catalogId: catalog.id);
+    await session.db.updateRow<_i2.Inventory>(
+      $inventory,
+      columns: [_i2.Inventory.t.catalogId],
+      transaction: transaction,
+    );
+  }
+}
+
+class CatalogDetachRepository {
+  const CatalogDetachRepository._();
+
+  /// Detaches the relation between this [Catalog] and the given [Inventory]
+  /// by setting the [Inventory]'s foreign key `catalogId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> inventory(
+    _i1.Session session,
+    List<_i2.Inventory> inventory, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (inventory.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('inventory.id');
+    }
+
+    var $inventory = inventory.map((e) => e.copyWith(catalogId: null)).toList();
+    await session.db.update<_i2.Inventory>(
+      $inventory,
+      columns: [_i2.Inventory.t.catalogId],
+      transaction: transaction,
+    );
+  }
+}
+
+class CatalogDetachRowRepository {
+  const CatalogDetachRowRepository._();
+
+  /// Detaches the relation between this [Catalog] and the given [Inventory]
+  /// by setting the [Inventory]'s foreign key `catalogId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> inventory(
+    _i1.Session session,
+    _i2.Inventory inventory, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (inventory.id == null) {
+      throw ArgumentError.notNull('inventory.id');
+    }
+
+    var $inventory = inventory.copyWith(catalogId: null);
+    await session.db.updateRow<_i2.Inventory>(
+      $inventory,
+      columns: [_i2.Inventory.t.catalogId],
       transaction: transaction,
     );
   }

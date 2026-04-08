@@ -8,8 +8,11 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'catalog.dart' as _i2;
 
 abstract class Inventory
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -17,6 +20,7 @@ abstract class Inventory
     this.id,
     required this.workspaceId,
     required this.catalogId,
+    this.catalog,
     required this.currentQty,
     required this.availableQty,
     required this.totalValue,
@@ -36,6 +40,7 @@ abstract class Inventory
     int? id,
     required int workspaceId,
     required int catalogId,
+    _i2.Catalog? catalog,
     required double currentQty,
     required double availableQty,
     required int totalValue,
@@ -56,6 +61,10 @@ abstract class Inventory
       id: jsonSerialization['id'] as int?,
       workspaceId: jsonSerialization['workspaceId'] as int,
       catalogId: jsonSerialization['catalogId'] as int,
+      catalog: jsonSerialization['catalog'] == null
+          ? null
+          : _i2.Catalog.fromJson(
+              (jsonSerialization['catalog'] as Map<String, dynamic>)),
       currentQty: (jsonSerialization['currentQty'] as num).toDouble(),
       availableQty: (jsonSerialization['availableQty'] as num).toDouble(),
       totalValue: jsonSerialization['totalValue'] as int,
@@ -91,6 +100,8 @@ abstract class Inventory
   int workspaceId;
 
   int catalogId;
+
+  _i2.Catalog? catalog;
 
   double currentQty;
 
@@ -128,6 +139,7 @@ abstract class Inventory
     int? id,
     int? workspaceId,
     int? catalogId,
+    _i2.Catalog? catalog,
     double? currentQty,
     double? availableQty,
     int? totalValue,
@@ -148,6 +160,7 @@ abstract class Inventory
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'catalogId': catalogId,
+      if (catalog != null) 'catalog': catalog?.toJson(),
       'currentQty': currentQty,
       'availableQty': availableQty,
       'totalValue': totalValue,
@@ -171,6 +184,7 @@ abstract class Inventory
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'catalogId': catalogId,
+      if (catalog != null) 'catalog': catalog?.toJsonForProtocol(),
       'currentQty': currentQty,
       'availableQty': availableQty,
       'totalValue': totalValue,
@@ -188,8 +202,8 @@ abstract class Inventory
     };
   }
 
-  static InventoryInclude include() {
-    return InventoryInclude._();
+  static InventoryInclude include({_i2.CatalogInclude? catalog}) {
+    return InventoryInclude._(catalog: catalog);
   }
 
   static InventoryIncludeList includeList({
@@ -225,6 +239,7 @@ class _InventoryImpl extends Inventory {
     int? id,
     required int workspaceId,
     required int catalogId,
+    _i2.Catalog? catalog,
     required double currentQty,
     required double availableQty,
     required int totalValue,
@@ -242,6 +257,7 @@ class _InventoryImpl extends Inventory {
           id: id,
           workspaceId: workspaceId,
           catalogId: catalogId,
+          catalog: catalog,
           currentQty: currentQty,
           availableQty: availableQty,
           totalValue: totalValue,
@@ -265,6 +281,7 @@ class _InventoryImpl extends Inventory {
     Object? id = _Undefined,
     int? workspaceId,
     int? catalogId,
+    Object? catalog = _Undefined,
     double? currentQty,
     double? availableQty,
     int? totalValue,
@@ -283,6 +300,7 @@ class _InventoryImpl extends Inventory {
       id: id is int? ? id : this.id,
       workspaceId: workspaceId ?? this.workspaceId,
       catalogId: catalogId ?? this.catalogId,
+      catalog: catalog is _i2.Catalog? ? catalog : this.catalog?.copyWith(),
       currentQty: currentQty ?? this.currentQty,
       availableQty: availableQty ?? this.availableQty,
       totalValue: totalValue ?? this.totalValue,
@@ -379,6 +397,8 @@ class InventoryTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt catalogId;
 
+  _i2.CatalogTable? _catalog;
+
   late final _i1.ColumnDouble currentQty;
 
   late final _i1.ColumnDouble availableQty;
@@ -405,6 +425,19 @@ class InventoryTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime lastModifiedAt;
 
+  _i2.CatalogTable get catalog {
+    if (_catalog != null) return _catalog!;
+    _catalog = _i1.createRelationTable(
+      relationFieldName: 'catalog',
+      field: Inventory.t.catalogId,
+      foreignField: _i2.Catalog.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.CatalogTable(tableRelation: foreignTableRelation),
+    );
+    return _catalog!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -424,13 +457,25 @@ class InventoryTable extends _i1.Table<int?> {
         createdAt,
         lastModifiedAt,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'catalog') {
+      return catalog;
+    }
+    return null;
+  }
 }
 
 class InventoryInclude extends _i1.IncludeObject {
-  InventoryInclude._();
+  InventoryInclude._({_i2.CatalogInclude? catalog}) {
+    _catalog = catalog;
+  }
+
+  _i2.CatalogInclude? _catalog;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'catalog': _catalog};
 
   @override
   _i1.Table<int?> get table => Inventory.t;
@@ -458,6 +503,8 @@ class InventoryIncludeList extends _i1.IncludeList {
 
 class InventoryRepository {
   const InventoryRepository._();
+
+  final attachRow = const InventoryAttachRowRepository._();
 
   /// Returns a list of [Inventory]s matching the given query parameters.
   ///
@@ -490,6 +537,7 @@ class InventoryRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<InventoryTable>? orderByList,
     _i1.Transaction? transaction,
+    InventoryInclude? include,
   }) async {
     return session.db.find<Inventory>(
       where: where?.call(Inventory.t),
@@ -499,6 +547,7 @@ class InventoryRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -527,6 +576,7 @@ class InventoryRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<InventoryTable>? orderByList,
     _i1.Transaction? transaction,
+    InventoryInclude? include,
   }) async {
     return session.db.findFirstRow<Inventory>(
       where: where?.call(Inventory.t),
@@ -535,6 +585,7 @@ class InventoryRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -543,10 +594,12 @@ class InventoryRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    InventoryInclude? include,
   }) async {
     return session.db.findById<Inventory>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -664,6 +717,33 @@ class InventoryRepository {
     return session.db.count<Inventory>(
       where: where?.call(Inventory.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class InventoryAttachRowRepository {
+  const InventoryAttachRowRepository._();
+
+  /// Creates a relation between the given [Inventory] and [Catalog]
+  /// by setting the [Inventory]'s foreign key `catalogId` to refer to the [Catalog].
+  Future<void> catalog(
+    _i1.Session session,
+    Inventory inventory,
+    _i2.Catalog catalog, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (inventory.id == null) {
+      throw ArgumentError.notNull('inventory.id');
+    }
+    if (catalog.id == null) {
+      throw ArgumentError.notNull('catalog.id');
+    }
+
+    var $inventory = inventory.copyWith(catalogId: catalog.id);
+    await session.db.updateRow<Inventory>(
+      $inventory,
+      columns: [Inventory.t.catalogId],
       transaction: transaction,
     );
   }

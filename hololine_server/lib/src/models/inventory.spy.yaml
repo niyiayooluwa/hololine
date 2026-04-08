@@ -3,6 +3,7 @@ table: inventory
 fields:
   workspaceId:          int
   catalogId:            int
+  catalog:              Catalog?, relation(name=catalog_inventory, field=catalogId)
   currentQty:           double
   availableQty:         double
   totalValue:           int

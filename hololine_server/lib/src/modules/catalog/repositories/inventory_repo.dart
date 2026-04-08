@@ -20,6 +20,39 @@ class InventoryRepo {
     return await Inventory.db.updateRow(session, inventory, transaction: transaction);
   }
 
+  /// Lists inventory for a workspace, joined with catalog data using native include.
+  Future<List<Inventory>> listWithCatalog(
+    Session session,
+    int workspaceId, {
+    bool includeDiscontinued = false,
+  }) async {
+    return await Inventory.db.find(
+      session,
+      where: (t) {
+        var expr = t.workspaceId.equals(workspaceId);
+        if (!includeDiscontinued) {
+          expr = expr & t.catalog.status.notEquals('discontinued');
+        }
+        return expr;
+      },
+      include: Inventory.include(catalog: Catalog.include()),
+      orderBy: (t) => t.catalog.name,
+    );
+  }
+
+  /// Lists inventory items where stock is at or below threshold.
+  Future<List<Inventory>> getLowStockWithCatalog(Session session, int workspaceId) async {
+    return await Inventory.db.find(
+      session,
+      where: (t) =>
+          t.workspaceId.equals(workspaceId) &
+          t.lowStockThreshold.notEquals(null) &
+          (t.currentQty <= t.lowStockThreshold),
+      include: Inventory.include(catalog: Catalog.include()),
+      orderBy: (t) => t.catalog.name,
+    );
+  }
+
   /// Fetches multiple inventory records for a set of catalogIds within a workspace.
   Future<List<Inventory>> findByCatalogIds(
     Session session,

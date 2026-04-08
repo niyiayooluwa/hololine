@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'inventory.dart' as _i2;
 
 abstract class Catalog implements _i1.SerializableModel {
   Catalog._({
@@ -29,6 +30,7 @@ abstract class Catalog implements _i1.SerializableModel {
     this.addedById,
     required this.createdAt,
     required this.lastModifiedAt,
+    this.inventory,
   })  : currency = currency ?? 'NGN',
         status = status ?? 'active';
 
@@ -49,6 +51,7 @@ abstract class Catalog implements _i1.SerializableModel {
     int? addedById,
     required DateTime createdAt,
     required DateTime lastModifiedAt,
+    List<_i2.Inventory>? inventory,
   }) = _CatalogImpl;
 
   factory Catalog.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -71,6 +74,9 @@ abstract class Catalog implements _i1.SerializableModel {
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       lastModifiedAt: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['lastModifiedAt']),
+      inventory: (jsonSerialization['inventory'] as List?)
+          ?.map((e) => _i2.Inventory.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -109,6 +115,8 @@ abstract class Catalog implements _i1.SerializableModel {
 
   DateTime lastModifiedAt;
 
+  List<_i2.Inventory>? inventory;
+
   /// Returns a shallow copy of this [Catalog]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -129,6 +137,7 @@ abstract class Catalog implements _i1.SerializableModel {
     int? addedById,
     DateTime? createdAt,
     DateTime? lastModifiedAt,
+    List<_i2.Inventory>? inventory,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -149,6 +158,8 @@ abstract class Catalog implements _i1.SerializableModel {
       if (addedById != null) 'addedById': addedById,
       'createdAt': createdAt.toJson(),
       'lastModifiedAt': lastModifiedAt.toJson(),
+      if (inventory != null)
+        'inventory': inventory?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -178,6 +189,7 @@ class _CatalogImpl extends Catalog {
     int? addedById,
     required DateTime createdAt,
     required DateTime lastModifiedAt,
+    List<_i2.Inventory>? inventory,
   }) : super._(
           id: id,
           workspaceId: workspaceId,
@@ -195,6 +207,7 @@ class _CatalogImpl extends Catalog {
           addedById: addedById,
           createdAt: createdAt,
           lastModifiedAt: lastModifiedAt,
+          inventory: inventory,
         );
 
   /// Returns a shallow copy of this [Catalog]
@@ -218,6 +231,7 @@ class _CatalogImpl extends Catalog {
     Object? addedById = _Undefined,
     DateTime? createdAt,
     DateTime? lastModifiedAt,
+    Object? inventory = _Undefined,
   }) {
     return Catalog(
       id: id is int? ? id : this.id,
@@ -236,6 +250,9 @@ class _CatalogImpl extends Catalog {
       addedById: addedById is int? ? addedById : this.addedById,
       createdAt: createdAt ?? this.createdAt,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+      inventory: inventory is List<_i2.Inventory>?
+          ? inventory
+          : this.inventory?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

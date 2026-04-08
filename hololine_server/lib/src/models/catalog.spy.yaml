@@ -16,6 +16,7 @@ fields:
   addedById:      int?
   createdAt:      DateTime
   lastModifiedAt: DateTime
+  inventory:      List<Inventory>?, relation(name=catalog_inventory)
 
 indexes:
   catalog_workspace_idx:

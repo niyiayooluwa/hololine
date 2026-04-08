@@ -21,6 +21,17 @@ class LedgerRepo {
     return await Ledger.db.insertRow(session, ledger, transaction: transaction);
   }
 
+  /// Updates an existing [Ledger] record within a [transaction].
+  ///
+  /// Used to write back the computed `totalAmount` after line items are created.
+  Future<Ledger> updateWithTransaction(
+    Session session,
+    Ledger ledger,
+    Transaction transaction,
+  ) async {
+    return await Ledger.db.updateRow(session, ledger, transaction: transaction);
+  }
+
   /// Finds a [Ledger] record by its primary key [ledgerId].
   ///
   /// Returns `null` if no record exists with the given [ledgerId].

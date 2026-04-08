@@ -11,20 +11,21 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/catalog_endpoint.dart' as _i2;
-import '../endpoints/jobs/cron_endpoint.dart' as _i3;
-import '../endpoints/jobs/workspace_cleanup.dart' as _i4;
-import '../endpoints/ledger_endpoint.dart' as _i5;
-import '../endpoints/workspace_endpoint.dart' as _i6;
-import 'package:hololine_server/src/generated/catalog.dart' as _i7;
+import '../endpoints/inventory_endpoint.dart' as _i3;
+import '../endpoints/jobs/cron_endpoint.dart' as _i4;
+import '../endpoints/jobs/workspace_cleanup.dart' as _i5;
+import '../endpoints/ledger_endpoint.dart' as _i6;
+import '../endpoints/workspace_endpoint.dart' as _i7;
+import 'package:hololine_server/src/generated/catalog.dart' as _i8;
 import 'package:hololine_server/src/generated/requests/catalog_update_params.dart'
-    as _i8;
-import 'package:hololine_server/src/generated/requests/inventory_update_params.dart'
     as _i9;
-import 'package:hololine_server/src/generated/ledger_line_item.dart' as _i10;
-import 'package:hololine_server/src/generated/transaction_type.dart' as _i11;
-import 'package:hololine_server/src/generated/payment_status.dart' as _i12;
-import 'package:hololine_server/src/generated/workspace_role.dart' as _i13;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i14;
+import 'package:hololine_server/src/generated/requests/inventory_update_params.dart'
+    as _i10;
+import 'package:hololine_server/src/generated/ledger_line_item.dart' as _i11;
+import 'package:hololine_server/src/generated/transaction_type.dart' as _i12;
+import 'package:hololine_server/src/generated/payment_status.dart' as _i13;
+import 'package:hololine_server/src/generated/workspace_role.dart' as _i14;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i15;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -36,25 +37,31 @@ class Endpoints extends _i1.EndpointDispatch {
           'catalog',
           null,
         ),
-      'cron': _i3.CronEndpoint()
+      'inventory': _i3.InventoryEndpoint()
+        ..initialize(
+          server,
+          'inventory',
+          null,
+        ),
+      'cron': _i4.CronEndpoint()
         ..initialize(
           server,
           'cron',
           null,
         ),
-      'cleanup': _i4.CleanupEndpoint()
+      'cleanup': _i5.CleanupEndpoint()
         ..initialize(
           server,
           'cleanup',
           null,
         ),
-      'ledger': _i5.LedgerEndpoint()
+      'ledger': _i6.LedgerEndpoint()
         ..initialize(
           server,
           'ledger',
           null,
         ),
-      'workspace': _i6.WorkspaceEndpoint()
+      'workspace': _i7.WorkspaceEndpoint()
         ..initialize(
           server,
           'workspace',
@@ -75,7 +82,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'catalogData': _i1.ParameterDescription(
               name: 'catalogData',
-              type: _i1.getType<_i7.Catalog>(),
+              type: _i1.getType<_i8.Catalog>(),
               nullable: false,
             ),
           },
@@ -122,12 +129,12 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'catalogUpdates': _i1.ParameterDescription(
               name: 'catalogUpdates',
-              type: _i1.getType<_i8.CatalogUpdateParams>(),
+              type: _i1.getType<_i9.CatalogUpdateParams>(),
               nullable: false,
             ),
             'inventoryUpdates': _i1.ParameterDescription(
               name: 'inventoryUpdates',
-              type: _i1.getType<_i9.InventoryUpdateParams>(),
+              type: _i1.getType<_i10.InventoryUpdateParams>(),
               nullable: false,
             ),
           },
@@ -169,6 +176,85 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['inventory'] = _i1.EndpointConnector(
+      name: 'inventory',
+      endpoint: endpoints['inventory']!,
+      methodConnectors: {
+        'listInventory': _i1.MethodConnector(
+          name: 'listInventory',
+          params: {
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'includeDiscontinued': _i1.ParameterDescription(
+              name: 'includeDiscontinued',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['inventory'] as _i3.InventoryEndpoint).listInventory(
+            session,
+            workspaceId: params['workspaceId'],
+            includeDiscontinued: params['includeDiscontinued'],
+          ),
+        ),
+        'getLowStockItems': _i1.MethodConnector(
+          name: 'getLowStockItems',
+          params: {
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['inventory'] as _i3.InventoryEndpoint)
+                  .getLowStockItems(
+            session,
+            workspaceId: params['workspaceId'],
+          ),
+        ),
+        'updateThreshold': _i1.MethodConnector(
+          name: 'updateThreshold',
+          params: {
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'catalogId': _i1.ParameterDescription(
+              name: 'catalogId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'threshold': _i1.ParameterDescription(
+              name: 'threshold',
+              type: _i1.getType<double?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['inventory'] as _i3.InventoryEndpoint).updateThreshold(
+            session,
+            workspaceId: params['workspaceId'],
+            catalogId: params['catalogId'],
+            threshold: params['threshold'],
+          ),
+        ),
+      },
+    );
     connectors['cron'] = _i1.EndpointConnector(
       name: 'cron',
       endpoint: endpoints['cron']!,
@@ -180,7 +266,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['cron'] as _i3.CronEndpoint).executeJob(session),
+              (endpoints['cron'] as _i4.CronEndpoint).executeJob(session),
         )
       },
     );
@@ -195,7 +281,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['cleanup'] as _i4.CleanupEndpoint)
+              (endpoints['cleanup'] as _i5.CleanupEndpoint)
                   .checkAndPerformHardDeletes(session),
         )
       },
@@ -214,17 +300,17 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'lineItems': _i1.ParameterDescription(
               name: 'lineItems',
-              type: _i1.getType<List<_i10.LedgerLineItem>>(),
+              type: _i1.getType<List<_i11.LedgerLineItem>>(),
               nullable: false,
             ),
             'transactionType': _i1.ParameterDescription(
               name: 'transactionType',
-              type: _i1.getType<_i11.TransactionType>(),
+              type: _i1.getType<_i12.TransactionType>(),
               nullable: false,
             ),
             'paymentStatus': _i1.ParameterDescription(
               name: 'paymentStatus',
-              type: _i1.getType<_i12.PaymentStatus>(),
+              type: _i1.getType<_i13.PaymentStatus>(),
               nullable: false,
             ),
             'transactionAt': _i1.ParameterDescription(
@@ -252,7 +338,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['ledger'] as _i5.LedgerEndpoint).createTransaction(
+              (endpoints['ledger'] as _i6.LedgerEndpoint).createTransaction(
             session,
             workspaceId: params['workspaceId'],
             lineItems: params['lineItems'],
@@ -274,7 +360,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'transactionType': _i1.ParameterDescription(
               name: 'transactionType',
-              type: _i1.getType<_i11.TransactionType?>(),
+              type: _i1.getType<_i12.TransactionType?>(),
               nullable: true,
             ),
             'from': _i1.ParameterDescription(
@@ -292,7 +378,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['ledger'] as _i5.LedgerEndpoint).listTransactions(
+              (endpoints['ledger'] as _i6.LedgerEndpoint).listTransactions(
             session,
             workspaceId: params['workspaceId'],
             transactionType: params['transactionType'],
@@ -318,7 +404,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['ledger'] as _i5.LedgerEndpoint).getTransaction(
+              (endpoints['ledger'] as _i6.LedgerEndpoint).getTransaction(
             session,
             ledgerId: params['ledgerId'],
             workspaceId: params['workspaceId'],
@@ -348,7 +434,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .createStandalone(
             session,
             params['name'],
@@ -378,7 +464,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint).createChild(
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint).createChild(
             session,
             params['name'],
             params['parentWorkspaceId'],
@@ -398,7 +484,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .getWorkspaceDetails(
             session,
             publicId: params['publicId'],
@@ -417,7 +503,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .getDashboardData(
             session,
             publicId: params['publicId'],
@@ -430,7 +516,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .getMyWorkspaces(session),
         ),
         'getChildWorkspaces': _i1.MethodConnector(
@@ -446,7 +532,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .getChildWorkspaces(
             session,
             parentWorkspaceId: params['parentWorkspaceId'],
@@ -467,7 +553,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i13.WorkspaceRole>(),
+              type: _i1.getType<_i14.WorkspaceRole>(),
               nullable: false,
             ),
           },
@@ -475,7 +561,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .updateMemberRole(
             session,
             memberId: params['memberId'],
@@ -501,7 +587,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint).removeMember(
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint).removeMember(
             session,
             memberId: params['memberId'],
             workspaceId: params['workspaceId'],
@@ -520,7 +606,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint).leaveWorkspace(
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint).leaveWorkspace(
             session,
             workspaceId: params['workspaceId'],
           ),
@@ -540,7 +626,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i13.WorkspaceRole>(),
+              type: _i1.getType<_i14.WorkspaceRole>(),
               nullable: false,
             ),
           },
@@ -548,7 +634,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint).inviteMember(
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint).inviteMember(
             session,
             params['email'],
             params['workspaceId'],
@@ -568,7 +654,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .acceptInvitation(
             session,
             params['token'],
@@ -597,7 +683,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .updateWorkspaceDetails(
             session,
             workspaceId: params['workspaceId'],
@@ -618,7 +704,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .archiveWorkspace(
             session,
             params['workspaceId'],
@@ -637,7 +723,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .restoreWorkspace(
             session,
             params['workspaceId'],
@@ -661,7 +747,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .transferOwnership(
             session,
             params['workspaceId'],
@@ -681,7 +767,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['workspace'] as _i6.WorkspaceEndpoint)
+              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
                   .initiateDeleteWorkspace(
             session,
             params['workspaceId'],
@@ -689,6 +775,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth'] = _i14.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i15.Endpoints()..initializeEndpoints(server);
   }
 }

@@ -290,7 +290,7 @@ class LedgerService {
 
       // --- 9. Write the computed totalAmount back to the Ledger header ---
       final finalLedger = insertedLedger.copyWith(totalAmount: totalAmount);
-      await Ledger.db.updateRow(session, finalLedger, transaction: transaction);
+      await _ledgerRepository.updateWithTransaction(session, finalLedger, transaction);
 
       // --- 10. Mutate each inventory record ---
       for (final item in lineItems) {

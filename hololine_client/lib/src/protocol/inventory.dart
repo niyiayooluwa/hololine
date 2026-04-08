@@ -10,12 +10,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'catalog.dart' as _i2;
 
 abstract class Inventory implements _i1.SerializableModel {
   Inventory._({
     this.id,
     required this.workspaceId,
     required this.catalogId,
+    this.catalog,
     required this.currentQty,
     required this.availableQty,
     required this.totalValue,
@@ -35,6 +37,7 @@ abstract class Inventory implements _i1.SerializableModel {
     int? id,
     required int workspaceId,
     required int catalogId,
+    _i2.Catalog? catalog,
     required double currentQty,
     required double availableQty,
     required int totalValue,
@@ -55,6 +58,10 @@ abstract class Inventory implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       workspaceId: jsonSerialization['workspaceId'] as int,
       catalogId: jsonSerialization['catalogId'] as int,
+      catalog: jsonSerialization['catalog'] == null
+          ? null
+          : _i2.Catalog.fromJson(
+              (jsonSerialization['catalog'] as Map<String, dynamic>)),
       currentQty: (jsonSerialization['currentQty'] as num).toDouble(),
       availableQty: (jsonSerialization['availableQty'] as num).toDouble(),
       totalValue: jsonSerialization['totalValue'] as int,
@@ -89,6 +96,8 @@ abstract class Inventory implements _i1.SerializableModel {
 
   int catalogId;
 
+  _i2.Catalog? catalog;
+
   double currentQty;
 
   double availableQty;
@@ -122,6 +131,7 @@ abstract class Inventory implements _i1.SerializableModel {
     int? id,
     int? workspaceId,
     int? catalogId,
+    _i2.Catalog? catalog,
     double? currentQty,
     double? availableQty,
     int? totalValue,
@@ -142,6 +152,7 @@ abstract class Inventory implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'catalogId': catalogId,
+      if (catalog != null) 'catalog': catalog?.toJson(),
       'currentQty': currentQty,
       'availableQty': availableQty,
       'totalValue': totalValue,
@@ -172,6 +183,7 @@ class _InventoryImpl extends Inventory {
     int? id,
     required int workspaceId,
     required int catalogId,
+    _i2.Catalog? catalog,
     required double currentQty,
     required double availableQty,
     required int totalValue,
@@ -189,6 +201,7 @@ class _InventoryImpl extends Inventory {
           id: id,
           workspaceId: workspaceId,
           catalogId: catalogId,
+          catalog: catalog,
           currentQty: currentQty,
           availableQty: availableQty,
           totalValue: totalValue,
@@ -212,6 +225,7 @@ class _InventoryImpl extends Inventory {
     Object? id = _Undefined,
     int? workspaceId,
     int? catalogId,
+    Object? catalog = _Undefined,
     double? currentQty,
     double? availableQty,
     int? totalValue,
@@ -230,6 +244,7 @@ class _InventoryImpl extends Inventory {
       id: id is int? ? id : this.id,
       workspaceId: workspaceId ?? this.workspaceId,
       catalogId: catalogId ?? this.catalogId,
+      catalog: catalog is _i2.Catalog? ? catalog : this.catalog?.copyWith(),
       currentQty: currentQty ?? this.currentQty,
       availableQty: availableQty ?? this.availableQty,
       totalValue: totalValue ?? this.totalValue,

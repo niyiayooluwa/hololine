@@ -28,12 +28,13 @@ import 'workspace_member.dart' as _i16;
 import 'workspace_member_info.dart' as _i17;
 import 'workspace_role.dart' as _i18;
 import 'package:hololine_client/src/protocol/catalog.dart' as _i19;
-import 'package:hololine_client/src/protocol/ledger_line_item.dart' as _i20;
-import 'package:hololine_client/src/protocol/ledger.dart' as _i21;
+import 'package:hololine_client/src/protocol/inventory.dart' as _i20;
+import 'package:hololine_client/src/protocol/ledger_line_item.dart' as _i21;
+import 'package:hololine_client/src/protocol/ledger.dart' as _i22;
 import 'package:hololine_client/src/protocol/responses/workspace_summary.dart'
-    as _i22;
-import 'package:hololine_client/src/protocol/workspace.dart' as _i23;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i24;
+    as _i23;
+import 'package:hololine_client/src/protocol/workspace.dart' as _i24;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i25;
 export 'catalog.dart';
 export 'catalog_snapshot.dart';
 export 'inventory.dart';
@@ -173,6 +174,11 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i18.WorkspaceRole?>()) {
       return (data != null ? _i18.WorkspaceRole.fromJson(data) : null) as T;
     }
+    if (t == _i1.getType<List<_i4.Inventory>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i4.Inventory>(e)).toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<_i6.LedgerLineItem>?>()) {
       return (data != null
           ? (data as List)
@@ -196,26 +202,30 @@ class Protocol extends _i1.SerializationManager {
       return (data as List).map((e) => deserialize<_i19.Catalog>(e)).toList()
           as T;
     }
-    if (t == List<_i20.LedgerLineItem>) {
-      return (data as List)
-          .map((e) => deserialize<_i20.LedgerLineItem>(e))
-          .toList() as T;
-    }
-    if (t == List<_i21.Ledger>) {
-      return (data as List).map((e) => deserialize<_i21.Ledger>(e)).toList()
+    if (t == List<_i20.Inventory>) {
+      return (data as List).map((e) => deserialize<_i20.Inventory>(e)).toList()
           as T;
     }
-    if (t == List<_i22.WorkspaceSummary>) {
+    if (t == List<_i21.LedgerLineItem>) {
       return (data as List)
-          .map((e) => deserialize<_i22.WorkspaceSummary>(e))
+          .map((e) => deserialize<_i21.LedgerLineItem>(e))
           .toList() as T;
     }
-    if (t == List<_i23.Workspace>) {
-      return (data as List).map((e) => deserialize<_i23.Workspace>(e)).toList()
+    if (t == List<_i22.Ledger>) {
+      return (data as List).map((e) => deserialize<_i22.Ledger>(e)).toList()
+          as T;
+    }
+    if (t == List<_i23.WorkspaceSummary>) {
+      return (data as List)
+          .map((e) => deserialize<_i23.WorkspaceSummary>(e))
+          .toList() as T;
+    }
+    if (t == List<_i24.Workspace>) {
+      return (data as List).map((e) => deserialize<_i24.Workspace>(e)).toList()
           as T;
     }
     try {
-      return _i24.Protocol().deserialize<T>(data, t);
+      return _i25.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -275,7 +285,7 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i18.WorkspaceRole) {
       return 'WorkspaceRole';
     }
-    className = _i24.Protocol().getClassNameForObject(data);
+    className = _i25.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -341,7 +351,7 @@ class Protocol extends _i1.SerializationManager {
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i24.Protocol().deserializeByClassName(data);
+      return _i25.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
