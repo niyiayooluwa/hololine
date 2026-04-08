@@ -5,7 +5,7 @@ fields:
   catalogId:            int
   currentQty:           double
   availableQty:         double
-  totalValue:           double
+  totalValue:           int
   location:             String?
   lowStockThreshold:    double?
   lastRestockedAt:      DateTime?

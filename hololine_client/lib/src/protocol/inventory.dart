@@ -37,7 +37,7 @@ abstract class Inventory implements _i1.SerializableModel {
     required int catalogId,
     required double currentQty,
     required double availableQty,
-    required double totalValue,
+    required int totalValue,
     String? location,
     double? lowStockThreshold,
     DateTime? lastRestockedAt,
@@ -57,7 +57,7 @@ abstract class Inventory implements _i1.SerializableModel {
       catalogId: jsonSerialization['catalogId'] as int,
       currentQty: (jsonSerialization['currentQty'] as num).toDouble(),
       availableQty: (jsonSerialization['availableQty'] as num).toDouble(),
-      totalValue: (jsonSerialization['totalValue'] as num).toDouble(),
+      totalValue: jsonSerialization['totalValue'] as int,
       location: jsonSerialization['location'] as String?,
       lowStockThreshold:
           (jsonSerialization['lowStockThreshold'] as num?)?.toDouble(),
@@ -93,7 +93,7 @@ abstract class Inventory implements _i1.SerializableModel {
 
   double availableQty;
 
-  double totalValue;
+  int totalValue;
 
   String? location;
 
@@ -124,7 +124,7 @@ abstract class Inventory implements _i1.SerializableModel {
     int? catalogId,
     double? currentQty,
     double? availableQty,
-    double? totalValue,
+    int? totalValue,
     String? location,
     double? lowStockThreshold,
     DateTime? lastRestockedAt,
@@ -174,7 +174,7 @@ class _InventoryImpl extends Inventory {
     required int catalogId,
     required double currentQty,
     required double availableQty,
-    required double totalValue,
+    required int totalValue,
     String? location,
     double? lowStockThreshold,
     DateTime? lastRestockedAt,
@@ -214,7 +214,7 @@ class _InventoryImpl extends Inventory {
     int? catalogId,
     double? currentQty,
     double? availableQty,
-    double? totalValue,
+    int? totalValue,
     Object? location = _Undefined,
     Object? lowStockThreshold = _Undefined,
     Object? lastRestockedAt = _Undefined,

@@ -3,10 +3,11 @@ table: ledger
 fields:
   workspaceId:      int
   referenceNumber:  String?
-  transactionType:  String
-  paymentStatus:    String
-  totalAmount:      double
-  notes:            String?
+  transactionType:  TransactionType
+  paymentStatus:    PaymentStatus
+  totalAmount:      int
+  currency:         String,         default="NGN"
+  notes:      String?
   transactionAt:    DateTime
   createdByName:    String
   createdById:      int?

@@ -17,26 +17,28 @@ import 'catalog_snapshot.dart' as _i5;
 import 'inventory.dart' as _i6;
 import 'ledger.dart' as _i7;
 import 'ledger_line_item.dart' as _i8;
-import 'product.dart' as _i9;
+import 'payment_status.dart' as _i9;
 import 'responses/response.dart' as _i10;
 import 'responses/workspace_summary.dart' as _i11;
-import 'workspace.dart' as _i12;
-import 'workspace_dashboard_data.dart' as _i13;
-import 'workspace_invitation.dart' as _i14;
-import 'workspace_member.dart' as _i15;
-import 'workspace_member_info.dart' as _i16;
-import 'workspace_role.dart' as _i17;
+import 'transaction_type.dart' as _i12;
+import 'workspace.dart' as _i13;
+import 'workspace_dashboard_data.dart' as _i14;
+import 'workspace_invitation.dart' as _i15;
+import 'workspace_member.dart' as _i16;
+import 'workspace_member_info.dart' as _i17;
+import 'workspace_role.dart' as _i18;
 import 'package:hololine_server/src/generated/responses/workspace_summary.dart'
-    as _i18;
-import 'package:hololine_server/src/generated/workspace.dart' as _i19;
+    as _i19;
+import 'package:hololine_server/src/generated/workspace.dart' as _i20;
 export 'catalog.dart';
 export 'catalog_snapshot.dart';
 export 'inventory.dart';
 export 'ledger.dart';
 export 'ledger_line_item.dart';
-export 'product.dart';
+export 'payment_status.dart';
 export 'responses/response.dart';
 export 'responses/workspace_summary.dart';
+export 'transaction_type.dart';
 export 'workspace.dart';
 export 'workspace_dashboard_data.dart';
 export 'workspace_invitation.dart';
@@ -115,9 +117,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'price',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'double',
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'currency',
@@ -245,9 +247,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'totalValue',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'double',
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'location',
@@ -476,21 +478,28 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'transactionType',
-          columnType: _i2.ColumnType.text,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'String',
+          dartType: 'protocol:TransactionType',
         ),
         _i2.ColumnDefinition(
           name: 'paymentStatus',
-          columnType: _i2.ColumnType.text,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'String',
+          dartType: 'protocol:PaymentStatus',
         ),
         _i2.ColumnDefinition(
           name: 'totalAmount',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'double',
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'currency',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'NGN\'::text',
         ),
         _i2.ColumnDefinition(
           name: 'notes',
@@ -628,9 +637,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'unitPrice',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _i2.ColumnType.bigint,
           isNullable: false,
-          dartType: 'double',
+          dartType: 'int',
         ),
         _i2.ColumnDefinition(
           name: 'quantity',
@@ -645,10 +654,24 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String',
         ),
         _i2.ColumnDefinition(
-          name: 'subtotal',
-          columnType: _i2.ColumnType.doublePrecision,
+          name: 'currency',
+          columnType: _i2.ColumnType.text,
           isNullable: false,
-          dartType: 'double',
+          dartType: 'String',
+          columnDefault: '\'NGN\'::text',
+        ),
+        _i2.ColumnDefinition(
+          name: 'subtotal',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'position',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'createdAt',
@@ -702,79 +725,6 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
-      name: 'product',
-      dartName: 'Product',
-      schema: 'public',
-      module: 'hololine',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'product_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'workspaceId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'name',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'description',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'price',
-          columnType: _i2.ColumnType.doublePrecision,
-          isNullable: false,
-          dartType: 'double',
-        ),
-        _i2.ColumnDefinition(
-          name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-        ),
-      ],
-      foreignKeys: [
-        _i2.ForeignKeyDefinition(
-          constraintName: 'product_fk_0',
-          columns: ['workspaceId'],
-          referenceTable: 'workspace',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.cascade,
-          matchType: null,
-        )
-      ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'product_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
       ],
       managed: true,
     ),
@@ -1031,8 +981,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i8.LedgerLineItem) {
       return _i8.LedgerLineItem.fromJson(data) as T;
     }
-    if (t == _i9.Product) {
-      return _i9.Product.fromJson(data) as T;
+    if (t == _i9.PaymentStatus) {
+      return _i9.PaymentStatus.fromJson(data) as T;
     }
     if (t == _i10.Response) {
       return _i10.Response.fromJson(data) as T;
@@ -1040,23 +990,26 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i11.WorkspaceSummary) {
       return _i11.WorkspaceSummary.fromJson(data) as T;
     }
-    if (t == _i12.Workspace) {
-      return _i12.Workspace.fromJson(data) as T;
+    if (t == _i12.TransactionType) {
+      return _i12.TransactionType.fromJson(data) as T;
     }
-    if (t == _i13.WorkspaceDashboardData) {
-      return _i13.WorkspaceDashboardData.fromJson(data) as T;
+    if (t == _i13.Workspace) {
+      return _i13.Workspace.fromJson(data) as T;
     }
-    if (t == _i14.WorkspaceInvitation) {
-      return _i14.WorkspaceInvitation.fromJson(data) as T;
+    if (t == _i14.WorkspaceDashboardData) {
+      return _i14.WorkspaceDashboardData.fromJson(data) as T;
     }
-    if (t == _i15.WorkspaceMember) {
-      return _i15.WorkspaceMember.fromJson(data) as T;
+    if (t == _i15.WorkspaceInvitation) {
+      return _i15.WorkspaceInvitation.fromJson(data) as T;
     }
-    if (t == _i16.WorkspaceMemberInfo) {
-      return _i16.WorkspaceMemberInfo.fromJson(data) as T;
+    if (t == _i16.WorkspaceMember) {
+      return _i16.WorkspaceMember.fromJson(data) as T;
     }
-    if (t == _i17.WorkspaceRole) {
-      return _i17.WorkspaceRole.fromJson(data) as T;
+    if (t == _i17.WorkspaceMemberInfo) {
+      return _i17.WorkspaceMemberInfo.fromJson(data) as T;
+    }
+    if (t == _i18.WorkspaceRole) {
+      return _i18.WorkspaceRole.fromJson(data) as T;
     }
     if (t == _i1.getType<_i4.Catalog?>()) {
       return (data != null ? _i4.Catalog.fromJson(data) : null) as T;
@@ -1073,8 +1026,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i8.LedgerLineItem?>()) {
       return (data != null ? _i8.LedgerLineItem.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.Product?>()) {
-      return (data != null ? _i9.Product.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.PaymentStatus?>()) {
+      return (data != null ? _i9.PaymentStatus.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i10.Response?>()) {
       return (data != null ? _i10.Response.fromJson(data) : null) as T;
@@ -1082,46 +1035,49 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i11.WorkspaceSummary?>()) {
       return (data != null ? _i11.WorkspaceSummary.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.Workspace?>()) {
-      return (data != null ? _i12.Workspace.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i12.TransactionType?>()) {
+      return (data != null ? _i12.TransactionType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i13.WorkspaceDashboardData?>()) {
-      return (data != null ? _i13.WorkspaceDashboardData.fromJson(data) : null)
+    if (t == _i1.getType<_i13.Workspace?>()) {
+      return (data != null ? _i13.Workspace.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i14.WorkspaceDashboardData?>()) {
+      return (data != null ? _i14.WorkspaceDashboardData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i14.WorkspaceInvitation?>()) {
-      return (data != null ? _i14.WorkspaceInvitation.fromJson(data) : null)
+    if (t == _i1.getType<_i15.WorkspaceInvitation?>()) {
+      return (data != null ? _i15.WorkspaceInvitation.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i15.WorkspaceMember?>()) {
-      return (data != null ? _i15.WorkspaceMember.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.WorkspaceMember?>()) {
+      return (data != null ? _i16.WorkspaceMember.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.WorkspaceMemberInfo?>()) {
-      return (data != null ? _i16.WorkspaceMemberInfo.fromJson(data) : null)
+    if (t == _i1.getType<_i17.WorkspaceMemberInfo?>()) {
+      return (data != null ? _i17.WorkspaceMemberInfo.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i17.WorkspaceRole?>()) {
-      return (data != null ? _i17.WorkspaceRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i18.WorkspaceRole?>()) {
+      return (data != null ? _i18.WorkspaceRole.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<_i15.WorkspaceMember>?>()) {
+    if (t == _i1.getType<List<_i16.WorkspaceMember>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i15.WorkspaceMember>(e))
+              .map((e) => deserialize<_i16.WorkspaceMember>(e))
               .toList()
           : null) as T;
     }
-    if (t == List<_i16.WorkspaceMemberInfo>) {
+    if (t == List<_i17.WorkspaceMemberInfo>) {
       return (data as List)
-          .map((e) => deserialize<_i16.WorkspaceMemberInfo>(e))
+          .map((e) => deserialize<_i17.WorkspaceMemberInfo>(e))
           .toList() as T;
     }
-    if (t == List<_i18.WorkspaceSummary>) {
+    if (t == List<_i19.WorkspaceSummary>) {
       return (data as List)
-          .map((e) => deserialize<_i18.WorkspaceSummary>(e))
+          .map((e) => deserialize<_i19.WorkspaceSummary>(e))
           .toList() as T;
     }
-    if (t == List<_i19.Workspace>) {
-      return (data as List).map((e) => deserialize<_i19.Workspace>(e)).toList()
+    if (t == List<_i20.Workspace>) {
+      return (data as List).map((e) => deserialize<_i20.Workspace>(e)).toList()
           as T;
     }
     try {
@@ -1152,8 +1108,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i8.LedgerLineItem) {
       return 'LedgerLineItem';
     }
-    if (data is _i9.Product) {
-      return 'Product';
+    if (data is _i9.PaymentStatus) {
+      return 'PaymentStatus';
     }
     if (data is _i10.Response) {
       return 'Response';
@@ -1161,22 +1117,25 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i11.WorkspaceSummary) {
       return 'WorkspaceSummary';
     }
-    if (data is _i12.Workspace) {
+    if (data is _i12.TransactionType) {
+      return 'TransactionType';
+    }
+    if (data is _i13.Workspace) {
       return 'Workspace';
     }
-    if (data is _i13.WorkspaceDashboardData) {
+    if (data is _i14.WorkspaceDashboardData) {
       return 'WorkspaceDashboardData';
     }
-    if (data is _i14.WorkspaceInvitation) {
+    if (data is _i15.WorkspaceInvitation) {
       return 'WorkspaceInvitation';
     }
-    if (data is _i15.WorkspaceMember) {
+    if (data is _i16.WorkspaceMember) {
       return 'WorkspaceMember';
     }
-    if (data is _i16.WorkspaceMemberInfo) {
+    if (data is _i17.WorkspaceMemberInfo) {
       return 'WorkspaceMemberInfo';
     }
-    if (data is _i17.WorkspaceRole) {
+    if (data is _i18.WorkspaceRole) {
       return 'WorkspaceRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1211,8 +1170,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'LedgerLineItem') {
       return deserialize<_i8.LedgerLineItem>(data['data']);
     }
-    if (dataClassName == 'Product') {
-      return deserialize<_i9.Product>(data['data']);
+    if (dataClassName == 'PaymentStatus') {
+      return deserialize<_i9.PaymentStatus>(data['data']);
     }
     if (dataClassName == 'Response') {
       return deserialize<_i10.Response>(data['data']);
@@ -1220,23 +1179,26 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'WorkspaceSummary') {
       return deserialize<_i11.WorkspaceSummary>(data['data']);
     }
+    if (dataClassName == 'TransactionType') {
+      return deserialize<_i12.TransactionType>(data['data']);
+    }
     if (dataClassName == 'Workspace') {
-      return deserialize<_i12.Workspace>(data['data']);
+      return deserialize<_i13.Workspace>(data['data']);
     }
     if (dataClassName == 'WorkspaceDashboardData') {
-      return deserialize<_i13.WorkspaceDashboardData>(data['data']);
+      return deserialize<_i14.WorkspaceDashboardData>(data['data']);
     }
     if (dataClassName == 'WorkspaceInvitation') {
-      return deserialize<_i14.WorkspaceInvitation>(data['data']);
+      return deserialize<_i15.WorkspaceInvitation>(data['data']);
     }
     if (dataClassName == 'WorkspaceMember') {
-      return deserialize<_i15.WorkspaceMember>(data['data']);
+      return deserialize<_i16.WorkspaceMember>(data['data']);
     }
     if (dataClassName == 'WorkspaceMemberInfo') {
-      return deserialize<_i16.WorkspaceMemberInfo>(data['data']);
+      return deserialize<_i17.WorkspaceMemberInfo>(data['data']);
     }
     if (dataClassName == 'WorkspaceRole') {
-      return deserialize<_i17.WorkspaceRole>(data['data']);
+      return deserialize<_i18.WorkspaceRole>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -1272,14 +1234,12 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i7.Ledger.t;
       case _i8.LedgerLineItem:
         return _i8.LedgerLineItem.t;
-      case _i9.Product:
-        return _i9.Product.t;
-      case _i12.Workspace:
-        return _i12.Workspace.t;
-      case _i14.WorkspaceInvitation:
-        return _i14.WorkspaceInvitation.t;
-      case _i15.WorkspaceMember:
-        return _i15.WorkspaceMember.t;
+      case _i13.Workspace:
+        return _i13.Workspace.t;
+      case _i15.WorkspaceInvitation:
+        return _i15.WorkspaceInvitation.t;
+      case _i16.WorkspaceMember:
+        return _i16.WorkspaceMember.t;
     }
     return null;
   }

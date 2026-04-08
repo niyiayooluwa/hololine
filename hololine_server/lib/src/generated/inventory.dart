@@ -38,7 +38,7 @@ abstract class Inventory
     required int catalogId,
     required double currentQty,
     required double availableQty,
-    required double totalValue,
+    required int totalValue,
     String? location,
     double? lowStockThreshold,
     DateTime? lastRestockedAt,
@@ -58,7 +58,7 @@ abstract class Inventory
       catalogId: jsonSerialization['catalogId'] as int,
       currentQty: (jsonSerialization['currentQty'] as num).toDouble(),
       availableQty: (jsonSerialization['availableQty'] as num).toDouble(),
-      totalValue: (jsonSerialization['totalValue'] as num).toDouble(),
+      totalValue: jsonSerialization['totalValue'] as int,
       location: jsonSerialization['location'] as String?,
       lowStockThreshold:
           (jsonSerialization['lowStockThreshold'] as num?)?.toDouble(),
@@ -96,7 +96,7 @@ abstract class Inventory
 
   double availableQty;
 
-  double totalValue;
+  int totalValue;
 
   String? location;
 
@@ -130,7 +130,7 @@ abstract class Inventory
     int? catalogId,
     double? currentQty,
     double? availableQty,
-    double? totalValue,
+    int? totalValue,
     String? location,
     double? lowStockThreshold,
     DateTime? lastRestockedAt,
@@ -227,7 +227,7 @@ class _InventoryImpl extends Inventory {
     required int catalogId,
     required double currentQty,
     required double availableQty,
-    required double totalValue,
+    required int totalValue,
     String? location,
     double? lowStockThreshold,
     DateTime? lastRestockedAt,
@@ -267,7 +267,7 @@ class _InventoryImpl extends Inventory {
     int? catalogId,
     double? currentQty,
     double? availableQty,
-    double? totalValue,
+    int? totalValue,
     Object? location = _Undefined,
     Object? lowStockThreshold = _Undefined,
     Object? lastRestockedAt = _Undefined,
@@ -329,7 +329,7 @@ class InventoryTable extends _i1.Table<int?> {
       'availableQty',
       this,
     );
-    totalValue = _i1.ColumnDouble(
+    totalValue = _i1.ColumnInt(
       'totalValue',
       this,
     );
@@ -383,7 +383,7 @@ class InventoryTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDouble availableQty;
 
-  late final _i1.ColumnDouble totalValue;
+  late final _i1.ColumnInt totalValue;
 
   late final _i1.ColumnString location;
 

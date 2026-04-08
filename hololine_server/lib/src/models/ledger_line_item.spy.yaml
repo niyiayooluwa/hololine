@@ -6,10 +6,12 @@ fields:
   catalogId:     int
   catalogName:   String
   catalogSku:    String?
-  unitPrice:     double
+  unitPrice:     int
   quantity:      double
   unit:          String
-  subtotal:      double
+  currency:      String,         default="NGN"
+  subtotal:      int
+  position:      int,            default=0
   createdAt:     DateTime
 
 indexes:

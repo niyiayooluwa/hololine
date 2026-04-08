@@ -23,9 +23,12 @@ abstract class LedgerLineItem
     required this.unitPrice,
     required this.quantity,
     required this.unit,
+    String? currency,
     required this.subtotal,
+    int? position,
     required this.createdAt,
-  });
+  })  : currency = currency ?? 'NGN',
+        position = position ?? 0;
 
   factory LedgerLineItem({
     int? id,
@@ -34,10 +37,12 @@ abstract class LedgerLineItem
     required int catalogId,
     required String catalogName,
     String? catalogSku,
-    required double unitPrice,
+    required int unitPrice,
     required double quantity,
     required String unit,
-    required double subtotal,
+    String? currency,
+    required int subtotal,
+    int? position,
     required DateTime createdAt,
   }) = _LedgerLineItemImpl;
 
@@ -49,10 +54,12 @@ abstract class LedgerLineItem
       catalogId: jsonSerialization['catalogId'] as int,
       catalogName: jsonSerialization['catalogName'] as String,
       catalogSku: jsonSerialization['catalogSku'] as String?,
-      unitPrice: (jsonSerialization['unitPrice'] as num).toDouble(),
+      unitPrice: jsonSerialization['unitPrice'] as int,
       quantity: (jsonSerialization['quantity'] as num).toDouble(),
       unit: jsonSerialization['unit'] as String,
-      subtotal: (jsonSerialization['subtotal'] as num).toDouble(),
+      currency: jsonSerialization['currency'] as String,
+      subtotal: jsonSerialization['subtotal'] as int,
+      position: jsonSerialization['position'] as int,
       createdAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
     );
@@ -75,13 +82,17 @@ abstract class LedgerLineItem
 
   String? catalogSku;
 
-  double unitPrice;
+  int unitPrice;
 
   double quantity;
 
   String unit;
 
-  double subtotal;
+  String currency;
+
+  int subtotal;
+
+  int position;
 
   DateTime createdAt;
 
@@ -98,10 +109,12 @@ abstract class LedgerLineItem
     int? catalogId,
     String? catalogName,
     String? catalogSku,
-    double? unitPrice,
+    int? unitPrice,
     double? quantity,
     String? unit,
-    double? subtotal,
+    String? currency,
+    int? subtotal,
+    int? position,
     DateTime? createdAt,
   });
   @override
@@ -116,7 +129,9 @@ abstract class LedgerLineItem
       'unitPrice': unitPrice,
       'quantity': quantity,
       'unit': unit,
+      'currency': currency,
       'subtotal': subtotal,
+      'position': position,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -133,7 +148,9 @@ abstract class LedgerLineItem
       'unitPrice': unitPrice,
       'quantity': quantity,
       'unit': unit,
+      'currency': currency,
       'subtotal': subtotal,
+      'position': position,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -178,10 +195,12 @@ class _LedgerLineItemImpl extends LedgerLineItem {
     required int catalogId,
     required String catalogName,
     String? catalogSku,
-    required double unitPrice,
+    required int unitPrice,
     required double quantity,
     required String unit,
-    required double subtotal,
+    String? currency,
+    required int subtotal,
+    int? position,
     required DateTime createdAt,
   }) : super._(
           id: id,
@@ -193,7 +212,9 @@ class _LedgerLineItemImpl extends LedgerLineItem {
           unitPrice: unitPrice,
           quantity: quantity,
           unit: unit,
+          currency: currency,
           subtotal: subtotal,
+          position: position,
           createdAt: createdAt,
         );
 
@@ -208,10 +229,12 @@ class _LedgerLineItemImpl extends LedgerLineItem {
     int? catalogId,
     String? catalogName,
     Object? catalogSku = _Undefined,
-    double? unitPrice,
+    int? unitPrice,
     double? quantity,
     String? unit,
-    double? subtotal,
+    String? currency,
+    int? subtotal,
+    int? position,
     DateTime? createdAt,
   }) {
     return LedgerLineItem(
@@ -224,7 +247,9 @@ class _LedgerLineItemImpl extends LedgerLineItem {
       unitPrice: unitPrice ?? this.unitPrice,
       quantity: quantity ?? this.quantity,
       unit: unit ?? this.unit,
+      currency: currency ?? this.currency,
       subtotal: subtotal ?? this.subtotal,
+      position: position ?? this.position,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -253,7 +278,7 @@ class LedgerLineItemTable extends _i1.Table<int?> {
       'catalogSku',
       this,
     );
-    unitPrice = _i1.ColumnDouble(
+    unitPrice = _i1.ColumnInt(
       'unitPrice',
       this,
     );
@@ -265,9 +290,19 @@ class LedgerLineItemTable extends _i1.Table<int?> {
       'unit',
       this,
     );
-    subtotal = _i1.ColumnDouble(
+    currency = _i1.ColumnString(
+      'currency',
+      this,
+      hasDefault: true,
+    );
+    subtotal = _i1.ColumnInt(
       'subtotal',
       this,
+    );
+    position = _i1.ColumnInt(
+      'position',
+      this,
+      hasDefault: true,
     );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
@@ -285,13 +320,17 @@ class LedgerLineItemTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString catalogSku;
 
-  late final _i1.ColumnDouble unitPrice;
+  late final _i1.ColumnInt unitPrice;
 
   late final _i1.ColumnDouble quantity;
 
   late final _i1.ColumnString unit;
 
-  late final _i1.ColumnDouble subtotal;
+  late final _i1.ColumnString currency;
+
+  late final _i1.ColumnInt subtotal;
+
+  late final _i1.ColumnInt position;
 
   late final _i1.ColumnDateTime createdAt;
 
@@ -306,7 +345,9 @@ class LedgerLineItemTable extends _i1.Table<int?> {
         unitPrice,
         quantity,
         unit,
+        currency,
         subtotal,
+        position,
         createdAt,
       ];
 }

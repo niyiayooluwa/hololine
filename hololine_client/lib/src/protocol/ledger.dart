@@ -10,6 +10,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'transaction_type.dart' as _i2;
+import 'payment_status.dart' as _i3;
 
 abstract class Ledger implements _i1.SerializableModel {
   Ledger._({
@@ -19,6 +21,7 @@ abstract class Ledger implements _i1.SerializableModel {
     required this.transactionType,
     required this.paymentStatus,
     required this.totalAmount,
+    String? currency,
     this.notes,
     required this.transactionAt,
     required this.createdByName,
@@ -26,15 +29,16 @@ abstract class Ledger implements _i1.SerializableModel {
     this.counterpartyName,
     required this.createdAt,
     required this.lastModifiedAt,
-  });
+  }) : currency = currency ?? 'NGN';
 
   factory Ledger({
     int? id,
     required int workspaceId,
     String? referenceNumber,
-    required String transactionType,
-    required String paymentStatus,
-    required double totalAmount,
+    required _i2.TransactionType transactionType,
+    required _i3.PaymentStatus paymentStatus,
+    required int totalAmount,
+    String? currency,
     String? notes,
     required DateTime transactionAt,
     required String createdByName,
@@ -49,9 +53,12 @@ abstract class Ledger implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       workspaceId: jsonSerialization['workspaceId'] as int,
       referenceNumber: jsonSerialization['referenceNumber'] as String?,
-      transactionType: jsonSerialization['transactionType'] as String,
-      paymentStatus: jsonSerialization['paymentStatus'] as String,
-      totalAmount: (jsonSerialization['totalAmount'] as num).toDouble(),
+      transactionType: _i2.TransactionType.fromJson(
+          (jsonSerialization['transactionType'] as int)),
+      paymentStatus: _i3.PaymentStatus.fromJson(
+          (jsonSerialization['paymentStatus'] as int)),
+      totalAmount: jsonSerialization['totalAmount'] as int,
+      currency: jsonSerialization['currency'] as String,
       notes: jsonSerialization['notes'] as String?,
       transactionAt: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['transactionAt']),
@@ -74,11 +81,13 @@ abstract class Ledger implements _i1.SerializableModel {
 
   String? referenceNumber;
 
-  String transactionType;
+  _i2.TransactionType transactionType;
 
-  String paymentStatus;
+  _i3.PaymentStatus paymentStatus;
 
-  double totalAmount;
+  int totalAmount;
+
+  String currency;
 
   String? notes;
 
@@ -101,9 +110,10 @@ abstract class Ledger implements _i1.SerializableModel {
     int? id,
     int? workspaceId,
     String? referenceNumber,
-    String? transactionType,
-    String? paymentStatus,
-    double? totalAmount,
+    _i2.TransactionType? transactionType,
+    _i3.PaymentStatus? paymentStatus,
+    int? totalAmount,
+    String? currency,
     String? notes,
     DateTime? transactionAt,
     String? createdByName,
@@ -118,9 +128,10 @@ abstract class Ledger implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       if (referenceNumber != null) 'referenceNumber': referenceNumber,
-      'transactionType': transactionType,
-      'paymentStatus': paymentStatus,
+      'transactionType': transactionType.toJson(),
+      'paymentStatus': paymentStatus.toJson(),
       'totalAmount': totalAmount,
+      'currency': currency,
       if (notes != null) 'notes': notes,
       'transactionAt': transactionAt.toJson(),
       'createdByName': createdByName,
@@ -144,9 +155,10 @@ class _LedgerImpl extends Ledger {
     int? id,
     required int workspaceId,
     String? referenceNumber,
-    required String transactionType,
-    required String paymentStatus,
-    required double totalAmount,
+    required _i2.TransactionType transactionType,
+    required _i3.PaymentStatus paymentStatus,
+    required int totalAmount,
+    String? currency,
     String? notes,
     required DateTime transactionAt,
     required String createdByName,
@@ -161,6 +173,7 @@ class _LedgerImpl extends Ledger {
           transactionType: transactionType,
           paymentStatus: paymentStatus,
           totalAmount: totalAmount,
+          currency: currency,
           notes: notes,
           transactionAt: transactionAt,
           createdByName: createdByName,
@@ -178,9 +191,10 @@ class _LedgerImpl extends Ledger {
     Object? id = _Undefined,
     int? workspaceId,
     Object? referenceNumber = _Undefined,
-    String? transactionType,
-    String? paymentStatus,
-    double? totalAmount,
+    _i2.TransactionType? transactionType,
+    _i3.PaymentStatus? paymentStatus,
+    int? totalAmount,
+    String? currency,
     Object? notes = _Undefined,
     DateTime? transactionAt,
     String? createdByName,
@@ -197,6 +211,7 @@ class _LedgerImpl extends Ledger {
       transactionType: transactionType ?? this.transactionType,
       paymentStatus: paymentStatus ?? this.paymentStatus,
       totalAmount: totalAmount ?? this.totalAmount,
+      currency: currency ?? this.currency,
       notes: notes is String? ? notes : this.notes,
       transactionAt: transactionAt ?? this.transactionAt,
       createdByName: createdByName ?? this.createdByName,

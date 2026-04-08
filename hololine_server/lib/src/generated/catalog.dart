@@ -43,7 +43,7 @@ abstract class Catalog
     String? category,
     double? weight,
     int? minOrderQty,
-    required double price,
+    required int price,
     String? currency,
     String? status,
     required String addedByName,
@@ -63,7 +63,7 @@ abstract class Catalog
       category: jsonSerialization['category'] as String?,
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       minOrderQty: jsonSerialization['minOrderQty'] as int?,
-      price: (jsonSerialization['price'] as num).toDouble(),
+      price: jsonSerialization['price'] as int,
       currency: jsonSerialization['currency'] as String,
       status: jsonSerialization['status'] as String,
       addedByName: jsonSerialization['addedByName'] as String,
@@ -98,7 +98,7 @@ abstract class Catalog
 
   int? minOrderQty;
 
-  double price;
+  int price;
 
   String currency;
 
@@ -128,7 +128,7 @@ abstract class Catalog
     String? category,
     double? weight,
     int? minOrderQty,
-    double? price,
+    int? price,
     String? currency,
     String? status,
     String? addedByName,
@@ -223,7 +223,7 @@ class _CatalogImpl extends Catalog {
     String? category,
     double? weight,
     int? minOrderQty,
-    required double price,
+    required int price,
     String? currency,
     String? status,
     required String addedByName,
@@ -263,7 +263,7 @@ class _CatalogImpl extends Catalog {
     Object? category = _Undefined,
     Object? weight = _Undefined,
     Object? minOrderQty = _Undefined,
-    double? price,
+    int? price,
     String? currency,
     String? status,
     String? addedByName,
@@ -326,7 +326,7 @@ class CatalogTable extends _i1.Table<int?> {
       'minOrderQty',
       this,
     );
-    price = _i1.ColumnDouble(
+    price = _i1.ColumnInt(
       'price',
       this,
     );
@@ -374,7 +374,7 @@ class CatalogTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt minOrderQty;
 
-  late final _i1.ColumnDouble price;
+  late final _i1.ColumnInt price;
 
   late final _i1.ColumnString currency;
 
