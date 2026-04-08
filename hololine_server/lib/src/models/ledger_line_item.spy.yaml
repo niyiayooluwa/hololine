@@ -3,6 +3,7 @@ table: ledger_line_item
 fields:
   workspaceId:   int
   ledgerId:      int
+  ledger:        Ledger?,       relation(field=ledgerId, name=ledger_line_items, onDelete=Cascade)
   catalogId:     int
   catalogName:   String
   catalogSku:    String?

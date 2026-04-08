@@ -30,9 +30,11 @@ import 'workspace_member.dart' as _i18;
 import 'workspace_member_info.dart' as _i19;
 import 'workspace_role.dart' as _i20;
 import 'package:hololine_server/src/generated/catalog.dart' as _i21;
+import 'package:hololine_server/src/generated/ledger_line_item.dart' as _i22;
+import 'package:hololine_server/src/generated/ledger.dart' as _i23;
 import 'package:hololine_server/src/generated/responses/workspace_summary.dart'
-    as _i22;
-import 'package:hololine_server/src/generated/workspace.dart' as _i23;
+    as _i24;
+import 'package:hololine_server/src/generated/workspace.dart' as _i25;
 export 'catalog.dart';
 export 'catalog_snapshot.dart';
 export 'inventory.dart';
@@ -685,7 +687,18 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'DateTime',
         ),
       ],
-      foreignKeys: [],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'ledger_line_item_fk_0',
+          columns: ['ledgerId'],
+          referenceTable: 'ledger',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.cascade,
+          matchType: null,
+        )
+      ],
       indexes: [
         _i2.IndexDefinition(
           indexName: 'ledger_line_item_pkey',
@@ -1078,6 +1091,13 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i20.WorkspaceRole?>()) {
       return (data != null ? _i20.WorkspaceRole.fromJson(data) : null) as T;
     }
+    if (t == _i1.getType<List<_i8.LedgerLineItem>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i8.LedgerLineItem>(e))
+              .toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<_i18.WorkspaceMember>?>()) {
       return (data != null
           ? (data as List)
@@ -1094,13 +1114,22 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i21.Catalog>(e)).toList()
           as T;
     }
-    if (t == List<_i22.WorkspaceSummary>) {
+    if (t == List<_i22.LedgerLineItem>) {
       return (data as List)
-          .map((e) => deserialize<_i22.WorkspaceSummary>(e))
+          .map((e) => deserialize<_i22.LedgerLineItem>(e))
           .toList() as T;
     }
-    if (t == List<_i23.Workspace>) {
-      return (data as List).map((e) => deserialize<_i23.Workspace>(e)).toList()
+    if (t == List<_i23.Ledger>) {
+      return (data as List).map((e) => deserialize<_i23.Ledger>(e)).toList()
+          as T;
+    }
+    if (t == List<_i24.WorkspaceSummary>) {
+      return (data as List)
+          .map((e) => deserialize<_i24.WorkspaceSummary>(e))
+          .toList() as T;
+    }
+    if (t == List<_i25.Workspace>) {
+      return (data as List).map((e) => deserialize<_i25.Workspace>(e)).toList()
           as T;
     }
     try {

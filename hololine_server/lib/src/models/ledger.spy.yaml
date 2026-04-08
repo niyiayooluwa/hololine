@@ -14,6 +14,7 @@ fields:
   counterpartyName: String?
   createdAt:        DateTime
   lastModifiedAt:   DateTime
+  lineItems:        List<LedgerLineItem>?, relation(name=ledger_line_items)
 
 indexes:
   ledger_workspace_idx:

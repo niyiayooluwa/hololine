@@ -12,6 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'transaction_type.dart' as _i2;
 import 'payment_status.dart' as _i3;
+import 'ledger_line_item.dart' as _i4;
 
 abstract class Ledger implements _i1.SerializableModel {
   Ledger._({
@@ -29,6 +30,7 @@ abstract class Ledger implements _i1.SerializableModel {
     this.counterpartyName,
     required this.createdAt,
     required this.lastModifiedAt,
+    this.lineItems,
   }) : currency = currency ?? 'NGN';
 
   factory Ledger({
@@ -46,6 +48,7 @@ abstract class Ledger implements _i1.SerializableModel {
     String? counterpartyName,
     required DateTime createdAt,
     required DateTime lastModifiedAt,
+    List<_i4.LedgerLineItem>? lineItems,
   }) = _LedgerImpl;
 
   factory Ledger.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -69,6 +72,9 @@ abstract class Ledger implements _i1.SerializableModel {
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       lastModifiedAt: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['lastModifiedAt']),
+      lineItems: (jsonSerialization['lineItems'] as List?)
+          ?.map((e) => _i4.LedgerLineItem.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -103,6 +109,8 @@ abstract class Ledger implements _i1.SerializableModel {
 
   DateTime lastModifiedAt;
 
+  List<_i4.LedgerLineItem>? lineItems;
+
   /// Returns a shallow copy of this [Ledger]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -121,6 +129,7 @@ abstract class Ledger implements _i1.SerializableModel {
     String? counterpartyName,
     DateTime? createdAt,
     DateTime? lastModifiedAt,
+    List<_i4.LedgerLineItem>? lineItems,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -139,6 +148,8 @@ abstract class Ledger implements _i1.SerializableModel {
       if (counterpartyName != null) 'counterpartyName': counterpartyName,
       'createdAt': createdAt.toJson(),
       'lastModifiedAt': lastModifiedAt.toJson(),
+      if (lineItems != null)
+        'lineItems': lineItems?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -166,6 +177,7 @@ class _LedgerImpl extends Ledger {
     String? counterpartyName,
     required DateTime createdAt,
     required DateTime lastModifiedAt,
+    List<_i4.LedgerLineItem>? lineItems,
   }) : super._(
           id: id,
           workspaceId: workspaceId,
@@ -181,6 +193,7 @@ class _LedgerImpl extends Ledger {
           counterpartyName: counterpartyName,
           createdAt: createdAt,
           lastModifiedAt: lastModifiedAt,
+          lineItems: lineItems,
         );
 
   /// Returns a shallow copy of this [Ledger]
@@ -202,6 +215,7 @@ class _LedgerImpl extends Ledger {
     Object? counterpartyName = _Undefined,
     DateTime? createdAt,
     DateTime? lastModifiedAt,
+    Object? lineItems = _Undefined,
   }) {
     return Ledger(
       id: id is int? ? id : this.id,
@@ -221,6 +235,9 @@ class _LedgerImpl extends Ledger {
           : this.counterpartyName,
       createdAt: createdAt ?? this.createdAt,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+      lineItems: lineItems is List<_i4.LedgerLineItem>?
+          ? lineItems
+          : this.lineItems?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

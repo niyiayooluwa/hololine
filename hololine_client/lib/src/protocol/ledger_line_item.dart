@@ -10,12 +10,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'ledger.dart' as _i2;
 
 abstract class LedgerLineItem implements _i1.SerializableModel {
   LedgerLineItem._({
     this.id,
     required this.workspaceId,
     required this.ledgerId,
+    this.ledger,
     required this.catalogId,
     required this.catalogName,
     this.catalogSku,
@@ -33,6 +35,7 @@ abstract class LedgerLineItem implements _i1.SerializableModel {
     int? id,
     required int workspaceId,
     required int ledgerId,
+    _i2.Ledger? ledger,
     required int catalogId,
     required String catalogName,
     String? catalogSku,
@@ -50,6 +53,10 @@ abstract class LedgerLineItem implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       workspaceId: jsonSerialization['workspaceId'] as int,
       ledgerId: jsonSerialization['ledgerId'] as int,
+      ledger: jsonSerialization['ledger'] == null
+          ? null
+          : _i2.Ledger.fromJson(
+              (jsonSerialization['ledger'] as Map<String, dynamic>)),
       catalogId: jsonSerialization['catalogId'] as int,
       catalogName: jsonSerialization['catalogName'] as String,
       catalogSku: jsonSerialization['catalogSku'] as String?,
@@ -72,6 +79,8 @@ abstract class LedgerLineItem implements _i1.SerializableModel {
   int workspaceId;
 
   int ledgerId;
+
+  _i2.Ledger? ledger;
 
   int catalogId;
 
@@ -100,6 +109,7 @@ abstract class LedgerLineItem implements _i1.SerializableModel {
     int? id,
     int? workspaceId,
     int? ledgerId,
+    _i2.Ledger? ledger,
     int? catalogId,
     String? catalogName,
     String? catalogSku,
@@ -117,6 +127,7 @@ abstract class LedgerLineItem implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'ledgerId': ledgerId,
+      if (ledger != null) 'ledger': ledger?.toJson(),
       'catalogId': catalogId,
       'catalogName': catalogName,
       if (catalogSku != null) 'catalogSku': catalogSku,
@@ -143,6 +154,7 @@ class _LedgerLineItemImpl extends LedgerLineItem {
     int? id,
     required int workspaceId,
     required int ledgerId,
+    _i2.Ledger? ledger,
     required int catalogId,
     required String catalogName,
     String? catalogSku,
@@ -157,6 +169,7 @@ class _LedgerLineItemImpl extends LedgerLineItem {
           id: id,
           workspaceId: workspaceId,
           ledgerId: ledgerId,
+          ledger: ledger,
           catalogId: catalogId,
           catalogName: catalogName,
           catalogSku: catalogSku,
@@ -177,6 +190,7 @@ class _LedgerLineItemImpl extends LedgerLineItem {
     Object? id = _Undefined,
     int? workspaceId,
     int? ledgerId,
+    Object? ledger = _Undefined,
     int? catalogId,
     String? catalogName,
     Object? catalogSku = _Undefined,
@@ -192,6 +206,7 @@ class _LedgerLineItemImpl extends LedgerLineItem {
       id: id is int? ? id : this.id,
       workspaceId: workspaceId ?? this.workspaceId,
       ledgerId: ledgerId ?? this.ledgerId,
+      ledger: ledger is _i2.Ledger? ? ledger : this.ledger?.copyWith(),
       catalogId: catalogId ?? this.catalogId,
       catalogName: catalogName ?? this.catalogName,
       catalogSku: catalogSku is String? ? catalogSku : this.catalogSku,

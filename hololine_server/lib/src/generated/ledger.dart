@@ -8,10 +8,13 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'transaction_type.dart' as _i2;
 import 'payment_status.dart' as _i3;
+import 'ledger_line_item.dart' as _i4;
 
 abstract class Ledger implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Ledger._({
@@ -29,6 +32,7 @@ abstract class Ledger implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.counterpartyName,
     required this.createdAt,
     required this.lastModifiedAt,
+    this.lineItems,
   }) : currency = currency ?? 'NGN';
 
   factory Ledger({
@@ -46,6 +50,7 @@ abstract class Ledger implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? counterpartyName,
     required DateTime createdAt,
     required DateTime lastModifiedAt,
+    List<_i4.LedgerLineItem>? lineItems,
   }) = _LedgerImpl;
 
   factory Ledger.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -69,6 +74,9 @@ abstract class Ledger implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       lastModifiedAt: _i1.DateTimeJsonExtension.fromJson(
           jsonSerialization['lastModifiedAt']),
+      lineItems: (jsonSerialization['lineItems'] as List?)
+          ?.map((e) => _i4.LedgerLineItem.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -105,6 +113,8 @@ abstract class Ledger implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime lastModifiedAt;
 
+  List<_i4.LedgerLineItem>? lineItems;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -126,6 +136,7 @@ abstract class Ledger implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? counterpartyName,
     DateTime? createdAt,
     DateTime? lastModifiedAt,
+    List<_i4.LedgerLineItem>? lineItems,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -144,6 +155,8 @@ abstract class Ledger implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (counterpartyName != null) 'counterpartyName': counterpartyName,
       'createdAt': createdAt.toJson(),
       'lastModifiedAt': lastModifiedAt.toJson(),
+      if (lineItems != null)
+        'lineItems': lineItems?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -164,11 +177,14 @@ abstract class Ledger implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (counterpartyName != null) 'counterpartyName': counterpartyName,
       'createdAt': createdAt.toJson(),
       'lastModifiedAt': lastModifiedAt.toJson(),
+      if (lineItems != null)
+        'lineItems':
+            lineItems?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static LedgerInclude include() {
-    return LedgerInclude._();
+  static LedgerInclude include({_i4.LedgerLineItemIncludeList? lineItems}) {
+    return LedgerInclude._(lineItems: lineItems);
   }
 
   static LedgerIncludeList includeList({
@@ -215,6 +231,7 @@ class _LedgerImpl extends Ledger {
     String? counterpartyName,
     required DateTime createdAt,
     required DateTime lastModifiedAt,
+    List<_i4.LedgerLineItem>? lineItems,
   }) : super._(
           id: id,
           workspaceId: workspaceId,
@@ -230,6 +247,7 @@ class _LedgerImpl extends Ledger {
           counterpartyName: counterpartyName,
           createdAt: createdAt,
           lastModifiedAt: lastModifiedAt,
+          lineItems: lineItems,
         );
 
   /// Returns a shallow copy of this [Ledger]
@@ -251,6 +269,7 @@ class _LedgerImpl extends Ledger {
     Object? counterpartyName = _Undefined,
     DateTime? createdAt,
     DateTime? lastModifiedAt,
+    Object? lineItems = _Undefined,
   }) {
     return Ledger(
       id: id is int? ? id : this.id,
@@ -270,6 +289,9 @@ class _LedgerImpl extends Ledger {
           : this.counterpartyName,
       createdAt: createdAt ?? this.createdAt,
       lastModifiedAt: lastModifiedAt ?? this.lastModifiedAt,
+      lineItems: lineItems is List<_i4.LedgerLineItem>?
+          ? lineItems
+          : this.lineItems?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -359,6 +381,41 @@ class LedgerTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime lastModifiedAt;
 
+  _i4.LedgerLineItemTable? ___lineItems;
+
+  _i1.ManyRelation<_i4.LedgerLineItemTable>? _lineItems;
+
+  _i4.LedgerLineItemTable get __lineItems {
+    if (___lineItems != null) return ___lineItems!;
+    ___lineItems = _i1.createRelationTable(
+      relationFieldName: '__lineItems',
+      field: Ledger.t.id,
+      foreignField: _i4.LedgerLineItem.t.ledgerId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.LedgerLineItemTable(tableRelation: foreignTableRelation),
+    );
+    return ___lineItems!;
+  }
+
+  _i1.ManyRelation<_i4.LedgerLineItemTable> get lineItems {
+    if (_lineItems != null) return _lineItems!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'lineItems',
+      field: Ledger.t.id,
+      foreignField: _i4.LedgerLineItem.t.ledgerId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.LedgerLineItemTable(tableRelation: foreignTableRelation),
+    );
+    _lineItems = _i1.ManyRelation<_i4.LedgerLineItemTable>(
+      tableWithRelations: relationTable,
+      table: _i4.LedgerLineItemTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _lineItems!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -376,13 +433,25 @@ class LedgerTable extends _i1.Table<int?> {
         createdAt,
         lastModifiedAt,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'lineItems') {
+      return __lineItems;
+    }
+    return null;
+  }
 }
 
 class LedgerInclude extends _i1.IncludeObject {
-  LedgerInclude._();
+  LedgerInclude._({_i4.LedgerLineItemIncludeList? lineItems}) {
+    _lineItems = lineItems;
+  }
+
+  _i4.LedgerLineItemIncludeList? _lineItems;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'lineItems': _lineItems};
 
   @override
   _i1.Table<int?> get table => Ledger.t;
@@ -410,6 +479,14 @@ class LedgerIncludeList extends _i1.IncludeList {
 
 class LedgerRepository {
   const LedgerRepository._();
+
+  final attach = const LedgerAttachRepository._();
+
+  final attachRow = const LedgerAttachRowRepository._();
+
+  final detach = const LedgerDetachRepository._();
+
+  final detachRow = const LedgerDetachRowRepository._();
 
   /// Returns a list of [Ledger]s matching the given query parameters.
   ///
@@ -442,6 +519,7 @@ class LedgerRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<LedgerTable>? orderByList,
     _i1.Transaction? transaction,
+    LedgerInclude? include,
   }) async {
     return session.db.find<Ledger>(
       where: where?.call(Ledger.t),
@@ -451,6 +529,7 @@ class LedgerRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -479,6 +558,7 @@ class LedgerRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<LedgerTable>? orderByList,
     _i1.Transaction? transaction,
+    LedgerInclude? include,
   }) async {
     return session.db.findFirstRow<Ledger>(
       where: where?.call(Ledger.t),
@@ -487,6 +567,7 @@ class LedgerRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -495,10 +576,12 @@ class LedgerRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    LedgerInclude? include,
   }) async {
     return session.db.findById<Ledger>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -616,6 +699,114 @@ class LedgerRepository {
     return session.db.count<Ledger>(
       where: where?.call(Ledger.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class LedgerAttachRepository {
+  const LedgerAttachRepository._();
+
+  /// Creates a relation between this [Ledger] and the given [LedgerLineItem]s
+  /// by setting each [LedgerLineItem]'s foreign key `ledgerId` to refer to this [Ledger].
+  Future<void> lineItems(
+    _i1.Session session,
+    Ledger ledger,
+    List<_i4.LedgerLineItem> ledgerLineItem, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ledgerLineItem.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('ledgerLineItem.id');
+    }
+    if (ledger.id == null) {
+      throw ArgumentError.notNull('ledger.id');
+    }
+
+    var $ledgerLineItem =
+        ledgerLineItem.map((e) => e.copyWith(ledgerId: ledger.id)).toList();
+    await session.db.update<_i4.LedgerLineItem>(
+      $ledgerLineItem,
+      columns: [_i4.LedgerLineItem.t.ledgerId],
+      transaction: transaction,
+    );
+  }
+}
+
+class LedgerAttachRowRepository {
+  const LedgerAttachRowRepository._();
+
+  /// Creates a relation between this [Ledger] and the given [LedgerLineItem]
+  /// by setting the [LedgerLineItem]'s foreign key `ledgerId` to refer to this [Ledger].
+  Future<void> lineItems(
+    _i1.Session session,
+    Ledger ledger,
+    _i4.LedgerLineItem ledgerLineItem, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ledgerLineItem.id == null) {
+      throw ArgumentError.notNull('ledgerLineItem.id');
+    }
+    if (ledger.id == null) {
+      throw ArgumentError.notNull('ledger.id');
+    }
+
+    var $ledgerLineItem = ledgerLineItem.copyWith(ledgerId: ledger.id);
+    await session.db.updateRow<_i4.LedgerLineItem>(
+      $ledgerLineItem,
+      columns: [_i4.LedgerLineItem.t.ledgerId],
+      transaction: transaction,
+    );
+  }
+}
+
+class LedgerDetachRepository {
+  const LedgerDetachRepository._();
+
+  /// Detaches the relation between this [Ledger] and the given [LedgerLineItem]
+  /// by setting the [LedgerLineItem]'s foreign key `ledgerId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> lineItems(
+    _i1.Session session,
+    List<_i4.LedgerLineItem> ledgerLineItem, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ledgerLineItem.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('ledgerLineItem.id');
+    }
+
+    var $ledgerLineItem =
+        ledgerLineItem.map((e) => e.copyWith(ledgerId: null)).toList();
+    await session.db.update<_i4.LedgerLineItem>(
+      $ledgerLineItem,
+      columns: [_i4.LedgerLineItem.t.ledgerId],
+      transaction: transaction,
+    );
+  }
+}
+
+class LedgerDetachRowRepository {
+  const LedgerDetachRowRepository._();
+
+  /// Detaches the relation between this [Ledger] and the given [LedgerLineItem]
+  /// by setting the [LedgerLineItem]'s foreign key `ledgerId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> lineItems(
+    _i1.Session session,
+    _i4.LedgerLineItem ledgerLineItem, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ledgerLineItem.id == null) {
+      throw ArgumentError.notNull('ledgerLineItem.id');
+    }
+
+    var $ledgerLineItem = ledgerLineItem.copyWith(ledgerId: null);
+    await session.db.updateRow<_i4.LedgerLineItem>(
+      $ledgerLineItem,
+      columns: [_i4.LedgerLineItem.t.ledgerId],
       transaction: transaction,
     );
   }

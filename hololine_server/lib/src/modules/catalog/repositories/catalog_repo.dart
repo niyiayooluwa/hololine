@@ -69,4 +69,18 @@ class CatalogRepo {
   Future<UserInfo?> getUserInfo(Session session, int userId) async {
     return await UserInfo.db.findById(session, userId);
   }
+
+  /// Fetches multiple catalog records by their IDs within a workspace.
+  Future<List<Catalog>> findByIds(
+    Session session,
+    List<int> catalogIds,
+    int workspaceId,
+  ) async {
+    return await Catalog.db.find(
+      session,
+      where: (t) =>
+          t.workspaceId.equals(workspaceId) &
+          t.id.inSet(catalogIds.toSet()),
+    );
+  }
 }

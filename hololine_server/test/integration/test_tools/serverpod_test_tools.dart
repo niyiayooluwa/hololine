@@ -19,15 +19,19 @@ import 'package:hololine_server/src/generated/requests/catalog_update_params.dar
     as _i5;
 import 'package:hololine_server/src/generated/requests/inventory_update_params.dart'
     as _i6;
-import 'package:hololine_server/src/generated/workspace.dart' as _i7;
+import 'package:hololine_server/src/generated/ledger.dart' as _i7;
+import 'package:hololine_server/src/generated/ledger_line_item.dart' as _i8;
+import 'package:hololine_server/src/generated/transaction_type.dart' as _i9;
+import 'package:hololine_server/src/generated/payment_status.dart' as _i10;
+import 'package:hololine_server/src/generated/workspace.dart' as _i11;
 import 'package:hololine_server/src/generated/workspace_dashboard_data.dart'
-    as _i8;
-import 'package:hololine_server/src/generated/responses/workspace_summary.dart'
-    as _i9;
-import 'package:hololine_server/src/generated/workspace_member.dart' as _i10;
-import 'package:hololine_server/src/generated/workspace_role.dart' as _i11;
-import 'package:hololine_server/src/generated/workspace_invitation.dart'
     as _i12;
+import 'package:hololine_server/src/generated/responses/workspace_summary.dart'
+    as _i13;
+import 'package:hololine_server/src/generated/workspace_member.dart' as _i14;
+import 'package:hololine_server/src/generated/workspace_role.dart' as _i15;
+import 'package:hololine_server/src/generated/workspace_invitation.dart'
+    as _i16;
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -120,6 +124,8 @@ class TestEndpoints {
 
   late final _CleanupEndpoint cleanup;
 
+  late final _LedgerEndpoint ledger;
+
   late final _WorkspaceEndpoint workspace;
 }
 
@@ -139,6 +145,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     cleanup = _CleanupEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    ledger = _LedgerEndpoint(
       endpoints,
       serializationManager,
     );
@@ -367,6 +377,132 @@ class _CleanupEndpoint {
   }
 }
 
+class _LedgerEndpoint {
+  _LedgerEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i7.Ledger> createTransaction(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int workspaceId,
+    required List<_i8.LedgerLineItem> lineItems,
+    required _i9.TransactionType transactionType,
+    required _i10.PaymentStatus paymentStatus,
+    required DateTime transactionAt,
+    String? referenceNumber,
+    String? notes,
+    String? counterpartyName,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'ledger',
+        method: 'createTransaction',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ledger',
+          methodName: 'createTransaction',
+          parameters: _i1.testObjectToJson({
+            'workspaceId': workspaceId,
+            'lineItems': lineItems,
+            'transactionType': transactionType,
+            'paymentStatus': paymentStatus,
+            'transactionAt': transactionAt,
+            'referenceNumber': referenceNumber,
+            'notes': notes,
+            'counterpartyName': counterpartyName,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i7.Ledger>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i7.Ledger>> listTransactions(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int workspaceId,
+    _i9.TransactionType? transactionType,
+    DateTime? from,
+    DateTime? to,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'ledger',
+        method: 'listTransactions',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ledger',
+          methodName: 'listTransactions',
+          parameters: _i1.testObjectToJson({
+            'workspaceId': workspaceId,
+            'transactionType': transactionType,
+            'from': from,
+            'to': to,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i7.Ledger>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i7.Ledger> getTransaction(
+    _i1.TestSessionBuilder sessionBuilder, {
+    required int ledgerId,
+    required int workspaceId,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'ledger',
+        method: 'getTransaction',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ledger',
+          methodName: 'getTransaction',
+          parameters: _i1.testObjectToJson({
+            'ledgerId': ledgerId,
+            'workspaceId': workspaceId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i7.Ledger>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _WorkspaceEndpoint {
   _WorkspaceEndpoint(
     this._endpointDispatch,
@@ -377,7 +513,7 @@ class _WorkspaceEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i7.Workspace> createStandalone(
+  _i3.Future<_i11.Workspace> createStandalone(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
     String description,
@@ -402,7 +538,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Workspace>);
+        ) as _i3.Future<_i11.Workspace>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -410,7 +546,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i7.Workspace> createChild(
+  _i3.Future<_i11.Workspace> createChild(
     _i1.TestSessionBuilder sessionBuilder,
     String name,
     int parentWorkspaceId,
@@ -437,7 +573,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Workspace>);
+        ) as _i3.Future<_i11.Workspace>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -445,7 +581,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i7.Workspace> getWorkspaceDetails(
+  _i3.Future<_i11.Workspace> getWorkspaceDetails(
     _i1.TestSessionBuilder sessionBuilder, {
     required String publicId,
   }) async {
@@ -466,7 +602,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Workspace>);
+        ) as _i3.Future<_i11.Workspace>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -474,7 +610,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i8.WorkspaceDashboardData> getDashboardData(
+  _i3.Future<_i12.WorkspaceDashboardData> getDashboardData(
     _i1.TestSessionBuilder sessionBuilder, {
     required String publicId,
   }) async {
@@ -495,7 +631,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i8.WorkspaceDashboardData>);
+        ) as _i3.Future<_i12.WorkspaceDashboardData>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -503,7 +639,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<List<_i9.WorkspaceSummary>> getMyWorkspaces(
+  _i3.Future<List<_i13.WorkspaceSummary>> getMyWorkspaces(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -522,7 +658,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i9.WorkspaceSummary>>);
+        ) as _i3.Future<List<_i13.WorkspaceSummary>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -530,7 +666,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<List<_i7.Workspace>> getChildWorkspaces(
+  _i3.Future<List<_i11.Workspace>> getChildWorkspaces(
     _i1.TestSessionBuilder sessionBuilder, {
     required int parentWorkspaceId,
   }) async {
@@ -552,7 +688,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i7.Workspace>>);
+        ) as _i3.Future<List<_i11.Workspace>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -560,11 +696,11 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i10.WorkspaceMember> updateMemberRole(
+  _i3.Future<_i14.WorkspaceMember> updateMemberRole(
     _i1.TestSessionBuilder sessionBuilder, {
     required int memberId,
     required int workspaceId,
-    required _i11.WorkspaceRole role,
+    required _i15.WorkspaceRole role,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -587,7 +723,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i10.WorkspaceMember>);
+        ) as _i3.Future<_i14.WorkspaceMember>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -595,7 +731,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i10.WorkspaceMember> removeMember(
+  _i3.Future<_i14.WorkspaceMember> removeMember(
     _i1.TestSessionBuilder sessionBuilder, {
     required int memberId,
     required int workspaceId,
@@ -620,7 +756,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i10.WorkspaceMember>);
+        ) as _i3.Future<_i14.WorkspaceMember>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -628,7 +764,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i10.WorkspaceMember> leaveWorkspace(
+  _i3.Future<_i14.WorkspaceMember> leaveWorkspace(
     _i1.TestSessionBuilder sessionBuilder, {
     required int workspaceId,
   }) async {
@@ -649,7 +785,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i10.WorkspaceMember>);
+        ) as _i3.Future<_i14.WorkspaceMember>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -657,11 +793,11 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i12.WorkspaceInvitation> inviteMember(
+  _i3.Future<_i16.WorkspaceInvitation> inviteMember(
     _i1.TestSessionBuilder sessionBuilder,
     String email,
     int workspaceId,
-    _i11.WorkspaceRole role,
+    _i15.WorkspaceRole role,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -684,7 +820,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i12.WorkspaceInvitation>);
+        ) as _i3.Future<_i16.WorkspaceInvitation>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -692,7 +828,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i10.WorkspaceMember> acceptInvitation(
+  _i3.Future<_i14.WorkspaceMember> acceptInvitation(
     _i1.TestSessionBuilder sessionBuilder,
     String token,
   ) async {
@@ -713,7 +849,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i10.WorkspaceMember>);
+        ) as _i3.Future<_i14.WorkspaceMember>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -721,7 +857,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i7.Workspace> updateWorkspaceDetails(
+  _i3.Future<_i11.Workspace> updateWorkspaceDetails(
     _i1.TestSessionBuilder sessionBuilder, {
     required int workspaceId,
     String? name,
@@ -748,7 +884,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Workspace>);
+        ) as _i3.Future<_i11.Workspace>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -756,7 +892,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i7.Workspace> archiveWorkspace(
+  _i3.Future<_i11.Workspace> archiveWorkspace(
     _i1.TestSessionBuilder sessionBuilder,
     int workspaceId,
   ) async {
@@ -777,7 +913,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Workspace>);
+        ) as _i3.Future<_i11.Workspace>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -785,7 +921,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i7.Workspace> restoreWorkspace(
+  _i3.Future<_i11.Workspace> restoreWorkspace(
     _i1.TestSessionBuilder sessionBuilder,
     int workspaceId,
   ) async {
@@ -806,7 +942,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Workspace>);
+        ) as _i3.Future<_i11.Workspace>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -847,7 +983,7 @@ class _WorkspaceEndpoint {
     });
   }
 
-  _i3.Future<_i7.Workspace> initiateDeleteWorkspace(
+  _i3.Future<_i11.Workspace> initiateDeleteWorkspace(
     _i1.TestSessionBuilder sessionBuilder,
     int workspaceId,
   ) async {
@@ -868,7 +1004,7 @@ class _WorkspaceEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.Workspace>);
+        ) as _i3.Future<_i11.Workspace>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

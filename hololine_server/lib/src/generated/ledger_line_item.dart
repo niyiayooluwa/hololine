@@ -8,8 +8,11 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'ledger.dart' as _i2;
 
 abstract class LedgerLineItem
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -17,6 +20,7 @@ abstract class LedgerLineItem
     this.id,
     required this.workspaceId,
     required this.ledgerId,
+    this.ledger,
     required this.catalogId,
     required this.catalogName,
     this.catalogSku,
@@ -34,6 +38,7 @@ abstract class LedgerLineItem
     int? id,
     required int workspaceId,
     required int ledgerId,
+    _i2.Ledger? ledger,
     required int catalogId,
     required String catalogName,
     String? catalogSku,
@@ -51,6 +56,10 @@ abstract class LedgerLineItem
       id: jsonSerialization['id'] as int?,
       workspaceId: jsonSerialization['workspaceId'] as int,
       ledgerId: jsonSerialization['ledgerId'] as int,
+      ledger: jsonSerialization['ledger'] == null
+          ? null
+          : _i2.Ledger.fromJson(
+              (jsonSerialization['ledger'] as Map<String, dynamic>)),
       catalogId: jsonSerialization['catalogId'] as int,
       catalogName: jsonSerialization['catalogName'] as String,
       catalogSku: jsonSerialization['catalogSku'] as String?,
@@ -75,6 +84,8 @@ abstract class LedgerLineItem
   int workspaceId;
 
   int ledgerId;
+
+  _i2.Ledger? ledger;
 
   int catalogId;
 
@@ -106,6 +117,7 @@ abstract class LedgerLineItem
     int? id,
     int? workspaceId,
     int? ledgerId,
+    _i2.Ledger? ledger,
     int? catalogId,
     String? catalogName,
     String? catalogSku,
@@ -123,6 +135,7 @@ abstract class LedgerLineItem
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'ledgerId': ledgerId,
+      if (ledger != null) 'ledger': ledger?.toJson(),
       'catalogId': catalogId,
       'catalogName': catalogName,
       if (catalogSku != null) 'catalogSku': catalogSku,
@@ -142,6 +155,7 @@ abstract class LedgerLineItem
       if (id != null) 'id': id,
       'workspaceId': workspaceId,
       'ledgerId': ledgerId,
+      if (ledger != null) 'ledger': ledger?.toJsonForProtocol(),
       'catalogId': catalogId,
       'catalogName': catalogName,
       if (catalogSku != null) 'catalogSku': catalogSku,
@@ -155,8 +169,8 @@ abstract class LedgerLineItem
     };
   }
 
-  static LedgerLineItemInclude include() {
-    return LedgerLineItemInclude._();
+  static LedgerLineItemInclude include({_i2.LedgerInclude? ledger}) {
+    return LedgerLineItemInclude._(ledger: ledger);
   }
 
   static LedgerLineItemIncludeList includeList({
@@ -192,6 +206,7 @@ class _LedgerLineItemImpl extends LedgerLineItem {
     int? id,
     required int workspaceId,
     required int ledgerId,
+    _i2.Ledger? ledger,
     required int catalogId,
     required String catalogName,
     String? catalogSku,
@@ -206,6 +221,7 @@ class _LedgerLineItemImpl extends LedgerLineItem {
           id: id,
           workspaceId: workspaceId,
           ledgerId: ledgerId,
+          ledger: ledger,
           catalogId: catalogId,
           catalogName: catalogName,
           catalogSku: catalogSku,
@@ -226,6 +242,7 @@ class _LedgerLineItemImpl extends LedgerLineItem {
     Object? id = _Undefined,
     int? workspaceId,
     int? ledgerId,
+    Object? ledger = _Undefined,
     int? catalogId,
     String? catalogName,
     Object? catalogSku = _Undefined,
@@ -241,6 +258,7 @@ class _LedgerLineItemImpl extends LedgerLineItem {
       id: id is int? ? id : this.id,
       workspaceId: workspaceId ?? this.workspaceId,
       ledgerId: ledgerId ?? this.ledgerId,
+      ledger: ledger is _i2.Ledger? ? ledger : this.ledger?.copyWith(),
       catalogId: catalogId ?? this.catalogId,
       catalogName: catalogName ?? this.catalogName,
       catalogSku: catalogSku is String? ? catalogSku : this.catalogSku,
@@ -314,6 +332,8 @@ class LedgerLineItemTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt ledgerId;
 
+  _i2.LedgerTable? _ledger;
+
   late final _i1.ColumnInt catalogId;
 
   late final _i1.ColumnString catalogName;
@@ -334,6 +354,19 @@ class LedgerLineItemTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createdAt;
 
+  _i2.LedgerTable get ledger {
+    if (_ledger != null) return _ledger!;
+    _ledger = _i1.createRelationTable(
+      relationFieldName: 'ledger',
+      field: LedgerLineItem.t.ledgerId,
+      foreignField: _i2.Ledger.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.LedgerTable(tableRelation: foreignTableRelation),
+    );
+    return _ledger!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -350,13 +383,25 @@ class LedgerLineItemTable extends _i1.Table<int?> {
         position,
         createdAt,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'ledger') {
+      return ledger;
+    }
+    return null;
+  }
 }
 
 class LedgerLineItemInclude extends _i1.IncludeObject {
-  LedgerLineItemInclude._();
+  LedgerLineItemInclude._({_i2.LedgerInclude? ledger}) {
+    _ledger = ledger;
+  }
+
+  _i2.LedgerInclude? _ledger;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'ledger': _ledger};
 
   @override
   _i1.Table<int?> get table => LedgerLineItem.t;
@@ -384,6 +429,8 @@ class LedgerLineItemIncludeList extends _i1.IncludeList {
 
 class LedgerLineItemRepository {
   const LedgerLineItemRepository._();
+
+  final attachRow = const LedgerLineItemAttachRowRepository._();
 
   /// Returns a list of [LedgerLineItem]s matching the given query parameters.
   ///
@@ -416,6 +463,7 @@ class LedgerLineItemRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<LedgerLineItemTable>? orderByList,
     _i1.Transaction? transaction,
+    LedgerLineItemInclude? include,
   }) async {
     return session.db.find<LedgerLineItem>(
       where: where?.call(LedgerLineItem.t),
@@ -425,6 +473,7 @@ class LedgerLineItemRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -453,6 +502,7 @@ class LedgerLineItemRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<LedgerLineItemTable>? orderByList,
     _i1.Transaction? transaction,
+    LedgerLineItemInclude? include,
   }) async {
     return session.db.findFirstRow<LedgerLineItem>(
       where: where?.call(LedgerLineItem.t),
@@ -461,6 +511,7 @@ class LedgerLineItemRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -469,10 +520,12 @@ class LedgerLineItemRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    LedgerLineItemInclude? include,
   }) async {
     return session.db.findById<LedgerLineItem>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -590,6 +643,33 @@ class LedgerLineItemRepository {
     return session.db.count<LedgerLineItem>(
       where: where?.call(LedgerLineItem.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class LedgerLineItemAttachRowRepository {
+  const LedgerLineItemAttachRowRepository._();
+
+  /// Creates a relation between the given [LedgerLineItem] and [Ledger]
+  /// by setting the [LedgerLineItem]'s foreign key `ledgerId` to refer to the [Ledger].
+  Future<void> ledger(
+    _i1.Session session,
+    LedgerLineItem ledgerLineItem,
+    _i2.Ledger ledger, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (ledgerLineItem.id == null) {
+      throw ArgumentError.notNull('ledgerLineItem.id');
+    }
+    if (ledger.id == null) {
+      throw ArgumentError.notNull('ledger.id');
+    }
+
+    var $ledgerLineItem = ledgerLineItem.copyWith(ledgerId: ledger.id);
+    await session.db.updateRow<LedgerLineItem>(
+      $ledgerLineItem,
+      columns: [LedgerLineItem.t.ledgerId],
       transaction: transaction,
     );
   }

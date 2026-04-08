@@ -7,6 +7,10 @@ cron:
   - executeJob:
 cleanup:
   - checkAndPerformHardDeletes:
+ledger:
+  - createTransaction:
+  - listTransactions:
+  - getTransaction:
 workspace:
   - createStandalone:
   - createChild:
