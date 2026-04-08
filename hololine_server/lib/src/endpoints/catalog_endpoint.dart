@@ -14,7 +14,8 @@ class CatalogEndpoint extends Endpoint {
   final MemberRepo _memberRepo = MemberRepo();
   final CatalogRepo _catalogRepo = CatalogRepo();
   final InventoryRepo _inventoryRepo = InventoryRepo();
-  late final CatalogService _catalogService = CatalogService(_catalogRepo, _inventoryRepo, _memberRepo);
+  late final CatalogService _catalogService =
+      CatalogService(_catalogRepo, _inventoryRepo, _memberRepo);
 
   Future<Catalog> createProduct(
     Session session, {
@@ -77,7 +78,8 @@ class CatalogEndpoint extends Endpoint {
     if (userId == null) throw AuthenticationException('Not authenticated');
 
     return runWithLogger(session, 'archiveProduct', () async {
-      await _catalogService.archiveProduct(session, workspaceId, catalogId, userId);
+      await _catalogService.archiveProduct(
+          session, workspaceId, catalogId, userId);
     });
   }
 }
