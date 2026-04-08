@@ -1,20 +1,20 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:serverpod/server.dart';
-import '../repositories/product_repo.dart';
+import '../repositories/catalog_repo.dart';
 
 class CatalogService {
-  final ProductRepo _productRepository;
+  final CatalogRepo _catalogRepository;
 
-  CatalogService(this._productRepository);
+  CatalogService(this._catalogRepository);
 
   Future<CatalogSnapshot> getCatalogSnapshot(Session session, int workspaceId) async {
-    final total = await _productRepository.countByWorkspaceId(session, workspaceId);
-    final lastProduct = await _productRepository.findLastByWorkspaceId(session, workspaceId);
+    final total = await _catalogRepository.countByWorkspaceId(session, workspaceId);
+    final lastCatalog = await _catalogRepository.findLastByWorkspaceId(session, workspaceId);
 
     return CatalogSnapshot(
       totalItems: total,
-      lastProductName: lastProduct?.name,
-      lastProductDate: lastProduct?.createdAt,
+      lastProductName: lastCatalog?.name,
+      lastProductDate: lastCatalog?.createdAt,
     );
   }
 }
