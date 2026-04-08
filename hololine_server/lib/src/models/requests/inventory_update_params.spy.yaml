@@ -1,0 +1,4 @@
+class: InventoryUpdateParams
+fields:
+  location: String?
+  lowStockThreshold: double?

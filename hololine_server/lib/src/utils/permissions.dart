@@ -85,6 +85,16 @@ class RolePolicy {
   static bool canRestoreWorkspace(WorkspaceRole role) =>
       role == WorkspaceRole.owner;
 
+  // ========== PRODUCT CATALOG PERMISSIONS ==========
+
+  static bool canCreateProduct(WorkspaceRole role) =>
+      role == WorkspaceRole.owner || role == WorkspaceRole.admin;
+
+  static bool canEditProduct(WorkspaceRole role) =>
+      role == WorkspaceRole.owner || role == WorkspaceRole.admin;
+
+  static bool canViewProducts(WorkspaceRole role) => true;
+
   // ========== CHILD OPERATIONAL WORKSPACE PERMISSIONS ==========
 
   static bool canViewChildExists(ParentRole role) => true;

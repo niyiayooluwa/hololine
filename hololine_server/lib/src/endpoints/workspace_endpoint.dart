@@ -2,6 +2,7 @@ import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart';
 import 'package:hololine_server/src/modules/workspace/usecase/services.dart';
 import 'package:hololine_server/src/modules/catalog/repositories/catalog_repo.dart';
+import 'package:hololine_server/src/modules/catalog/repositories/inventory_repo.dart';
 import 'package:hololine_server/src/modules/catalog/usecase/catalog_service.dart';
 import 'package:hololine_server/src/services/email_service.dart';
 import 'package:hololine_server/src/utils/endpoint_helper.dart';
@@ -19,6 +20,7 @@ class WorkspaceEndpoint extends Endpoint {
   final MemberRepo _memberRepo = MemberRepo();
   final InvitationRepo _invitationRepo = InvitationRepo();
   final CatalogRepo _catalogRepo = CatalogRepo();
+  final InventoryRepo _inventoryRepo = InventoryRepo();
 
   late final WorkspaceService _workspaceService = WorkspaceService(
     _memberRepo,
@@ -28,7 +30,7 @@ class WorkspaceEndpoint extends Endpoint {
     _memberRepo,
     _coreWorkspaceRepo,
   );
-  late final CatalogService _catalogService = CatalogService(_catalogRepo);
+  late final CatalogService _catalogService = CatalogService(_catalogRepo, _inventoryRepo, _memberRepo);
 
   // ===========================================================================
   // CREATION

@@ -1,0 +1,12 @@
+class: CatalogUpdateParams
+fields:
+  name: String?
+  type: String?
+  sku: String?
+  clearSku: bool, default=false
+  unit: String?
+  category: String?
+  weight: double?
+  minOrderQty: double?
+  price: int?
+  currency: String?

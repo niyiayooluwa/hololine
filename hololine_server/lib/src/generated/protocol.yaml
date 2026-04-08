@@ -1,3 +1,8 @@
+catalog:
+  - createProduct:
+  - listProducts:
+  - updateProduct:
+  - archiveProduct:
 cron:
   - executeJob:
 cleanup:

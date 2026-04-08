@@ -11,16 +11,79 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:hololine_client/src/protocol/workspace.dart' as _i3;
-import 'package:hololine_client/src/protocol/workspace_dashboard_data.dart'
+import 'package:hololine_client/src/protocol/catalog.dart' as _i3;
+import 'package:hololine_client/src/protocol/requests/catalog_update_params.dart'
     as _i4;
-import 'package:hololine_client/src/protocol/responses/workspace_summary.dart'
+import 'package:hololine_client/src/protocol/requests/inventory_update_params.dart'
     as _i5;
-import 'package:hololine_client/src/protocol/workspace_member.dart' as _i6;
-import 'package:hololine_client/src/protocol/workspace_role.dart' as _i7;
-import 'package:hololine_client/src/protocol/workspace_invitation.dart' as _i8;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i9;
-import 'protocol.dart' as _i10;
+import 'package:hololine_client/src/protocol/workspace.dart' as _i6;
+import 'package:hololine_client/src/protocol/workspace_dashboard_data.dart'
+    as _i7;
+import 'package:hololine_client/src/protocol/responses/workspace_summary.dart'
+    as _i8;
+import 'package:hololine_client/src/protocol/workspace_member.dart' as _i9;
+import 'package:hololine_client/src/protocol/workspace_role.dart' as _i10;
+import 'package:hololine_client/src/protocol/workspace_invitation.dart' as _i11;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i12;
+import 'protocol.dart' as _i13;
+
+/// {@category Endpoint}
+class EndpointCatalog extends _i1.EndpointRef {
+  EndpointCatalog(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'catalog';
+
+  _i2.Future<_i3.Catalog> createProduct({
+    required int workspaceId,
+    required _i3.Catalog catalogData,
+  }) =>
+      caller.callServerEndpoint<_i3.Catalog>(
+        'catalog',
+        'createProduct',
+        {
+          'workspaceId': workspaceId,
+          'catalogData': catalogData,
+        },
+      );
+
+  _i2.Future<List<_i3.Catalog>> listProducts({required int workspaceId}) =>
+      caller.callServerEndpoint<List<_i3.Catalog>>(
+        'catalog',
+        'listProducts',
+        {'workspaceId': workspaceId},
+      );
+
+  _i2.Future<_i3.Catalog> updateProduct({
+    required int workspaceId,
+    required int catalogId,
+    required _i4.CatalogUpdateParams catalogUpdates,
+    required _i5.InventoryUpdateParams inventoryUpdates,
+  }) =>
+      caller.callServerEndpoint<_i3.Catalog>(
+        'catalog',
+        'updateProduct',
+        {
+          'workspaceId': workspaceId,
+          'catalogId': catalogId,
+          'catalogUpdates': catalogUpdates,
+          'inventoryUpdates': inventoryUpdates,
+        },
+      );
+
+  _i2.Future<void> archiveProduct({
+    required int workspaceId,
+    required int catalogId,
+  }) =>
+      caller.callServerEndpoint<void>(
+        'catalog',
+        'archiveProduct',
+        {
+          'workspaceId': workspaceId,
+          'catalogId': catalogId,
+        },
+      );
+}
 
 /// {@category Endpoint}
 class EndpointCron extends _i1.EndpointRef {
@@ -63,11 +126,11 @@ class EndpointWorkspace extends _i1.EndpointRef {
   @override
   String get name => 'workspace';
 
-  _i2.Future<_i3.Workspace> createStandalone(
+  _i2.Future<_i6.Workspace> createStandalone(
     String name,
     String description,
   ) =>
-      caller.callServerEndpoint<_i3.Workspace>(
+      caller.callServerEndpoint<_i6.Workspace>(
         'workspace',
         'createStandalone',
         {
@@ -76,12 +139,12 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.Workspace> createChild(
+  _i2.Future<_i6.Workspace> createChild(
     String name,
     int parentWorkspaceId,
     String description,
   ) =>
-      caller.callServerEndpoint<_i3.Workspace>(
+      caller.callServerEndpoint<_i6.Workspace>(
         'workspace',
         'createChild',
         {
@@ -91,42 +154,42 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.Workspace> getWorkspaceDetails({required String publicId}) =>
-      caller.callServerEndpoint<_i3.Workspace>(
+  _i2.Future<_i6.Workspace> getWorkspaceDetails({required String publicId}) =>
+      caller.callServerEndpoint<_i6.Workspace>(
         'workspace',
         'getWorkspaceDetails',
         {'publicId': publicId},
       );
 
-  _i2.Future<_i4.WorkspaceDashboardData> getDashboardData(
+  _i2.Future<_i7.WorkspaceDashboardData> getDashboardData(
           {required String publicId}) =>
-      caller.callServerEndpoint<_i4.WorkspaceDashboardData>(
+      caller.callServerEndpoint<_i7.WorkspaceDashboardData>(
         'workspace',
         'getDashboardData',
         {'publicId': publicId},
       );
 
-  _i2.Future<List<_i5.WorkspaceSummary>> getMyWorkspaces() =>
-      caller.callServerEndpoint<List<_i5.WorkspaceSummary>>(
+  _i2.Future<List<_i8.WorkspaceSummary>> getMyWorkspaces() =>
+      caller.callServerEndpoint<List<_i8.WorkspaceSummary>>(
         'workspace',
         'getMyWorkspaces',
         {},
       );
 
-  _i2.Future<List<_i3.Workspace>> getChildWorkspaces(
+  _i2.Future<List<_i6.Workspace>> getChildWorkspaces(
           {required int parentWorkspaceId}) =>
-      caller.callServerEndpoint<List<_i3.Workspace>>(
+      caller.callServerEndpoint<List<_i6.Workspace>>(
         'workspace',
         'getChildWorkspaces',
         {'parentWorkspaceId': parentWorkspaceId},
       );
 
-  _i2.Future<_i6.WorkspaceMember> updateMemberRole({
+  _i2.Future<_i9.WorkspaceMember> updateMemberRole({
     required int memberId,
     required int workspaceId,
-    required _i7.WorkspaceRole role,
+    required _i10.WorkspaceRole role,
   }) =>
-      caller.callServerEndpoint<_i6.WorkspaceMember>(
+      caller.callServerEndpoint<_i9.WorkspaceMember>(
         'workspace',
         'updateMemberRole',
         {
@@ -136,11 +199,11 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i6.WorkspaceMember> removeMember({
+  _i2.Future<_i9.WorkspaceMember> removeMember({
     required int memberId,
     required int workspaceId,
   }) =>
-      caller.callServerEndpoint<_i6.WorkspaceMember>(
+      caller.callServerEndpoint<_i9.WorkspaceMember>(
         'workspace',
         'removeMember',
         {
@@ -149,19 +212,19 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i6.WorkspaceMember> leaveWorkspace({required int workspaceId}) =>
-      caller.callServerEndpoint<_i6.WorkspaceMember>(
+  _i2.Future<_i9.WorkspaceMember> leaveWorkspace({required int workspaceId}) =>
+      caller.callServerEndpoint<_i9.WorkspaceMember>(
         'workspace',
         'leaveWorkspace',
         {'workspaceId': workspaceId},
       );
 
-  _i2.Future<_i8.WorkspaceInvitation> inviteMember(
+  _i2.Future<_i11.WorkspaceInvitation> inviteMember(
     String email,
     int workspaceId,
-    _i7.WorkspaceRole role,
+    _i10.WorkspaceRole role,
   ) =>
-      caller.callServerEndpoint<_i8.WorkspaceInvitation>(
+      caller.callServerEndpoint<_i11.WorkspaceInvitation>(
         'workspace',
         'inviteMember',
         {
@@ -171,19 +234,19 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i6.WorkspaceMember> acceptInvitation(String token) =>
-      caller.callServerEndpoint<_i6.WorkspaceMember>(
+  _i2.Future<_i9.WorkspaceMember> acceptInvitation(String token) =>
+      caller.callServerEndpoint<_i9.WorkspaceMember>(
         'workspace',
         'acceptInvitation',
         {'token': token},
       );
 
-  _i2.Future<_i3.Workspace> updateWorkspaceDetails({
+  _i2.Future<_i6.Workspace> updateWorkspaceDetails({
     required int workspaceId,
     String? name,
     String? description,
   }) =>
-      caller.callServerEndpoint<_i3.Workspace>(
+      caller.callServerEndpoint<_i6.Workspace>(
         'workspace',
         'updateWorkspaceDetails',
         {
@@ -193,15 +256,15 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.Workspace> archiveWorkspace(int workspaceId) =>
-      caller.callServerEndpoint<_i3.Workspace>(
+  _i2.Future<_i6.Workspace> archiveWorkspace(int workspaceId) =>
+      caller.callServerEndpoint<_i6.Workspace>(
         'workspace',
         'archiveWorkspace',
         {'workspaceId': workspaceId},
       );
 
-  _i2.Future<_i3.Workspace> restoreWorkspace(int workspaceId) =>
-      caller.callServerEndpoint<_i3.Workspace>(
+  _i2.Future<_i6.Workspace> restoreWorkspace(int workspaceId) =>
+      caller.callServerEndpoint<_i6.Workspace>(
         'workspace',
         'restoreWorkspace',
         {'workspaceId': workspaceId},
@@ -220,8 +283,8 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.Workspace> initiateDeleteWorkspace(int workspaceId) =>
-      caller.callServerEndpoint<_i3.Workspace>(
+  _i2.Future<_i6.Workspace> initiateDeleteWorkspace(int workspaceId) =>
+      caller.callServerEndpoint<_i6.Workspace>(
         'workspace',
         'initiateDeleteWorkspace',
         {'workspaceId': workspaceId},
@@ -230,10 +293,10 @@ class EndpointWorkspace extends _i1.EndpointRef {
 
 class Modules {
   Modules(Client client) {
-    auth = _i9.Caller(client);
+    auth = _i12.Caller(client);
   }
 
-  late final _i9.Caller auth;
+  late final _i12.Caller auth;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -252,7 +315,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i10.Protocol(),
+          _i13.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -262,11 +325,14 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    catalog = EndpointCatalog(this);
     cron = EndpointCron(this);
     cleanup = EndpointCleanup(this);
     workspace = EndpointWorkspace(this);
     modules = Modules(this);
   }
+
+  late final EndpointCatalog catalog;
 
   late final EndpointCron cron;
 
@@ -278,6 +344,7 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'catalog': catalog,
         'cron': cron,
         'cleanup': cleanup,
         'workspace': workspace,

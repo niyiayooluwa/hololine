@@ -18,24 +18,29 @@ import 'inventory.dart' as _i6;
 import 'ledger.dart' as _i7;
 import 'ledger_line_item.dart' as _i8;
 import 'payment_status.dart' as _i9;
-import 'responses/response.dart' as _i10;
-import 'responses/workspace_summary.dart' as _i11;
-import 'transaction_type.dart' as _i12;
-import 'workspace.dart' as _i13;
-import 'workspace_dashboard_data.dart' as _i14;
-import 'workspace_invitation.dart' as _i15;
-import 'workspace_member.dart' as _i16;
-import 'workspace_member_info.dart' as _i17;
-import 'workspace_role.dart' as _i18;
+import 'requests/catalog_update_params.dart' as _i10;
+import 'requests/inventory_update_params.dart' as _i11;
+import 'responses/response.dart' as _i12;
+import 'responses/workspace_summary.dart' as _i13;
+import 'transaction_type.dart' as _i14;
+import 'workspace.dart' as _i15;
+import 'workspace_dashboard_data.dart' as _i16;
+import 'workspace_invitation.dart' as _i17;
+import 'workspace_member.dart' as _i18;
+import 'workspace_member_info.dart' as _i19;
+import 'workspace_role.dart' as _i20;
+import 'package:hololine_server/src/generated/catalog.dart' as _i21;
 import 'package:hololine_server/src/generated/responses/workspace_summary.dart'
-    as _i19;
-import 'package:hololine_server/src/generated/workspace.dart' as _i20;
+    as _i22;
+import 'package:hololine_server/src/generated/workspace.dart' as _i23;
 export 'catalog.dart';
 export 'catalog_snapshot.dart';
 export 'inventory.dart';
 export 'ledger.dart';
 export 'ledger_line_item.dart';
 export 'payment_status.dart';
+export 'requests/catalog_update_params.dart';
+export 'requests/inventory_update_params.dart';
 export 'responses/response.dart';
 export 'responses/workspace_summary.dart';
 export 'transaction_type.dart';
@@ -984,32 +989,38 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i9.PaymentStatus) {
       return _i9.PaymentStatus.fromJson(data) as T;
     }
-    if (t == _i10.Response) {
-      return _i10.Response.fromJson(data) as T;
+    if (t == _i10.CatalogUpdateParams) {
+      return _i10.CatalogUpdateParams.fromJson(data) as T;
     }
-    if (t == _i11.WorkspaceSummary) {
-      return _i11.WorkspaceSummary.fromJson(data) as T;
+    if (t == _i11.InventoryUpdateParams) {
+      return _i11.InventoryUpdateParams.fromJson(data) as T;
     }
-    if (t == _i12.TransactionType) {
-      return _i12.TransactionType.fromJson(data) as T;
+    if (t == _i12.Response) {
+      return _i12.Response.fromJson(data) as T;
     }
-    if (t == _i13.Workspace) {
-      return _i13.Workspace.fromJson(data) as T;
+    if (t == _i13.WorkspaceSummary) {
+      return _i13.WorkspaceSummary.fromJson(data) as T;
     }
-    if (t == _i14.WorkspaceDashboardData) {
-      return _i14.WorkspaceDashboardData.fromJson(data) as T;
+    if (t == _i14.TransactionType) {
+      return _i14.TransactionType.fromJson(data) as T;
     }
-    if (t == _i15.WorkspaceInvitation) {
-      return _i15.WorkspaceInvitation.fromJson(data) as T;
+    if (t == _i15.Workspace) {
+      return _i15.Workspace.fromJson(data) as T;
     }
-    if (t == _i16.WorkspaceMember) {
-      return _i16.WorkspaceMember.fromJson(data) as T;
+    if (t == _i16.WorkspaceDashboardData) {
+      return _i16.WorkspaceDashboardData.fromJson(data) as T;
     }
-    if (t == _i17.WorkspaceMemberInfo) {
-      return _i17.WorkspaceMemberInfo.fromJson(data) as T;
+    if (t == _i17.WorkspaceInvitation) {
+      return _i17.WorkspaceInvitation.fromJson(data) as T;
     }
-    if (t == _i18.WorkspaceRole) {
-      return _i18.WorkspaceRole.fromJson(data) as T;
+    if (t == _i18.WorkspaceMember) {
+      return _i18.WorkspaceMember.fromJson(data) as T;
+    }
+    if (t == _i19.WorkspaceMemberInfo) {
+      return _i19.WorkspaceMemberInfo.fromJson(data) as T;
+    }
+    if (t == _i20.WorkspaceRole) {
+      return _i20.WorkspaceRole.fromJson(data) as T;
     }
     if (t == _i1.getType<_i4.Catalog?>()) {
       return (data != null ? _i4.Catalog.fromJson(data) : null) as T;
@@ -1029,55 +1040,67 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i9.PaymentStatus?>()) {
       return (data != null ? _i9.PaymentStatus.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i10.Response?>()) {
-      return (data != null ? _i10.Response.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i11.WorkspaceSummary?>()) {
-      return (data != null ? _i11.WorkspaceSummary.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i12.TransactionType?>()) {
-      return (data != null ? _i12.TransactionType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i13.Workspace?>()) {
-      return (data != null ? _i13.Workspace.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i14.WorkspaceDashboardData?>()) {
-      return (data != null ? _i14.WorkspaceDashboardData.fromJson(data) : null)
+    if (t == _i1.getType<_i10.CatalogUpdateParams?>()) {
+      return (data != null ? _i10.CatalogUpdateParams.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i15.WorkspaceInvitation?>()) {
-      return (data != null ? _i15.WorkspaceInvitation.fromJson(data) : null)
+    if (t == _i1.getType<_i11.InventoryUpdateParams?>()) {
+      return (data != null ? _i11.InventoryUpdateParams.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i16.WorkspaceMember?>()) {
-      return (data != null ? _i16.WorkspaceMember.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i12.Response?>()) {
+      return (data != null ? _i12.Response.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.WorkspaceMemberInfo?>()) {
-      return (data != null ? _i17.WorkspaceMemberInfo.fromJson(data) : null)
+    if (t == _i1.getType<_i13.WorkspaceSummary?>()) {
+      return (data != null ? _i13.WorkspaceSummary.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i14.TransactionType?>()) {
+      return (data != null ? _i14.TransactionType.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i15.Workspace?>()) {
+      return (data != null ? _i15.Workspace.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i16.WorkspaceDashboardData?>()) {
+      return (data != null ? _i16.WorkspaceDashboardData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i18.WorkspaceRole?>()) {
-      return (data != null ? _i18.WorkspaceRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.WorkspaceInvitation?>()) {
+      return (data != null ? _i17.WorkspaceInvitation.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i16.WorkspaceMember>?>()) {
+    if (t == _i1.getType<_i18.WorkspaceMember?>()) {
+      return (data != null ? _i18.WorkspaceMember.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i19.WorkspaceMemberInfo?>()) {
+      return (data != null ? _i19.WorkspaceMemberInfo.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i20.WorkspaceRole?>()) {
+      return (data != null ? _i20.WorkspaceRole.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<List<_i18.WorkspaceMember>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i16.WorkspaceMember>(e))
+              .map((e) => deserialize<_i18.WorkspaceMember>(e))
               .toList()
           : null) as T;
     }
-    if (t == List<_i17.WorkspaceMemberInfo>) {
+    if (t == List<_i19.WorkspaceMemberInfo>) {
       return (data as List)
-          .map((e) => deserialize<_i17.WorkspaceMemberInfo>(e))
+          .map((e) => deserialize<_i19.WorkspaceMemberInfo>(e))
           .toList() as T;
     }
-    if (t == List<_i19.WorkspaceSummary>) {
+    if (t == List<_i21.Catalog>) {
+      return (data as List).map((e) => deserialize<_i21.Catalog>(e)).toList()
+          as T;
+    }
+    if (t == List<_i22.WorkspaceSummary>) {
       return (data as List)
-          .map((e) => deserialize<_i19.WorkspaceSummary>(e))
+          .map((e) => deserialize<_i22.WorkspaceSummary>(e))
           .toList() as T;
     }
-    if (t == List<_i20.Workspace>) {
-      return (data as List).map((e) => deserialize<_i20.Workspace>(e)).toList()
+    if (t == List<_i23.Workspace>) {
+      return (data as List).map((e) => deserialize<_i23.Workspace>(e)).toList()
           as T;
     }
     try {
@@ -1111,31 +1134,37 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i9.PaymentStatus) {
       return 'PaymentStatus';
     }
-    if (data is _i10.Response) {
+    if (data is _i10.CatalogUpdateParams) {
+      return 'CatalogUpdateParams';
+    }
+    if (data is _i11.InventoryUpdateParams) {
+      return 'InventoryUpdateParams';
+    }
+    if (data is _i12.Response) {
       return 'Response';
     }
-    if (data is _i11.WorkspaceSummary) {
+    if (data is _i13.WorkspaceSummary) {
       return 'WorkspaceSummary';
     }
-    if (data is _i12.TransactionType) {
+    if (data is _i14.TransactionType) {
       return 'TransactionType';
     }
-    if (data is _i13.Workspace) {
+    if (data is _i15.Workspace) {
       return 'Workspace';
     }
-    if (data is _i14.WorkspaceDashboardData) {
+    if (data is _i16.WorkspaceDashboardData) {
       return 'WorkspaceDashboardData';
     }
-    if (data is _i15.WorkspaceInvitation) {
+    if (data is _i17.WorkspaceInvitation) {
       return 'WorkspaceInvitation';
     }
-    if (data is _i16.WorkspaceMember) {
+    if (data is _i18.WorkspaceMember) {
       return 'WorkspaceMember';
     }
-    if (data is _i17.WorkspaceMemberInfo) {
+    if (data is _i19.WorkspaceMemberInfo) {
       return 'WorkspaceMemberInfo';
     }
-    if (data is _i18.WorkspaceRole) {
+    if (data is _i20.WorkspaceRole) {
       return 'WorkspaceRole';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1173,32 +1202,38 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'PaymentStatus') {
       return deserialize<_i9.PaymentStatus>(data['data']);
     }
+    if (dataClassName == 'CatalogUpdateParams') {
+      return deserialize<_i10.CatalogUpdateParams>(data['data']);
+    }
+    if (dataClassName == 'InventoryUpdateParams') {
+      return deserialize<_i11.InventoryUpdateParams>(data['data']);
+    }
     if (dataClassName == 'Response') {
-      return deserialize<_i10.Response>(data['data']);
+      return deserialize<_i12.Response>(data['data']);
     }
     if (dataClassName == 'WorkspaceSummary') {
-      return deserialize<_i11.WorkspaceSummary>(data['data']);
+      return deserialize<_i13.WorkspaceSummary>(data['data']);
     }
     if (dataClassName == 'TransactionType') {
-      return deserialize<_i12.TransactionType>(data['data']);
+      return deserialize<_i14.TransactionType>(data['data']);
     }
     if (dataClassName == 'Workspace') {
-      return deserialize<_i13.Workspace>(data['data']);
+      return deserialize<_i15.Workspace>(data['data']);
     }
     if (dataClassName == 'WorkspaceDashboardData') {
-      return deserialize<_i14.WorkspaceDashboardData>(data['data']);
+      return deserialize<_i16.WorkspaceDashboardData>(data['data']);
     }
     if (dataClassName == 'WorkspaceInvitation') {
-      return deserialize<_i15.WorkspaceInvitation>(data['data']);
+      return deserialize<_i17.WorkspaceInvitation>(data['data']);
     }
     if (dataClassName == 'WorkspaceMember') {
-      return deserialize<_i16.WorkspaceMember>(data['data']);
+      return deserialize<_i18.WorkspaceMember>(data['data']);
     }
     if (dataClassName == 'WorkspaceMemberInfo') {
-      return deserialize<_i17.WorkspaceMemberInfo>(data['data']);
+      return deserialize<_i19.WorkspaceMemberInfo>(data['data']);
     }
     if (dataClassName == 'WorkspaceRole') {
-      return deserialize<_i18.WorkspaceRole>(data['data']);
+      return deserialize<_i20.WorkspaceRole>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -1234,12 +1269,12 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i7.Ledger.t;
       case _i8.LedgerLineItem:
         return _i8.LedgerLineItem.t;
-      case _i13.Workspace:
-        return _i13.Workspace.t;
-      case _i15.WorkspaceInvitation:
-        return _i15.WorkspaceInvitation.t;
-      case _i16.WorkspaceMember:
-        return _i16.WorkspaceMember.t;
+      case _i15.Workspace:
+        return _i15.Workspace.t;
+      case _i17.WorkspaceInvitation:
+        return _i17.WorkspaceInvitation.t;
+      case _i18.WorkspaceMember:
+        return _i18.WorkspaceMember.t;
     }
     return null;
   }
