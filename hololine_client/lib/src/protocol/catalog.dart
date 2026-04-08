@@ -41,7 +41,7 @@ abstract class Catalog implements _i1.SerializableModel {
     required String unit,
     String? category,
     double? weight,
-    int? minOrderQty,
+    double? minOrderQty,
     required int price,
     String? currency,
     String? status,
@@ -61,7 +61,7 @@ abstract class Catalog implements _i1.SerializableModel {
       unit: jsonSerialization['unit'] as String,
       category: jsonSerialization['category'] as String?,
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
-      minOrderQty: jsonSerialization['minOrderQty'] as int?,
+      minOrderQty: (jsonSerialization['minOrderQty'] as num?)?.toDouble(),
       price: jsonSerialization['price'] as int,
       currency: jsonSerialization['currency'] as String,
       status: jsonSerialization['status'] as String,
@@ -93,7 +93,7 @@ abstract class Catalog implements _i1.SerializableModel {
 
   double? weight;
 
-  int? minOrderQty;
+  double? minOrderQty;
 
   int price;
 
@@ -121,7 +121,7 @@ abstract class Catalog implements _i1.SerializableModel {
     String? unit,
     String? category,
     double? weight,
-    int? minOrderQty,
+    double? minOrderQty,
     int? price,
     String? currency,
     String? status,
@@ -170,7 +170,7 @@ class _CatalogImpl extends Catalog {
     required String unit,
     String? category,
     double? weight,
-    int? minOrderQty,
+    double? minOrderQty,
     required int price,
     String? currency,
     String? status,
@@ -228,7 +228,7 @@ class _CatalogImpl extends Catalog {
       unit: unit ?? this.unit,
       category: category is String? ? category : this.category,
       weight: weight is double? ? weight : this.weight,
-      minOrderQty: minOrderQty is int? ? minOrderQty : this.minOrderQty,
+      minOrderQty: minOrderQty is double? ? minOrderQty : this.minOrderQty,
       price: price ?? this.price,
       currency: currency ?? this.currency,
       status: status ?? this.status,

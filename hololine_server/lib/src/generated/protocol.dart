@@ -111,9 +111,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'minOrderQty',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.doublePrecision,
           isNullable: true,
-          dartType: 'int?',
+          dartType: 'double?',
         ),
         _i2.ColumnDefinition(
           name: 'price',

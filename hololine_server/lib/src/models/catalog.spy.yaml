@@ -8,7 +8,7 @@ fields:
   unit:           String
   category:       String?
   weight:         double?
-  minOrderQty:    int?
+  minOrderQty:    double?
   price:          int
   currency:       String,         default="NGN"
   status:         String,         default="active"
