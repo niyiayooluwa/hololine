@@ -1,5 +1,0 @@
-class: CatalogSnapshot
-fields:
-  totalItems: int
-  lastProductName: String?
-  lastProductDate: DateTime?
