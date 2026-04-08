@@ -1,0 +1,7 @@
+enum: TransactionType
+values:
+  - sale
+  - purchase
+  - refund
+  - adjustment
+  - writeOff

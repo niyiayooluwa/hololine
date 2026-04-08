@@ -1,0 +1,5 @@
+enum: PaymentStatus
+values:
+  - paid
+  - partial
+  - credit
