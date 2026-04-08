@@ -42,3 +42,55 @@ class InvalidStateException extends WorkspaceException {
 class ExternalServiceException extends WorkspaceException {
   ExternalServiceException(super.message);
 }
+
+/// Thrown when an operation requires more stock than is available.
+class InsufficientStockException extends WorkspaceException {
+  final int catalogId;
+  final double requested;
+  final double available;
+
+  InsufficientStockException({
+    required String message,
+    required this.catalogId,
+    required this.requested,
+    required this.available,
+  }) : super(message);
+
+  @override
+  String toString() => '$runtimeType: $message (Catalog: $catalogId, Requested: $requested, Available: $available)';
+}
+
+/// Thrown when a duplicate SKU is detected within a workspace.
+class DuplicateSkuException extends WorkspaceException {
+  final String sku;
+  final int workspaceId;
+
+  DuplicateSkuException({
+    required String message,
+    required this.sku,
+    required this.workspaceId,
+  }) : super(message);
+
+  @override
+  String toString() => '$runtimeType: $message (SKU: $sku, Workspace: $workspaceId)';
+}
+
+/// Thrown when currencies do not match during a transaction.
+class CurrencyMismatchException extends WorkspaceException {
+  final String expected;
+  final String found;
+
+  CurrencyMismatchException({
+    required String message,
+    required this.expected,
+    required this.found,
+  }) : super(message);
+
+  @override
+  String toString() => '$runtimeType: $message (Expected: $expected, Found: $found)';
+}
+
+/// Thrown when a user is not authorized to perform an action.
+class UnauthorizedException extends WorkspaceException {
+  UnauthorizedException(super.message);
+}
