@@ -12,7 +12,8 @@ class CatalogRepo {
   }
 
   /// Finds the most recently added catalog item in a workspace.
-  Future<Catalog?> findLastByWorkspaceId(Session session, int workspaceId) async {
+  Future<Catalog?> findLastByWorkspaceId(
+      Session session, int workspaceId) async {
     return await Catalog.db.findFirstRow(
       session,
       where: (t) => t.workspaceId.equals(workspaceId),
@@ -27,7 +28,8 @@ class CatalogRepo {
   }
 
   /// Checks if a SKU already exists within a workspace, ignoring a specific catalog ID (for updates).
-  Future<bool> isSkuTaken(Session session, String sku, int workspaceId, {int? excludeCatalogId}) async {
+  Future<bool> isSkuTaken(Session session, String sku, int workspaceId,
+      {int? excludeCatalogId}) async {
     final count = await Catalog.db.count(
       session,
       where: (t) {
@@ -45,7 +47,9 @@ class CatalogRepo {
   Future<List<Catalog>> listProducts(Session session, int workspaceId) async {
     return await Catalog.db.find(
       session,
-      where: (t) => t.workspaceId.equals(workspaceId) & t.status.notEquals('discontinued'),
+      where: (t) =>
+          t.workspaceId.equals(workspaceId) &
+          t.status.notEquals('discontinued'),
       orderBy: (t) => t.createdAt,
       orderDescending: true,
     );
@@ -57,12 +61,15 @@ class CatalogRepo {
     Catalog catalog,
     Transaction transaction,
   ) async {
-    return await Catalog.db.insertRow(session, catalog, transaction: transaction);
+    return await Catalog.db
+        .insertRow(session, catalog, transaction: transaction);
   }
 
   /// Updates an existing catalog item, optionally within a transaction.
-  Future<Catalog> update(Session session, Catalog catalog, {Transaction? transaction}) async {
-    return await Catalog.db.updateRow(session, catalog, transaction: transaction);
+  Future<Catalog> update(Session session, Catalog catalog,
+      {Transaction? transaction}) async {
+    return await Catalog.db
+        .updateRow(session, catalog, transaction: transaction);
   }
 
   /// Fetches the UserInfo for the given userId.
@@ -79,8 +86,7 @@ class CatalogRepo {
     return await Catalog.db.find(
       session,
       where: (t) =>
-          t.workspaceId.equals(workspaceId) &
-          t.id.inSet(catalogIds.toSet()),
+          t.workspaceId.equals(workspaceId) & t.id.inSet(catalogIds.toSet()),
     );
   }
 }

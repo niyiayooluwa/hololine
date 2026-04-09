@@ -6,20 +6,32 @@
 import 'dart:async' as _i6;
 
 import 'package:hololine_server/src/generated/protocol.dart' as _i2;
-import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart'
+import 'package:hololine_server/src/modules/catalog/repositories/catalog_repo.dart'
+    as _i14;
+import 'package:hololine_server/src/modules/catalog/repositories/inventory_repo.dart'
+    as _i15;
+import 'package:hololine_server/src/modules/catalog/usecase/catalog_service.dart'
     as _i9;
+import 'package:hololine_server/src/modules/inventory/usecase/inventory_service.dart'
+    as _i10;
+import 'package:hololine_server/src/modules/ledger/repositories/ledger_repo.dart'
+    as _i16;
+import 'package:hololine_server/src/modules/ledger/usecase/ledger_service.dart'
+    as _i11;
+import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart'
+    as _i12;
 import 'package:hololine_server/src/modules/workspace/usecase/core_workspace_service.dart'
     as _i5;
 import 'package:hololine_server/src/modules/workspace/usecase/invitation_service.dart'
     as _i8;
 import 'package:hololine_server/src/modules/workspace/usecase/member_service.dart'
     as _i7;
-import 'package:hololine_server/src/services/email_service.dart' as _i12;
+import 'package:hololine_server/src/services/email_service.dart' as _i18;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i11;
+import 'package:mockito/src/dummies.dart' as _i17;
 import 'package:serverpod/serverpod.dart' as _i3;
 import 'package:serverpod/src/cache/caches.dart' as _i4;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i10;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i13;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -68,8 +80,9 @@ class _FakeWorkspaceInvitation_2 extends _i1.SmartFake
         );
 }
 
-class _FakeUuidValue_3 extends _i1.SmartFake implements _i3.UuidValue {
-  _FakeUuidValue_3(
+class _FakeCatalogSnapshot_3 extends _i1.SmartFake
+    implements _i2.CatalogSnapshot {
+  _FakeCatalogSnapshot_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -78,8 +91,8 @@ class _FakeUuidValue_3 extends _i1.SmartFake implements _i3.UuidValue {
         );
 }
 
-class _FakeServer_4 extends _i1.SmartFake implements _i3.Server {
-  _FakeServer_4(
+class _FakeCatalog_4 extends _i1.SmartFake implements _i2.Catalog {
+  _FakeCatalog_4(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -88,8 +101,8 @@ class _FakeServer_4 extends _i1.SmartFake implements _i3.Server {
         );
 }
 
-class _FakeServerpod_5 extends _i1.SmartFake implements _i3.Serverpod {
-  _FakeServerpod_5(
+class _FakeLedger_5 extends _i1.SmartFake implements _i2.Ledger {
+  _FakeLedger_5(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -98,8 +111,8 @@ class _FakeServerpod_5 extends _i1.SmartFake implements _i3.Serverpod {
         );
 }
 
-class _FakeDateTime_6 extends _i1.SmartFake implements DateTime {
-  _FakeDateTime_6(
+class _FakeInventory_6 extends _i1.SmartFake implements _i2.Inventory {
+  _FakeInventory_6(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -108,8 +121,8 @@ class _FakeDateTime_6 extends _i1.SmartFake implements DateTime {
         );
 }
 
-class _FakeDatabase_7 extends _i1.SmartFake implements _i3.Database {
-  _FakeDatabase_7(
+class _FakeUuidValue_7 extends _i1.SmartFake implements _i3.UuidValue {
+  _FakeUuidValue_7(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -118,8 +131,8 @@ class _FakeDatabase_7 extends _i1.SmartFake implements _i3.Database {
         );
 }
 
-class _FakeCaches_8 extends _i1.SmartFake implements _i4.Caches {
-  _FakeCaches_8(
+class _FakeServer_8 extends _i1.SmartFake implements _i3.Server {
+  _FakeServer_8(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -128,8 +141,8 @@ class _FakeCaches_8 extends _i1.SmartFake implements _i4.Caches {
         );
 }
 
-class _FakeStorageAccess_9 extends _i1.SmartFake implements _i3.StorageAccess {
-  _FakeStorageAccess_9(
+class _FakeServerpod_9 extends _i1.SmartFake implements _i3.Serverpod {
+  _FakeServerpod_9(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -138,9 +151,49 @@ class _FakeStorageAccess_9 extends _i1.SmartFake implements _i3.StorageAccess {
         );
 }
 
-class _FakeMessageCentralAccess_10 extends _i1.SmartFake
+class _FakeDateTime_10 extends _i1.SmartFake implements DateTime {
+  _FakeDateTime_10(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeDatabase_11 extends _i1.SmartFake implements _i3.Database {
+  _FakeDatabase_11(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeCaches_12 extends _i1.SmartFake implements _i4.Caches {
+  _FakeCaches_12(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeStorageAccess_13 extends _i1.SmartFake implements _i3.StorageAccess {
+  _FakeStorageAccess_13(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeMessageCentralAccess_14 extends _i1.SmartFake
     implements _i3.MessageCentralAccess {
-  _FakeMessageCentralAccess_10(
+  _FakeMessageCentralAccess_14(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -149,8 +202,8 @@ class _FakeMessageCentralAccess_10 extends _i1.SmartFake
         );
 }
 
-class _FakeDuration_11 extends _i1.SmartFake implements Duration {
-  _FakeDuration_11(
+class _FakeDuration_15 extends _i1.SmartFake implements Duration {
+  _FakeDuration_15(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -159,8 +212,8 @@ class _FakeDuration_11 extends _i1.SmartFake implements Duration {
         );
 }
 
-class _FakeSession_12 extends _i1.SmartFake implements _i3.Session {
-  _FakeSession_12(
+class _FakeSession_16 extends _i1.SmartFake implements _i3.Session {
+  _FakeSession_16(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -622,16 +675,341 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
       ) as _i6.Future<_i2.WorkspaceMember>);
 }
 
+/// A class which mocks [CatalogService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
+  MockCatalogService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<_i2.CatalogSnapshot> getCatalogSnapshot(
+    _i3.Session? session,
+    int? workspaceId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getCatalogSnapshot,
+          [
+            session,
+            workspaceId,
+          ],
+        ),
+        returnValue:
+            _i6.Future<_i2.CatalogSnapshot>.value(_FakeCatalogSnapshot_3(
+          this,
+          Invocation.method(
+            #getCatalogSnapshot,
+            [
+              session,
+              workspaceId,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.CatalogSnapshot>);
+
+  @override
+  _i6.Future<_i2.Catalog> createProduct(
+    _i3.Session? session, {
+    required int? workspaceId,
+    required _i2.Catalog? catalogData,
+    required int? actorId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createProduct,
+          [session],
+          {
+            #workspaceId: workspaceId,
+            #catalogData: catalogData,
+            #actorId: actorId,
+          },
+        ),
+        returnValue: _i6.Future<_i2.Catalog>.value(_FakeCatalog_4(
+          this,
+          Invocation.method(
+            #createProduct,
+            [session],
+            {
+              #workspaceId: workspaceId,
+              #catalogData: catalogData,
+              #actorId: actorId,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i2.Catalog>);
+
+  @override
+  _i6.Future<List<_i2.Catalog>> listProducts(
+    _i3.Session? session,
+    int? workspaceId,
+    int? actorId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listProducts,
+          [
+            session,
+            workspaceId,
+            actorId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
+      ) as _i6.Future<List<_i2.Catalog>>);
+
+  @override
+  _i6.Future<_i2.Catalog> updateProduct(
+    _i3.Session? session, {
+    required int? workspaceId,
+    required int? catalogId,
+    required _i2.CatalogUpdateParams? catalogUpdates,
+    required _i2.InventoryUpdateParams? inventoryUpdates,
+    required int? actorId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateProduct,
+          [session],
+          {
+            #workspaceId: workspaceId,
+            #catalogId: catalogId,
+            #catalogUpdates: catalogUpdates,
+            #inventoryUpdates: inventoryUpdates,
+            #actorId: actorId,
+          },
+        ),
+        returnValue: _i6.Future<_i2.Catalog>.value(_FakeCatalog_4(
+          this,
+          Invocation.method(
+            #updateProduct,
+            [session],
+            {
+              #workspaceId: workspaceId,
+              #catalogId: catalogId,
+              #catalogUpdates: catalogUpdates,
+              #inventoryUpdates: inventoryUpdates,
+              #actorId: actorId,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i2.Catalog>);
+
+  @override
+  _i6.Future<void> archiveProduct(
+    _i3.Session? session,
+    int? workspaceId,
+    int? catalogId,
+    int? actorId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #archiveProduct,
+          [
+            session,
+            workspaceId,
+            catalogId,
+            actorId,
+          ],
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+}
+
+/// A class which mocks [InventoryService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockInventoryService extends _i1.Mock implements _i10.InventoryService {
+  MockInventoryService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<List<_i2.Inventory>> listInventory(
+    _i3.Session? session, {
+    required int? workspaceId,
+    required int? actorId,
+    bool? includeDiscontinued = false,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listInventory,
+          [session],
+          {
+            #workspaceId: workspaceId,
+            #actorId: actorId,
+            #includeDiscontinued: includeDiscontinued,
+          },
+        ),
+        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i6.Future<List<_i2.Inventory>>);
+
+  @override
+  _i6.Future<List<_i2.Inventory>> getLowStockItems(
+    _i3.Session? session, {
+    required int? workspaceId,
+    required int? actorId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getLowStockItems,
+          [session],
+          {
+            #workspaceId: workspaceId,
+            #actorId: actorId,
+          },
+        ),
+        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i6.Future<List<_i2.Inventory>>);
+
+  @override
+  _i6.Future<void> updateThreshold(
+    _i3.Session? session, {
+    required int? workspaceId,
+    required int? catalogId,
+    required double? threshold,
+    required int? actorId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateThreshold,
+          [session],
+          {
+            #workspaceId: workspaceId,
+            #catalogId: catalogId,
+            #threshold: threshold,
+            #actorId: actorId,
+          },
+        ),
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
+}
+
+/// A class which mocks [LedgerService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLedgerService extends _i1.Mock implements _i11.LedgerService {
+  MockLedgerService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<_i2.Ledger> createTransaction(
+    _i3.Session? session, {
+    required int? workspaceId,
+    required int? actorId,
+    required List<_i2.LedgerLineItem>? lineItems,
+    required _i2.TransactionType? transactionType,
+    required _i2.PaymentStatus? paymentStatus,
+    required DateTime? transactionAt,
+    String? referenceNumber,
+    String? notes,
+    String? counterpartyName,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createTransaction,
+          [session],
+          {
+            #workspaceId: workspaceId,
+            #actorId: actorId,
+            #lineItems: lineItems,
+            #transactionType: transactionType,
+            #paymentStatus: paymentStatus,
+            #transactionAt: transactionAt,
+            #referenceNumber: referenceNumber,
+            #notes: notes,
+            #counterpartyName: counterpartyName,
+          },
+        ),
+        returnValue: _i6.Future<_i2.Ledger>.value(_FakeLedger_5(
+          this,
+          Invocation.method(
+            #createTransaction,
+            [session],
+            {
+              #workspaceId: workspaceId,
+              #actorId: actorId,
+              #lineItems: lineItems,
+              #transactionType: transactionType,
+              #paymentStatus: paymentStatus,
+              #transactionAt: transactionAt,
+              #referenceNumber: referenceNumber,
+              #notes: notes,
+              #counterpartyName: counterpartyName,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i2.Ledger>);
+
+  @override
+  _i6.Future<List<_i2.Ledger>> listTransactions(
+    _i3.Session? session, {
+    required int? workspaceId,
+    required int? actorId,
+    _i2.TransactionType? transactionType,
+    DateTime? from,
+    DateTime? to,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listTransactions,
+          [session],
+          {
+            #workspaceId: workspaceId,
+            #actorId: actorId,
+            #transactionType: transactionType,
+            #from: from,
+            #to: to,
+          },
+        ),
+        returnValue: _i6.Future<List<_i2.Ledger>>.value(<_i2.Ledger>[]),
+      ) as _i6.Future<List<_i2.Ledger>>);
+
+  @override
+  _i6.Future<_i2.Ledger> getTransaction(
+    _i3.Session? session, {
+    required int? ledgerId,
+    required int? workspaceId,
+    required int? actorId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getTransaction,
+          [session],
+          {
+            #ledgerId: ledgerId,
+            #workspaceId: workspaceId,
+            #actorId: actorId,
+          },
+        ),
+        returnValue: _i6.Future<_i2.Ledger>.value(_FakeLedger_5(
+          this,
+          Invocation.method(
+            #getTransaction,
+            [session],
+            {
+              #ledgerId: ledgerId,
+              #workspaceId: workspaceId,
+              #actorId: actorId,
+            },
+          ),
+        )),
+      ) as _i6.Future<_i2.Ledger>);
+}
+
 /// A class which mocks [WorkspaceRepo].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkspaceRepo extends _i1.Mock implements _i9.WorkspaceRepo {
+class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
   MockWorkspaceRepo() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i10.UserInfo?> getUserInfo(
+  _i6.Future<_i13.UserInfo?> getUserInfo(
     _i3.Session? session,
     int? userId,
   ) =>
@@ -643,8 +1021,8 @@ class MockWorkspaceRepo extends _i1.Mock implements _i9.WorkspaceRepo {
             userId,
           ],
         ),
-        returnValue: _i6.Future<_i10.UserInfo?>.value(),
-      ) as _i6.Future<_i10.UserInfo?>);
+        returnValue: _i6.Future<_i13.UserInfo?>.value(),
+      ) as _i6.Future<_i13.UserInfo?>);
 
   @override
   _i6.Future<_i2.Workspace?> findByNameAndOwner(
@@ -851,7 +1229,7 @@ class MockWorkspaceRepo extends _i1.Mock implements _i9.WorkspaceRepo {
 /// A class which mocks [MemberRepo].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMemberRepo extends _i1.Mock implements _i9.MemberRepo {
+class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
   MockMemberRepo() {
     _i1.throwOnMissingStub(this);
   }
@@ -978,12 +1356,30 @@ class MockMemberRepo extends _i1.Mock implements _i9.MemberRepo {
           ),
         )),
       ) as _i6.Future<_i2.WorkspaceMember>);
+
+  @override
+  _i6.Future<List<_i2.WorkspaceMemberInfo>>
+      findMembersWithUserInfoByWorkspaceId(
+    _i3.Session? session,
+    int? workspaceId,
+  ) =>
+          (super.noSuchMethod(
+            Invocation.method(
+              #findMembersWithUserInfoByWorkspaceId,
+              [
+                session,
+                workspaceId,
+              ],
+            ),
+            returnValue: _i6.Future<List<_i2.WorkspaceMemberInfo>>.value(
+                <_i2.WorkspaceMemberInfo>[]),
+          ) as _i6.Future<List<_i2.WorkspaceMemberInfo>>);
 }
 
 /// A class which mocks [InvitationRepo].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockInvitationRepo extends _i1.Mock implements _i9.InvitationRepo {
+class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
   MockInvitationRepo() {
     _i1.throwOnMissingStub(this);
   }
@@ -1116,6 +1512,463 @@ class MockInvitationRepo extends _i1.Mock implements _i9.InvitationRepo {
       ) as _i6.Future<_i2.WorkspaceInvitation?>);
 }
 
+/// A class which mocks [CatalogRepo].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
+  MockCatalogRepo() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<int> countByWorkspaceId(
+    _i3.Session? session,
+    int? workspaceId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #countByWorkspaceId,
+          [
+            session,
+            workspaceId,
+          ],
+        ),
+        returnValue: _i6.Future<int>.value(0),
+      ) as _i6.Future<int>);
+
+  @override
+  _i6.Future<_i2.Catalog?> findLastByWorkspaceId(
+    _i3.Session? session,
+    int? workspaceId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findLastByWorkspaceId,
+          [
+            session,
+            workspaceId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Catalog?>.value(),
+      ) as _i6.Future<_i2.Catalog?>);
+
+  @override
+  _i6.Future<_i2.Catalog?> findById(
+    _i3.Session? session,
+    int? catalogId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findById,
+          [
+            session,
+            catalogId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Catalog?>.value(),
+      ) as _i6.Future<_i2.Catalog?>);
+
+  @override
+  _i6.Future<bool> isSkuTaken(
+    _i3.Session? session,
+    String? sku,
+    int? workspaceId, {
+    int? excludeCatalogId,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #isSkuTaken,
+          [
+            session,
+            sku,
+            workspaceId,
+          ],
+          {#excludeCatalogId: excludeCatalogId},
+        ),
+        returnValue: _i6.Future<bool>.value(false),
+      ) as _i6.Future<bool>);
+
+  @override
+  _i6.Future<List<_i2.Catalog>> listProducts(
+    _i3.Session? session,
+    int? workspaceId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listProducts,
+          [
+            session,
+            workspaceId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
+      ) as _i6.Future<List<_i2.Catalog>>);
+
+  @override
+  _i6.Future<_i2.Catalog> insertWithTransaction(
+    _i3.Session? session,
+    _i2.Catalog? catalog,
+    _i3.Transaction? transaction,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #insertWithTransaction,
+          [
+            session,
+            catalog,
+            transaction,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Catalog>.value(_FakeCatalog_4(
+          this,
+          Invocation.method(
+            #insertWithTransaction,
+            [
+              session,
+              catalog,
+              transaction,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Catalog>);
+
+  @override
+  _i6.Future<_i2.Catalog> update(
+    _i3.Session? session,
+    _i2.Catalog? catalog, {
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #update,
+          [
+            session,
+            catalog,
+          ],
+          {#transaction: transaction},
+        ),
+        returnValue: _i6.Future<_i2.Catalog>.value(_FakeCatalog_4(
+          this,
+          Invocation.method(
+            #update,
+            [
+              session,
+              catalog,
+            ],
+            {#transaction: transaction},
+          ),
+        )),
+      ) as _i6.Future<_i2.Catalog>);
+
+  @override
+  _i6.Future<_i13.UserInfo?> getUserInfo(
+    _i3.Session? session,
+    int? userId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getUserInfo,
+          [
+            session,
+            userId,
+          ],
+        ),
+        returnValue: _i6.Future<_i13.UserInfo?>.value(),
+      ) as _i6.Future<_i13.UserInfo?>);
+
+  @override
+  _i6.Future<List<_i2.Catalog>> findByIds(
+    _i3.Session? session,
+    List<int>? catalogIds,
+    int? workspaceId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findByIds,
+          [
+            session,
+            catalogIds,
+            workspaceId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
+      ) as _i6.Future<List<_i2.Catalog>>);
+}
+
+/// A class which mocks [InventoryRepo].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
+  MockInventoryRepo() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<_i2.Inventory> insert(
+    _i3.Session? session,
+    _i2.Inventory? inventory, {
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #insert,
+          [
+            session,
+            inventory,
+          ],
+          {#transaction: transaction},
+        ),
+        returnValue: _i6.Future<_i2.Inventory>.value(_FakeInventory_6(
+          this,
+          Invocation.method(
+            #insert,
+            [
+              session,
+              inventory,
+            ],
+            {#transaction: transaction},
+          ),
+        )),
+      ) as _i6.Future<_i2.Inventory>);
+
+  @override
+  _i6.Future<_i2.Inventory?> findByCatalogId(
+    _i3.Session? session,
+    int? catalogId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findByCatalogId,
+          [
+            session,
+            catalogId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Inventory?>.value(),
+      ) as _i6.Future<_i2.Inventory?>);
+
+  @override
+  _i6.Future<_i2.Inventory> update(
+    _i3.Session? session,
+    _i2.Inventory? inventory, {
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #update,
+          [
+            session,
+            inventory,
+          ],
+          {#transaction: transaction},
+        ),
+        returnValue: _i6.Future<_i2.Inventory>.value(_FakeInventory_6(
+          this,
+          Invocation.method(
+            #update,
+            [
+              session,
+              inventory,
+            ],
+            {#transaction: transaction},
+          ),
+        )),
+      ) as _i6.Future<_i2.Inventory>);
+
+  @override
+  _i6.Future<List<_i2.Inventory>> listWithCatalog(
+    _i3.Session? session,
+    int? workspaceId, {
+    bool? includeDiscontinued = false,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #listWithCatalog,
+          [
+            session,
+            workspaceId,
+          ],
+          {#includeDiscontinued: includeDiscontinued},
+        ),
+        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i6.Future<List<_i2.Inventory>>);
+
+  @override
+  _i6.Future<List<_i2.Inventory>> getLowStockWithCatalog(
+    _i3.Session? session,
+    int? workspaceId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getLowStockWithCatalog,
+          [
+            session,
+            workspaceId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i6.Future<List<_i2.Inventory>>);
+
+  @override
+  _i6.Future<List<_i2.Inventory>> findByCatalogIds(
+    _i3.Session? session,
+    List<int>? catalogIds,
+    int? workspaceId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findByCatalogIds,
+          [
+            session,
+            catalogIds,
+            workspaceId,
+          ],
+        ),
+        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i6.Future<List<_i2.Inventory>>);
+
+  @override
+  _i6.Future<_i2.Inventory?> findByCatalogIdForUpdate(
+    _i3.Session? session,
+    int? catalogId,
+    int? workspaceId,
+    _i3.Transaction? transaction,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findByCatalogIdForUpdate,
+          [
+            session,
+            catalogId,
+            workspaceId,
+            transaction,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Inventory?>.value(),
+      ) as _i6.Future<_i2.Inventory?>);
+}
+
+/// A class which mocks [LedgerRepo].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
+  MockLedgerRepo() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<_i2.Ledger> insertWithTransaction(
+    _i3.Session? session,
+    _i2.Ledger? ledger,
+    _i3.Transaction? transaction,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #insertWithTransaction,
+          [
+            session,
+            ledger,
+            transaction,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Ledger>.value(_FakeLedger_5(
+          this,
+          Invocation.method(
+            #insertWithTransaction,
+            [
+              session,
+              ledger,
+              transaction,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Ledger>);
+
+  @override
+  _i6.Future<_i2.Ledger> updateWithTransaction(
+    _i3.Session? session,
+    _i2.Ledger? ledger,
+    _i3.Transaction? transaction,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateWithTransaction,
+          [
+            session,
+            ledger,
+            transaction,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Ledger>.value(_FakeLedger_5(
+          this,
+          Invocation.method(
+            #updateWithTransaction,
+            [
+              session,
+              ledger,
+              transaction,
+            ],
+          ),
+        )),
+      ) as _i6.Future<_i2.Ledger>);
+
+  @override
+  _i6.Future<_i2.Ledger?> findById(
+    _i3.Session? session,
+    int? ledgerId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findById,
+          [
+            session,
+            ledgerId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Ledger?>.value(),
+      ) as _i6.Future<_i2.Ledger?>);
+
+  @override
+  _i6.Future<_i2.Ledger?> findByIdWithLineItems(
+    _i3.Session? session,
+    int? ledgerId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findByIdWithLineItems,
+          [
+            session,
+            ledgerId,
+          ],
+        ),
+        returnValue: _i6.Future<_i2.Ledger?>.value(),
+      ) as _i6.Future<_i2.Ledger?>);
+
+  @override
+  _i6.Future<List<_i2.Ledger>> list(
+    _i3.Session? session,
+    int? workspaceId, {
+    _i2.TransactionType? transactionType,
+    DateTime? from,
+    DateTime? to,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #list,
+          [
+            session,
+            workspaceId,
+          ],
+          {
+            #transactionType: transactionType,
+            #from: from,
+            #to: to,
+          },
+        ),
+        returnValue: _i6.Future<List<_i2.Ledger>>.value(<_i2.Ledger>[]),
+      ) as _i6.Future<List<_i2.Ledger>>);
+}
+
 /// A class which mocks [Session].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -1127,7 +1980,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   _i3.UuidValue get sessionId => (super.noSuchMethod(
         Invocation.getter(#sessionId),
-        returnValue: _FakeUuidValue_3(
+        returnValue: _FakeUuidValue_7(
           this,
           Invocation.getter(#sessionId),
         ),
@@ -1136,7 +1989,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   _i3.Server get server => (super.noSuchMethod(
         Invocation.getter(#server),
-        returnValue: _FakeServer_4(
+        returnValue: _FakeServer_8(
           this,
           Invocation.getter(#server),
         ),
@@ -1145,7 +1998,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   _i3.Serverpod get serverpod => (super.noSuchMethod(
         Invocation.getter(#serverpod),
-        returnValue: _FakeServerpod_5(
+        returnValue: _FakeServerpod_9(
           this,
           Invocation.getter(#serverpod),
         ),
@@ -1154,7 +2007,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   DateTime get startTime => (super.noSuchMethod(
         Invocation.getter(#startTime),
-        returnValue: _FakeDateTime_6(
+        returnValue: _FakeDateTime_10(
           this,
           Invocation.getter(#startTime),
         ),
@@ -1175,7 +2028,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   _i3.Database get db => (super.noSuchMethod(
         Invocation.getter(#db),
-        returnValue: _FakeDatabase_7(
+        returnValue: _FakeDatabase_11(
           this,
           Invocation.getter(#db),
         ),
@@ -1184,7 +2037,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   _i4.Caches get caches => (super.noSuchMethod(
         Invocation.getter(#caches),
-        returnValue: _FakeCaches_8(
+        returnValue: _FakeCaches_12(
           this,
           Invocation.getter(#caches),
         ),
@@ -1199,7 +2052,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   _i3.StorageAccess get storage => (super.noSuchMethod(
         Invocation.getter(#storage),
-        returnValue: _FakeStorageAccess_9(
+        returnValue: _FakeStorageAccess_13(
           this,
           Invocation.getter(#storage),
         ),
@@ -1208,7 +2061,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   _i3.MessageCentralAccess get messages => (super.noSuchMethod(
         Invocation.getter(#messages),
-        returnValue: _FakeMessageCentralAccess_10(
+        returnValue: _FakeMessageCentralAccess_14(
           this,
           Invocation.getter(#messages),
         ),
@@ -1223,7 +2076,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   String get endpoint => (super.noSuchMethod(
         Invocation.getter(#endpoint),
-        returnValue: _i11.dummyValue<String>(
+        returnValue: _i17.dummyValue<String>(
           this,
           Invocation.getter(#endpoint),
         ),
@@ -1232,7 +2085,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   Duration get duration => (super.noSuchMethod(
         Invocation.getter(#duration),
-        returnValue: _FakeDuration_11(
+        returnValue: _FakeDuration_15(
           this,
           Invocation.getter(#duration),
         ),
@@ -1335,7 +2188,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
 /// A class which mocks [EmailHandler].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockEmailHandler extends _i1.Mock implements _i12.EmailHandler {
+class MockEmailHandler extends _i1.Mock implements _i18.EmailHandler {
   MockEmailHandler() {
     _i1.throwOnMissingStub(this);
   }
@@ -1343,7 +2196,7 @@ class MockEmailHandler extends _i1.Mock implements _i12.EmailHandler {
   @override
   _i3.Session get session => (super.noSuchMethod(
         Invocation.getter(#session),
-        returnValue: _FakeSession_12(
+        returnValue: _FakeSession_16(
           this,
           Invocation.getter(#session),
         ),
