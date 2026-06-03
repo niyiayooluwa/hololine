@@ -5,8 +5,7 @@ import 'package:hololine_server/src/modules/ledger/repositories/ledger_line_item
 import 'package:hololine_server/src/modules/ledger/repositories/ledger_repo.dart';
 import 'package:hololine_server/src/modules/ledger/usecase/ledger_service.dart';
 import 'package:hololine_server/src/modules/workspace/repositories/member_repo.dart';
-import 'package:hololine_server/src/utils/endpoint_helper.dart';
-import 'package:hololine_server/src/utils/exceptions.dart';
+import 'package:hololine_server/src/utils/authenticated_endpoint.dart';
 import 'package:serverpod/server.dart';
 
 /// Serverpod endpoint that exposes ledger operations to the Flutter client.
@@ -18,10 +17,7 @@ import 'package:serverpod/server.dart';
 ///
 /// No business logic, permission checks, or database calls live here.
 /// All of that is handled by [LedgerService].
-class LedgerEndpoint extends Endpoint {
-  @override
-  bool get requireLogin => true;
-
+class LedgerEndpoint extends AuthenticatedEndpoint {
   final MemberRepo _memberRepo = MemberRepo();
   final CatalogRepo _catalogRepo = CatalogRepo();
   final InventoryRepo _inventoryRepo = InventoryRepo();
@@ -61,10 +57,7 @@ class LedgerEndpoint extends Endpoint {
     String? notes,
     String? counterpartyName,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'createTransaction', () async {
+    return runAuthenticated(session, 'createTransaction', (userId) async {
       return await _ledgerService.createTransaction(
         session,
         workspaceId: workspaceId,
@@ -91,10 +84,7 @@ class LedgerEndpoint extends Endpoint {
     DateTime? from,
     DateTime? to,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'listTransactions', () async {
+    return runAuthenticated(session, 'listTransactions', (userId) async {
       return await _ledgerService.listTransactions(
         session,
         workspaceId: workspaceId,
@@ -115,10 +105,7 @@ class LedgerEndpoint extends Endpoint {
     required int ledgerId,
     required int workspaceId,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'getTransaction', () async {
+    return runAuthenticated(session, 'getTransaction', (userId) async {
       return await _ledgerService.getTransaction(
         session,
         ledgerId: ledgerId,

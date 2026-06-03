@@ -3,14 +3,10 @@ import 'package:hololine_server/src/modules/catalog/repositories/catalog_repo.da
 import 'package:hololine_server/src/modules/catalog/repositories/inventory_repo.dart';
 import 'package:hololine_server/src/modules/catalog/usecase/catalog_service.dart';
 import 'package:hololine_server/src/modules/workspace/repositories/member_repo.dart';
-import 'package:hololine_server/src/utils/endpoint_helper.dart';
-import 'package:hololine_server/src/utils/exceptions.dart';
+import 'package:hololine_server/src/utils/authenticated_endpoint.dart';
 import 'package:serverpod/server.dart';
 
-class CatalogEndpoint extends Endpoint {
-  @override
-  bool get requireLogin => true;
-
+class CatalogEndpoint extends AuthenticatedEndpoint {
   final MemberRepo _memberRepo = MemberRepo();
   final CatalogRepo _catalogRepo = CatalogRepo();
   final InventoryRepo _inventoryRepo = InventoryRepo();
@@ -22,10 +18,7 @@ class CatalogEndpoint extends Endpoint {
     required int workspaceId,
     required Catalog catalogData,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'createProduct', () async {
+    return runAuthenticated(session, 'createProduct', (userId) async {
       return await _catalogService.createProduct(
         session,
         workspaceId: workspaceId,
@@ -39,10 +32,7 @@ class CatalogEndpoint extends Endpoint {
     Session session, {
     required int workspaceId,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'listProducts', () async {
+    return runAuthenticated(session, 'listProducts', (userId) async {
       return await _catalogService.listProducts(session, workspaceId, userId);
     });
   }
@@ -54,10 +44,7 @@ class CatalogEndpoint extends Endpoint {
     required CatalogUpdateParams catalogUpdates,
     required InventoryUpdateParams inventoryUpdates,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'updateProduct', () async {
+    return runAuthenticated(session, 'updateProduct', (userId) async {
       return await _catalogService.updateProduct(
         session,
         workspaceId: workspaceId,
@@ -74,10 +61,7 @@ class CatalogEndpoint extends Endpoint {
     required int workspaceId,
     required int catalogId,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'archiveProduct', () async {
+    return runAuthenticated(session, 'archiveProduct', (userId) async {
       await _catalogService.archiveProduct(
           session, workspaceId, catalogId, userId);
     });

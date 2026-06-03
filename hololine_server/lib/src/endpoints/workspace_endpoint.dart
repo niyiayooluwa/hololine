@@ -4,21 +4,13 @@ import 'package:hololine_server/src/modules/workspace/usecase/services.dart';
 import 'package:hololine_server/src/modules/catalog/repositories/catalog_repo.dart';
 import 'package:hololine_server/src/modules/catalog/repositories/inventory_repo.dart';
 import 'package:hololine_server/src/modules/catalog/usecase/catalog_service.dart';
-import 'package:hololine_server/src/services/email_service.dart';
-import 'package:hololine_server/src/utils/endpoint_helper.dart';
-import 'package:hololine_server/src/utils/exceptions.dart';
+import 'package:hololine_server/src/utils/authenticated_endpoint.dart';
 import 'package:serverpod/serverpod.dart';
 
-// TODO: TECH DEBT - Add integration tests for WorkspaceEndpoint.
-// Skipped on 2026-01-10 due to constraints.
-
-class WorkspaceEndpoint extends Endpoint {
-  @override
-  bool get requireLogin => true;
-
+/// Endpoint for managing the core workspace lifecycle (creation, updates, deletion).
+class WorkspaceEndpoint extends AuthenticatedEndpoint {
   final WorkspaceRepo _coreWorkspaceRepo = WorkspaceRepo();
   final MemberRepo _memberRepo = MemberRepo();
-  final InvitationRepo _invitationRepo = InvitationRepo();
   final CatalogRepo _catalogRepo = CatalogRepo();
   final InventoryRepo _inventoryRepo = InventoryRepo();
 
@@ -26,37 +18,31 @@ class WorkspaceEndpoint extends Endpoint {
     _memberRepo,
     _coreWorkspaceRepo,
   );
-  late final MemberService _memberService = MemberService(
-    _memberRepo,
-    _coreWorkspaceRepo,
-  );
-  late final CatalogService _catalogService = CatalogService(_catalogRepo, _inventoryRepo, _memberRepo);
+
+  late final CatalogService _catalogService =
+      CatalogService(_catalogRepo, _inventoryRepo, _memberRepo);
 
   // ===========================================================================
   // CREATION
   // ===========================================================================
 
+  /// Creates a new standalone workspace.
   Future<Workspace> createStandalone(
       Session session, String name, String description) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'createStandalone', () async {
+    return runAuthenticated(session, 'createStandalone', (userId) async {
       return await _workspaceService.createStandalone(
           session, name, userId, description);
     });
   }
 
+  /// Creates a new child workspace under a parent.
   Future<Workspace> createChild(
     Session session,
     String name,
     int parentWorkspaceId,
     String description,
   ) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'createChild', () async {
+    return runAuthenticated(session, 'createChild', (userId) async {
       return await _workspaceService.createChild(
         session,
         name,
@@ -68,17 +54,15 @@ class WorkspaceEndpoint extends Endpoint {
   }
 
   // ===========================================================================
-  // READ OPERATIONS (The Missing Ones!)
+  // READ OPERATIONS
   // ===========================================================================
 
+  /// Returns full details for a single workspace by its public ID.
   Future<Workspace> getWorkspaceDetails(
     Session session, {
     required String publicId,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'getWorkspaceDetails', () async {
+    return runAuthenticated(session, 'getWorkspaceDetails', (userId) async {
       return await _workspaceService.getWorkspaceDetails(
         session,
         publicId,
@@ -87,14 +71,13 @@ class WorkspaceEndpoint extends Endpoint {
     });
   }
 
+  /// Returns an aggregated dashboard view for a workspace, including member info
+  /// and a catalog snapshot.
   Future<WorkspaceDashboardData> getDashboardData(
     Session session, {
     required String publicId,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'getDashboardData', () async {
+    return runAuthenticated(session, 'getDashboardData', (userId) async {
       // 1. Get workspace details
       final workspace = await _workspaceService.getWorkspaceDetails(
         session,
@@ -122,23 +105,12 @@ class WorkspaceEndpoint extends Endpoint {
     });
   }
 
-  Future<List<WorkspaceSummary>> getMyWorkspaces(Session session) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'getMyWorkspaces', () async {
-      return await _memberService.getMyWorkspaces(session, userId);
-    });
-  }
-
+  /// Returns a list of child workspaces for a given parent.
   Future<List<Workspace>> getChildWorkspaces(
     Session session, {
     required int parentWorkspaceId,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'getChildWorkspaces', () async {
+    return runAuthenticated(session, 'getChildWorkspaces', (userId) async {
       return await _workspaceService.getChildWorkspaces(
         session,
         parentWorkspaceId,
@@ -148,179 +120,62 @@ class WorkspaceEndpoint extends Endpoint {
   }
 
   // ===========================================================================
-  // MEMBER MANAGEMENT
-  // ===========================================================================
-
-  Future<WorkspaceMember> updateMemberRole(
-    Session session, {
-    required int memberId,
-    required int workspaceId,
-    required WorkspaceRole role,
-  }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'updateMemberRole', () async {
-      return await _memberService.updateMemberRole(
-        session,
-        memberId: memberId,
-        workspaceId: workspaceId,
-        role: role,
-        actorId: userId,
-      );
-    });
-  }
-
-  Future<WorkspaceMember> removeMember(
-    Session session, {
-    required int memberId,
-    required int workspaceId,
-  }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'removeMember', () async {
-      return await _memberService.removeMember(
-        session,
-        memberId: memberId,
-        workspaceId: workspaceId,
-        actorId: userId,
-      );
-    });
-  }
-
-  Future<WorkspaceMember> leaveWorkspace(
-    Session session, {
-    required int workspaceId,
-  }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'leaveWorkspace', () async {
-      return await _memberService.leaveWorkspace(session, workspaceId, userId);
-    });
-  }
-
-  // ===========================================================================
-  // INVITATIONS
-  // ===========================================================================
-
-  Future<WorkspaceInvitation> inviteMember(
-    Session session,
-    String email,
-    int workspaceId,
-    WorkspaceRole role,
-  ) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    final emailHandler = EmailHandler(session);
-    final invitationService = InvitationService(
-      _coreWorkspaceRepo,
-      _memberRepo,
-      _invitationRepo,
-      emailHandler,
-    );
-
-    return runWithLogger(session, 'inviteMember', () async {
-      return await invitationService.inviteMember(
-        session,
-        email,
-        workspaceId,
-        role,
-        userId,
-      );
-    });
-  }
-
-  Future<WorkspaceMember> acceptInvitation(
-    Session session,
-    String token,
-  ) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    final emailHandler = EmailHandler(session);
-    final invitationService = InvitationService(
-      _coreWorkspaceRepo,
-      _memberRepo,
-      _invitationRepo,
-      emailHandler,
-    );
-
-    return runWithLogger(session, 'acceptInvitation', () async {
-      return await invitationService.acceptInvitation(session, token,
-          userId: userId);
-    });
-  }
-
-  // ===========================================================================
   // UPDATE / ARCHIVE / DELETE
   // ===========================================================================
 
+  /// Updates the name and description of a workspace.
   Future<Workspace> updateWorkspaceDetails(
     Session session, {
     required int workspaceId,
     String? name,
     String? description,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'updateWorkspaceDetails', () async {
+    return runAuthenticated(session, 'updateWorkspaceDetails', (userId) async {
       return await _workspaceService.updateWorkspaceDetails(
           session, workspaceId, name, description, userId);
     });
   }
 
+  /// Archives a workspace.
   Future<Workspace> archiveWorkspace(
     Session session,
     int workspaceId,
   ) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'archiveWorkspace', () async {
+    return runAuthenticated(session, 'archiveWorkspace', (userId) async {
       return await _workspaceService.archiveWorkspace(
           session, workspaceId, userId);
     });
   }
 
+  /// Restores a previously archived workspace.
   Future<Workspace> restoreWorkspace(
     Session session,
     int workspaceId,
   ) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'restoreWorkspace', () async {
+    return runAuthenticated(session, 'restoreWorkspace', (userId) async {
       return await _workspaceService.restoreWorkspace(
           session, workspaceId, userId);
     });
   }
 
+  /// Transfers ownership of the workspace to another member.
   Future<bool> transferOwnership(
     Session session,
     int workspaceId,
     int newOwnerId,
   ) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'transferOwnership', () async {
+    return runAuthenticated(session, 'transferOwnership', (userId) async {
       return await _workspaceService.transferOwnership(
           session, workspaceId, newOwnerId, userId);
     });
   }
 
+  /// Marks a workspace for deletion after a grace period.
   Future<Workspace> initiateDeleteWorkspace(
     Session session,
     int workspaceId,
   ) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('User not authenticated');
-
-    return runWithLogger(session, 'initiateDeleteWorkspace', () async {
+    return runAuthenticated(session, 'initiateDeleteWorkspace', (userId) async {
       return await _workspaceService.initiateDeleteWorkspace(
           session, workspaceId, userId);
     });

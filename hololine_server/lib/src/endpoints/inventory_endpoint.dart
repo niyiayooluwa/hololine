@@ -2,15 +2,11 @@ import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/modules/catalog/repositories/inventory_repo.dart';
 import 'package:hololine_server/src/modules/inventory/usecase/inventory_service.dart';
 import 'package:hololine_server/src/modules/workspace/repositories/member_repo.dart';
-import 'package:hololine_server/src/utils/endpoint_helper.dart';
-import 'package:hololine_server/src/utils/exceptions.dart';
+import 'package:hololine_server/src/utils/authenticated_endpoint.dart';
 import 'package:serverpod/server.dart';
 
 /// Serverpod endpoint providing API access to inventory and stock levels.
-class InventoryEndpoint extends Endpoint {
-  @override
-  bool get requireLogin => true;
-
+class InventoryEndpoint extends AuthenticatedEndpoint {
   final InventoryRepo _inventoryRepo = InventoryRepo();
   final MemberRepo _memberRepo = MemberRepo();
 
@@ -26,10 +22,7 @@ class InventoryEndpoint extends Endpoint {
     required int workspaceId,
     bool includeDiscontinued = false,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'listInventory', () async {
+    return runAuthenticated(session, 'listInventory', (userId) async {
       return await _inventoryService.listInventory(
         session,
         workspaceId: workspaceId,
@@ -44,10 +37,7 @@ class InventoryEndpoint extends Endpoint {
     Session session, {
     required int workspaceId,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'getLowStockItems', () async {
+    return runAuthenticated(session, 'getLowStockItems', (userId) async {
       return await _inventoryService.getLowStockItems(
         session,
         workspaceId: workspaceId,
@@ -63,10 +53,7 @@ class InventoryEndpoint extends Endpoint {
     required int catalogId,
     double? threshold,
   }) async {
-    final userId = (await session.authenticated)?.userId;
-    if (userId == null) throw AuthenticationException('Not authenticated');
-
-    return runWithLogger(session, 'updateThreshold', () async {
+    return runAuthenticated(session, 'updateThreshold', (userId) async {
       await _inventoryService.updateThreshold(
         session,
         workspaceId: workspaceId,
