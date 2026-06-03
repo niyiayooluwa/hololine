@@ -1,21 +1,38 @@
+# Represents a product or service within a workspace's catalog.
 class: Catalog
 table: catalog
 fields:
+  # The ID of the workspace this catalog item belongs to.
   workspaceId:    int
+  # The display name of the product or service.
   name:           String
+  # The type classification (e.g., 'product', 'service').
   type:           String
+  # Unique Stock Keeping Unit for tracking inventory.
   sku:            String?
+  # The unit of measurement (e.g., 'pcs', 'kg', 'hour').
   unit:           String
+  # Optional category for grouping catalog items.
   category:       String?
+  # Physical weight of the item, if applicable.
   weight:         double?
+  # Minimum quantity allowed per order.
   minOrderQty:    double?
+  # Base price in the smallest currency unit (e.g., kobo for NGN).
   price:          int
+  # ISO 4217 currency code.
   currency:       String,         default="NGN"
+  # Current status of the item ('active', 'archived', etc.).
   status:         String,         default="active"
+  # Name of the user who added this item.
   addedByName:    String
+  # Optional ID of the user who added this item.
   addedById:      int?
+  # Timestamp of when the item was created.
   createdAt:      DateTime
+  # Timestamp of the last update to this item.
   lastModifiedAt: DateTime
+  # Associated inventory records for this catalog item.
   inventory:      List<Inventory>?, relation(name=catalog_inventory)
 
 indexes:
