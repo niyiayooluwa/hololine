@@ -16,16 +16,18 @@ import '../endpoints/jobs/cron_endpoint.dart' as _i4;
 import '../endpoints/jobs/workspace_cleanup.dart' as _i5;
 import '../endpoints/ledger_endpoint.dart' as _i6;
 import '../endpoints/workspace_endpoint.dart' as _i7;
-import 'package:hololine_server/src/generated/catalog.dart' as _i8;
+import '../endpoints/workspace_invitation_endpoint.dart' as _i8;
+import '../endpoints/workspace_member_endpoint.dart' as _i9;
+import 'package:hololine_server/src/generated/catalog.dart' as _i10;
 import 'package:hololine_server/src/generated/requests/catalog_update_params.dart'
-    as _i9;
+    as _i11;
 import 'package:hololine_server/src/generated/requests/inventory_update_params.dart'
-    as _i10;
-import 'package:hololine_server/src/generated/ledger_line_item.dart' as _i11;
-import 'package:hololine_server/src/generated/transaction_type.dart' as _i12;
-import 'package:hololine_server/src/generated/payment_status.dart' as _i13;
-import 'package:hololine_server/src/generated/workspace_role.dart' as _i14;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i15;
+    as _i12;
+import 'package:hololine_server/src/generated/ledger_line_item.dart' as _i13;
+import 'package:hololine_server/src/generated/transaction_type.dart' as _i14;
+import 'package:hololine_server/src/generated/payment_status.dart' as _i15;
+import 'package:hololine_server/src/generated/workspace_role.dart' as _i16;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i17;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -67,6 +69,18 @@ class Endpoints extends _i1.EndpointDispatch {
           'workspace',
           null,
         ),
+      'workspaceInvitation': _i8.WorkspaceInvitationEndpoint()
+        ..initialize(
+          server,
+          'workspaceInvitation',
+          null,
+        ),
+      'workspaceMember': _i9.WorkspaceMemberEndpoint()
+        ..initialize(
+          server,
+          'workspaceMember',
+          null,
+        ),
     };
     connectors['catalog'] = _i1.EndpointConnector(
       name: 'catalog',
@@ -82,7 +96,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'catalogData': _i1.ParameterDescription(
               name: 'catalogData',
-              type: _i1.getType<_i8.Catalog>(),
+              type: _i1.getType<_i10.Catalog>(),
               nullable: false,
             ),
           },
@@ -129,12 +143,12 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'catalogUpdates': _i1.ParameterDescription(
               name: 'catalogUpdates',
-              type: _i1.getType<_i9.CatalogUpdateParams>(),
+              type: _i1.getType<_i11.CatalogUpdateParams>(),
               nullable: false,
             ),
             'inventoryUpdates': _i1.ParameterDescription(
               name: 'inventoryUpdates',
-              type: _i1.getType<_i10.InventoryUpdateParams>(),
+              type: _i1.getType<_i12.InventoryUpdateParams>(),
               nullable: false,
             ),
           },
@@ -300,17 +314,17 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'lineItems': _i1.ParameterDescription(
               name: 'lineItems',
-              type: _i1.getType<List<_i11.LedgerLineItem>>(),
+              type: _i1.getType<List<_i13.LedgerLineItem>>(),
               nullable: false,
             ),
             'transactionType': _i1.ParameterDescription(
               name: 'transactionType',
-              type: _i1.getType<_i12.TransactionType>(),
+              type: _i1.getType<_i14.TransactionType>(),
               nullable: false,
             ),
             'paymentStatus': _i1.ParameterDescription(
               name: 'paymentStatus',
-              type: _i1.getType<_i13.PaymentStatus>(),
+              type: _i1.getType<_i15.PaymentStatus>(),
               nullable: false,
             ),
             'transactionAt': _i1.ParameterDescription(
@@ -360,7 +374,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'transactionType': _i1.ParameterDescription(
               name: 'transactionType',
-              type: _i1.getType<_i12.TransactionType?>(),
+              type: _i1.getType<_i14.TransactionType?>(),
               nullable: true,
             ),
             'from': _i1.ParameterDescription(
@@ -509,16 +523,6 @@ class Endpoints extends _i1.EndpointDispatch {
             publicId: params['publicId'],
           ),
         ),
-        'getMyWorkspaces': _i1.MethodConnector(
-          name: 'getMyWorkspaces',
-          params: {},
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
-                  .getMyWorkspaces(session),
-        ),
         'getChildWorkspaces': _i1.MethodConnector(
           name: 'getChildWorkspaces',
           params: {
@@ -536,128 +540,6 @@ class Endpoints extends _i1.EndpointDispatch {
                   .getChildWorkspaces(
             session,
             parentWorkspaceId: params['parentWorkspaceId'],
-          ),
-        ),
-        'updateMemberRole': _i1.MethodConnector(
-          name: 'updateMemberRole',
-          params: {
-            'memberId': _i1.ParameterDescription(
-              name: 'memberId',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'workspaceId': _i1.ParameterDescription(
-              name: 'workspaceId',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'role': _i1.ParameterDescription(
-              name: 'role',
-              type: _i1.getType<_i14.WorkspaceRole>(),
-              nullable: false,
-            ),
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
-                  .updateMemberRole(
-            session,
-            memberId: params['memberId'],
-            workspaceId: params['workspaceId'],
-            role: params['role'],
-          ),
-        ),
-        'removeMember': _i1.MethodConnector(
-          name: 'removeMember',
-          params: {
-            'memberId': _i1.ParameterDescription(
-              name: 'memberId',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'workspaceId': _i1.ParameterDescription(
-              name: 'workspaceId',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['workspace'] as _i7.WorkspaceEndpoint).removeMember(
-            session,
-            memberId: params['memberId'],
-            workspaceId: params['workspaceId'],
-          ),
-        ),
-        'leaveWorkspace': _i1.MethodConnector(
-          name: 'leaveWorkspace',
-          params: {
-            'workspaceId': _i1.ParameterDescription(
-              name: 'workspaceId',
-              type: _i1.getType<int>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['workspace'] as _i7.WorkspaceEndpoint).leaveWorkspace(
-            session,
-            workspaceId: params['workspaceId'],
-          ),
-        ),
-        'inviteMember': _i1.MethodConnector(
-          name: 'inviteMember',
-          params: {
-            'email': _i1.ParameterDescription(
-              name: 'email',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'workspaceId': _i1.ParameterDescription(
-              name: 'workspaceId',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'role': _i1.ParameterDescription(
-              name: 'role',
-              type: _i1.getType<_i14.WorkspaceRole>(),
-              nullable: false,
-            ),
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['workspace'] as _i7.WorkspaceEndpoint).inviteMember(
-            session,
-            params['email'],
-            params['workspaceId'],
-            params['role'],
-          ),
-        ),
-        'acceptInvitation': _i1.MethodConnector(
-          name: 'acceptInvitation',
-          params: {
-            'token': _i1.ParameterDescription(
-              name: 'token',
-              type: _i1.getType<String>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['workspace'] as _i7.WorkspaceEndpoint)
-                  .acceptInvitation(
-            session,
-            params['token'],
           ),
         ),
         'updateWorkspaceDetails': _i1.MethodConnector(
@@ -775,6 +657,155 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth'] = _i15.Endpoints()..initializeEndpoints(server);
+    connectors['workspaceInvitation'] = _i1.EndpointConnector(
+      name: 'workspaceInvitation',
+      endpoint: endpoints['workspaceInvitation']!,
+      methodConnectors: {
+        'inviteMember': _i1.MethodConnector(
+          name: 'inviteMember',
+          params: {
+            'email': _i1.ParameterDescription(
+              name: 'email',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'role': _i1.ParameterDescription(
+              name: 'role',
+              type: _i1.getType<_i16.WorkspaceRole>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspaceInvitation']
+                      as _i8.WorkspaceInvitationEndpoint)
+                  .inviteMember(
+            session,
+            params['email'],
+            params['workspaceId'],
+            params['role'],
+          ),
+        ),
+        'acceptInvitation': _i1.MethodConnector(
+          name: 'acceptInvitation',
+          params: {
+            'token': _i1.ParameterDescription(
+              name: 'token',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspaceInvitation']
+                      as _i8.WorkspaceInvitationEndpoint)
+                  .acceptInvitation(
+            session,
+            params['token'],
+          ),
+        ),
+      },
+    );
+    connectors['workspaceMember'] = _i1.EndpointConnector(
+      name: 'workspaceMember',
+      endpoint: endpoints['workspaceMember']!,
+      methodConnectors: {
+        'getMyWorkspaces': _i1.MethodConnector(
+          name: 'getMyWorkspaces',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspaceMember'] as _i9.WorkspaceMemberEndpoint)
+                  .getMyWorkspaces(session),
+        ),
+        'updateMemberRole': _i1.MethodConnector(
+          name: 'updateMemberRole',
+          params: {
+            'memberId': _i1.ParameterDescription(
+              name: 'memberId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'role': _i1.ParameterDescription(
+              name: 'role',
+              type: _i1.getType<_i16.WorkspaceRole>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspaceMember'] as _i9.WorkspaceMemberEndpoint)
+                  .updateMemberRole(
+            session,
+            memberId: params['memberId'],
+            workspaceId: params['workspaceId'],
+            role: params['role'],
+          ),
+        ),
+        'removeMember': _i1.MethodConnector(
+          name: 'removeMember',
+          params: {
+            'memberId': _i1.ParameterDescription(
+              name: 'memberId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspaceMember'] as _i9.WorkspaceMemberEndpoint)
+                  .removeMember(
+            session,
+            memberId: params['memberId'],
+            workspaceId: params['workspaceId'],
+          ),
+        ),
+        'leaveWorkspace': _i1.MethodConnector(
+          name: 'leaveWorkspace',
+          params: {
+            'workspaceId': _i1.ParameterDescription(
+              name: 'workspaceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['workspaceMember'] as _i9.WorkspaceMemberEndpoint)
+                  .leaveWorkspace(
+            session,
+            workspaceId: params['workspaceId'],
+          ),
+        ),
+      },
+    );
+    modules['serverpod_auth'] = _i17.Endpoints()..initializeEndpoints(server);
   }
 }

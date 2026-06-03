@@ -20,15 +20,17 @@ workspace:
   - createChild:
   - getWorkspaceDetails:
   - getDashboardData:
-  - getMyWorkspaces:
   - getChildWorkspaces:
-  - updateMemberRole:
-  - removeMember:
-  - leaveWorkspace:
-  - inviteMember:
-  - acceptInvitation:
   - updateWorkspaceDetails:
   - archiveWorkspace:
   - restoreWorkspace:
   - transferOwnership:
   - initiateDeleteWorkspace:
+workspaceInvitation:
+  - inviteMember:
+  - acceptInvitation:
+workspaceMember:
+  - getMyWorkspaces:
+  - updateMemberRole:
+  - removeMember:
+  - leaveWorkspace:

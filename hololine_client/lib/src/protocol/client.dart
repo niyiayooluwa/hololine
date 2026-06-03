@@ -24,11 +24,11 @@ import 'package:hololine_client/src/protocol/payment_status.dart' as _i10;
 import 'package:hololine_client/src/protocol/workspace.dart' as _i11;
 import 'package:hololine_client/src/protocol/workspace_dashboard_data.dart'
     as _i12;
+import 'package:hololine_client/src/protocol/workspace_invitation.dart' as _i13;
+import 'package:hololine_client/src/protocol/workspace_role.dart' as _i14;
+import 'package:hololine_client/src/protocol/workspace_member.dart' as _i15;
 import 'package:hololine_client/src/protocol/responses/workspace_summary.dart'
-    as _i13;
-import 'package:hololine_client/src/protocol/workspace_member.dart' as _i14;
-import 'package:hololine_client/src/protocol/workspace_role.dart' as _i15;
-import 'package:hololine_client/src/protocol/workspace_invitation.dart' as _i16;
+    as _i16;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i17;
 import 'protocol.dart' as _i18;
 
@@ -267,6 +267,7 @@ class EndpointLedger extends _i1.EndpointRef {
       );
 }
 
+/// Endpoint for managing the core workspace lifecycle (creation, updates, deletion).
 /// {@category Endpoint}
 class EndpointWorkspace extends _i1.EndpointRef {
   EndpointWorkspace(_i1.EndpointCaller caller) : super(caller);
@@ -274,6 +275,7 @@ class EndpointWorkspace extends _i1.EndpointRef {
   @override
   String get name => 'workspace';
 
+  /// Creates a new standalone workspace.
   _i2.Future<_i11.Workspace> createStandalone(
     String name,
     String description,
@@ -287,6 +289,7 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
+  /// Creates a new child workspace under a parent.
   _i2.Future<_i11.Workspace> createChild(
     String name,
     int parentWorkspaceId,
@@ -302,6 +305,7 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
+  /// Returns full details for a single workspace by its public ID.
   _i2.Future<_i11.Workspace> getWorkspaceDetails({required String publicId}) =>
       caller.callServerEndpoint<_i11.Workspace>(
         'workspace',
@@ -309,6 +313,8 @@ class EndpointWorkspace extends _i1.EndpointRef {
         {'publicId': publicId},
       );
 
+  /// Returns an aggregated dashboard view for a workspace, including member info
+  /// and a catalog snapshot.
   _i2.Future<_i12.WorkspaceDashboardData> getDashboardData(
           {required String publicId}) =>
       caller.callServerEndpoint<_i12.WorkspaceDashboardData>(
@@ -317,13 +323,7 @@ class EndpointWorkspace extends _i1.EndpointRef {
         {'publicId': publicId},
       );
 
-  _i2.Future<List<_i13.WorkspaceSummary>> getMyWorkspaces() =>
-      caller.callServerEndpoint<List<_i13.WorkspaceSummary>>(
-        'workspace',
-        'getMyWorkspaces',
-        {},
-      );
-
+  /// Returns a list of child workspaces for a given parent.
   _i2.Future<List<_i11.Workspace>> getChildWorkspaces(
           {required int parentWorkspaceId}) =>
       caller.callServerEndpoint<List<_i11.Workspace>>(
@@ -332,63 +332,7 @@ class EndpointWorkspace extends _i1.EndpointRef {
         {'parentWorkspaceId': parentWorkspaceId},
       );
 
-  _i2.Future<_i14.WorkspaceMember> updateMemberRole({
-    required int memberId,
-    required int workspaceId,
-    required _i15.WorkspaceRole role,
-  }) =>
-      caller.callServerEndpoint<_i14.WorkspaceMember>(
-        'workspace',
-        'updateMemberRole',
-        {
-          'memberId': memberId,
-          'workspaceId': workspaceId,
-          'role': role,
-        },
-      );
-
-  _i2.Future<_i14.WorkspaceMember> removeMember({
-    required int memberId,
-    required int workspaceId,
-  }) =>
-      caller.callServerEndpoint<_i14.WorkspaceMember>(
-        'workspace',
-        'removeMember',
-        {
-          'memberId': memberId,
-          'workspaceId': workspaceId,
-        },
-      );
-
-  _i2.Future<_i14.WorkspaceMember> leaveWorkspace({required int workspaceId}) =>
-      caller.callServerEndpoint<_i14.WorkspaceMember>(
-        'workspace',
-        'leaveWorkspace',
-        {'workspaceId': workspaceId},
-      );
-
-  _i2.Future<_i16.WorkspaceInvitation> inviteMember(
-    String email,
-    int workspaceId,
-    _i15.WorkspaceRole role,
-  ) =>
-      caller.callServerEndpoint<_i16.WorkspaceInvitation>(
-        'workspace',
-        'inviteMember',
-        {
-          'email': email,
-          'workspaceId': workspaceId,
-          'role': role,
-        },
-      );
-
-  _i2.Future<_i14.WorkspaceMember> acceptInvitation(String token) =>
-      caller.callServerEndpoint<_i14.WorkspaceMember>(
-        'workspace',
-        'acceptInvitation',
-        {'token': token},
-      );
-
+  /// Updates the name and description of a workspace.
   _i2.Future<_i11.Workspace> updateWorkspaceDetails({
     required int workspaceId,
     String? name,
@@ -404,6 +348,7 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
+  /// Archives a workspace.
   _i2.Future<_i11.Workspace> archiveWorkspace(int workspaceId) =>
       caller.callServerEndpoint<_i11.Workspace>(
         'workspace',
@@ -411,6 +356,7 @@ class EndpointWorkspace extends _i1.EndpointRef {
         {'workspaceId': workspaceId},
       );
 
+  /// Restores a previously archived workspace.
   _i2.Future<_i11.Workspace> restoreWorkspace(int workspaceId) =>
       caller.callServerEndpoint<_i11.Workspace>(
         'workspace',
@@ -418,6 +364,7 @@ class EndpointWorkspace extends _i1.EndpointRef {
         {'workspaceId': workspaceId},
       );
 
+  /// Transfers ownership of the workspace to another member.
   _i2.Future<bool> transferOwnership(
     int workspaceId,
     int newOwnerId,
@@ -431,10 +378,99 @@ class EndpointWorkspace extends _i1.EndpointRef {
         },
       );
 
+  /// Marks a workspace for deletion after a grace period.
   _i2.Future<_i11.Workspace> initiateDeleteWorkspace(int workspaceId) =>
       caller.callServerEndpoint<_i11.Workspace>(
         'workspace',
         'initiateDeleteWorkspace',
+        {'workspaceId': workspaceId},
+      );
+}
+
+/// Endpoint for managing workspace invitations and onboarding.
+/// {@category Endpoint}
+class EndpointWorkspaceInvitation extends _i1.EndpointRef {
+  EndpointWorkspaceInvitation(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'workspaceInvitation';
+
+  /// Invites a new member to a workspace via email.
+  _i2.Future<_i13.WorkspaceInvitation> inviteMember(
+    String email,
+    int workspaceId,
+    _i14.WorkspaceRole role,
+  ) =>
+      caller.callServerEndpoint<_i13.WorkspaceInvitation>(
+        'workspaceInvitation',
+        'inviteMember',
+        {
+          'email': email,
+          'workspaceId': workspaceId,
+          'role': role,
+        },
+      );
+
+  /// Accepts a workspace invitation using a secret token.
+  _i2.Future<_i15.WorkspaceMember> acceptInvitation(String token) =>
+      caller.callServerEndpoint<_i15.WorkspaceMember>(
+        'workspaceInvitation',
+        'acceptInvitation',
+        {'token': token},
+      );
+}
+
+/// Endpoint for managing workspace members and their roles.
+/// {@category Endpoint}
+class EndpointWorkspaceMember extends _i1.EndpointRef {
+  EndpointWorkspaceMember(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'workspaceMember';
+
+  /// Returns a list of all workspaces the authenticated user belongs to.
+  _i2.Future<List<_i16.WorkspaceSummary>> getMyWorkspaces() =>
+      caller.callServerEndpoint<List<_i16.WorkspaceSummary>>(
+        'workspaceMember',
+        'getMyWorkspaces',
+        {},
+      );
+
+  /// Updates the role of a member within a workspace.
+  _i2.Future<_i15.WorkspaceMember> updateMemberRole({
+    required int memberId,
+    required int workspaceId,
+    required _i14.WorkspaceRole role,
+  }) =>
+      caller.callServerEndpoint<_i15.WorkspaceMember>(
+        'workspaceMember',
+        'updateMemberRole',
+        {
+          'memberId': memberId,
+          'workspaceId': workspaceId,
+          'role': role,
+        },
+      );
+
+  /// Removes a member from a workspace.
+  _i2.Future<_i15.WorkspaceMember> removeMember({
+    required int memberId,
+    required int workspaceId,
+  }) =>
+      caller.callServerEndpoint<_i15.WorkspaceMember>(
+        'workspaceMember',
+        'removeMember',
+        {
+          'memberId': memberId,
+          'workspaceId': workspaceId,
+        },
+      );
+
+  /// Allows the authenticated user to leave a workspace.
+  _i2.Future<_i15.WorkspaceMember> leaveWorkspace({required int workspaceId}) =>
+      caller.callServerEndpoint<_i15.WorkspaceMember>(
+        'workspaceMember',
+        'leaveWorkspace',
         {'workspaceId': workspaceId},
       );
 }
@@ -479,6 +515,8 @@ class Client extends _i1.ServerpodClientShared {
     cleanup = EndpointCleanup(this);
     ledger = EndpointLedger(this);
     workspace = EndpointWorkspace(this);
+    workspaceInvitation = EndpointWorkspaceInvitation(this);
+    workspaceMember = EndpointWorkspaceMember(this);
     modules = Modules(this);
   }
 
@@ -494,6 +532,10 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointWorkspace workspace;
 
+  late final EndpointWorkspaceInvitation workspaceInvitation;
+
+  late final EndpointWorkspaceMember workspaceMember;
+
   late final Modules modules;
 
   @override
@@ -504,6 +546,8 @@ class Client extends _i1.ServerpodClientShared {
         'cleanup': cleanup,
         'ledger': ledger,
         'workspace': workspace,
+        'workspaceInvitation': workspaceInvitation,
+        'workspaceMember': workspaceMember,
       };
 
   @override

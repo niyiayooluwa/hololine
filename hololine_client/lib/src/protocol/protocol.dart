@@ -31,9 +31,9 @@ import 'package:hololine_client/src/protocol/catalog.dart' as _i19;
 import 'package:hololine_client/src/protocol/inventory.dart' as _i20;
 import 'package:hololine_client/src/protocol/ledger_line_item.dart' as _i21;
 import 'package:hololine_client/src/protocol/ledger.dart' as _i22;
+import 'package:hololine_client/src/protocol/workspace.dart' as _i23;
 import 'package:hololine_client/src/protocol/responses/workspace_summary.dart'
-    as _i23;
-import 'package:hololine_client/src/protocol/workspace.dart' as _i24;
+    as _i24;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i25;
 export 'catalog.dart';
 export 'catalog_snapshot.dart';
@@ -215,14 +215,14 @@ class Protocol extends _i1.SerializationManager {
       return (data as List).map((e) => deserialize<_i22.Ledger>(e)).toList()
           as T;
     }
-    if (t == List<_i23.WorkspaceSummary>) {
-      return (data as List)
-          .map((e) => deserialize<_i23.WorkspaceSummary>(e))
-          .toList() as T;
-    }
-    if (t == List<_i24.Workspace>) {
-      return (data as List).map((e) => deserialize<_i24.Workspace>(e)).toList()
+    if (t == List<_i23.Workspace>) {
+      return (data as List).map((e) => deserialize<_i23.Workspace>(e)).toList()
           as T;
+    }
+    if (t == List<_i24.WorkspaceSummary>) {
+      return (data as List)
+          .map((e) => deserialize<_i24.WorkspaceSummary>(e))
+          .toList() as T;
     }
     try {
       return _i25.Protocol().deserialize<T>(data, t);
