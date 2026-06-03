@@ -67,7 +67,7 @@ final class WorkspaceDashboardProvider
 }
 
 String _$workspaceDashboardHash() =>
-    r'4f10afd329a5ceb6fd9451d46e96f5bbf14f9d58';
+    r'd7bae90318d7b65c7bbb7caa8f13edfba80241f2';
 
 final class WorkspaceDashboardFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<WorkspaceDashboardData>, String> {
