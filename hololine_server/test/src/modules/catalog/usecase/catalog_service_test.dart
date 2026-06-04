@@ -1,6 +1,7 @@
 import 'package:hololine_server/src/generated/protocol.dart';
 import 'package:hololine_server/src/modules/catalog/usecase/catalog_service.dart';
 import 'package:mockito/mockito.dart';
+import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 import 'package:test/test.dart';
 
@@ -11,6 +12,7 @@ void main() {
   late MockInventoryRepo mockInventoryRepo;
   late MockMemberRepo mockMemberRepo;
   late MockSession mockSession;
+  late MockDatabase mockDb;
   late CatalogService catalogService;
 
   setUp(() {
@@ -18,6 +20,15 @@ void main() {
     mockMemberRepo = MockMemberRepo();
     mockInventoryRepo = MockInventoryRepo();
     mockSession = MockSession();
+    mockDb = MockDatabase();
+
+    when(mockSession.db).thenReturn(mockDb);
+    // Mock Database Transaction
+    when(mockDb.transaction<Catalog>(any)).thenAnswer((invocation) async {
+      final callback = invocation.positionalArguments[0]
+          as Future<Catalog> Function(Transaction);
+      return await callback(MockTransaction());
+    });
 
     catalogService = CatalogService(
       mockCatalogRepo,
@@ -76,12 +87,12 @@ void main() {
       });
 
       // Mock inventory insert – just complete
-      when(mockInventoryRepo.insert(any, any, transaction: any)).thenAnswer(
+      when(mockInventoryRepo.insert(any, any, transaction: anyNamed('transaction'))).thenAnswer(
           (_) async => Inventory(
               workspaceId: workspaceId,
               catalogId: 2,
-              currentQty: 2,
-              availableQty: 2,
+              currentQty: 2.0,
+              availableQty: 2.0,
               totalValue: 2,
               createdAt: DateTime.now(),
               lastModifiedAt: DateTime.now()));
@@ -99,7 +110,7 @@ void main() {
       expect(result.status, 'active');
 
       // Verify that the inventory insert was called once
-      verify(() => mockInventoryRepo.insert(any, any, transaction: any))
+      verify(mockInventoryRepo.insert(any, any, transaction: anyNamed('transaction')))
           .called(1);
     });
 
@@ -129,8 +140,10 @@ void main() {
         id: 1,
         workspaceId: workspaceId,
         catalogId: catalogId,
-        currentQty: 5,
-        totalValue: 5000, availableQty: 5, createdAt: DateTime.now(),
+        currentQty: 5.0,
+        totalValue: 5000, 
+        availableQty: 5.0, 
+        createdAt: DateTime.now(),
         lastModifiedAt: DateTime.now(), // 5 * 1000
       );
       // Mock permission
@@ -147,15 +160,15 @@ void main() {
       when(mockInventoryRepo.findByCatalogId(any, catalogId))
           .thenAnswer((_) async => existingInv);
       // Mock update – just return the passed catalog
-      when(mockCatalogRepo.update(any, any, transaction: any))
+      when(mockCatalogRepo.update(any, any, transaction: anyNamed('transaction')))
           .thenAnswer((inv) async => inv.positionalArguments[1] as Catalog);
       // Mock inventory update
-      when(mockInventoryRepo.update(any, any, transaction: any)).thenAnswer(
+      when(mockInventoryRepo.update(any, any, transaction: anyNamed('transaction'))).thenAnswer(
           (_) async => Inventory(
               workspaceId: workspaceId,
               catalogId: catalogId,
-              currentQty: 5,
-              availableQty: 5,
+              currentQty: 5.0,
+              availableQty: 5.0,
               totalValue: 500,
               createdAt: DateTime.now(),
               lastModifiedAt: DateTime.now()));
@@ -174,7 +187,7 @@ void main() {
       verify(mockInventoryRepo.update(
         any,
         argThat(predicate<Inventory>((inv) => inv.totalValue == 7500)),
-        transaction: any,
+        transaction: anyNamed('transaction'),
       )).called(1);
     });
   });

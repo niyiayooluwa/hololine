@@ -3,7 +3,7 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i5;
 
 import 'package:hololine_server/src/generated/protocol.dart' as _i2;
 import 'package:hololine_server/src/modules/catalog/repositories/catalog_repo.dart'
@@ -14,6 +14,8 @@ import 'package:hololine_server/src/modules/catalog/usecase/catalog_service.dart
     as _i9;
 import 'package:hololine_server/src/modules/inventory/usecase/inventory_service.dart'
     as _i10;
+import 'package:hololine_server/src/modules/ledger/repositories/ledger_line_item_repo.dart'
+    as _i17;
 import 'package:hololine_server/src/modules/ledger/repositories/ledger_repo.dart'
     as _i16;
 import 'package:hololine_server/src/modules/ledger/usecase/ledger_service.dart'
@@ -21,14 +23,14 @@ import 'package:hololine_server/src/modules/ledger/usecase/ledger_service.dart'
 import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart'
     as _i12;
 import 'package:hololine_server/src/modules/workspace/usecase/core_workspace_service.dart'
-    as _i5;
+    as _i6;
 import 'package:hololine_server/src/modules/workspace/usecase/invitation_service.dart'
     as _i8;
 import 'package:hololine_server/src/modules/workspace/usecase/member_service.dart'
     as _i7;
-import 'package:hololine_server/src/services/email_service.dart' as _i18;
+import 'package:hololine_server/src/services/email_service.dart' as _i19;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i17;
+import 'package:mockito/src/dummies.dart' as _i18;
 import 'package:serverpod/serverpod.dart' as _i3;
 import 'package:serverpod/src/cache/caches.dart' as _i4;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i13;
@@ -222,16 +224,47 @@ class _FakeSession_16 extends _i1.SmartFake implements _i3.Session {
         );
 }
 
+class _FakeFuture_17<T1> extends _i1.SmartFake implements _i5.Future<T1> {
+  _FakeFuture_17(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeDatabaseResult_18 extends _i1.SmartFake
+    implements _i3.DatabaseResult {
+  _FakeDatabaseResult_18(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeSavepoint_19 extends _i1.SmartFake implements _i3.Savepoint {
+  _FakeSavepoint_19(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [WorkspaceService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
+class MockWorkspaceService extends _i1.Mock implements _i6.WorkspaceService {
   MockWorkspaceService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i2.Workspace> createStandalone(
+  _i5.Future<_i2.Workspace> createStandalone(
     _i3.Session? session,
     String? name,
     int? userId,
@@ -247,7 +280,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             description,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #createStandalone,
@@ -259,10 +292,10 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<_i2.Workspace> createChild(
+  _i5.Future<_i2.Workspace> createChild(
     _i3.Session? session,
     String? name,
     int? userId,
@@ -280,7 +313,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             description,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #createChild,
@@ -293,10 +326,10 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<_i2.Workspace> getWorkspaceDetails(
+  _i5.Future<_i2.Workspace> getWorkspaceDetails(
     _i3.Session? session,
     String? publicId,
     int? actorId,
@@ -310,7 +343,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #getWorkspaceDetails,
@@ -321,10 +354,10 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<List<_i2.Workspace>> getChildWorkspaces(
+  _i5.Future<List<_i2.Workspace>> getChildWorkspaces(
     _i3.Session? session,
     int? parentWorkspaceId,
     int? actorId,
@@ -338,11 +371,11 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
-      ) as _i6.Future<List<_i2.Workspace>>);
+        returnValue: _i5.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
+      ) as _i5.Future<List<_i2.Workspace>>);
 
   @override
-  _i6.Future<_i2.Workspace> updateWorkspaceDetails(
+  _i5.Future<_i2.Workspace> updateWorkspaceDetails(
     _i3.Session? session,
     int? workspaceId,
     String? name,
@@ -360,7 +393,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #updateWorkspaceDetails,
@@ -373,10 +406,10 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<_i2.Workspace> archiveWorkspace(
+  _i5.Future<_i2.Workspace> archiveWorkspace(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -390,7 +423,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #archiveWorkspace,
@@ -401,10 +434,10 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<_i2.Workspace> restoreWorkspace(
+  _i5.Future<_i2.Workspace> restoreWorkspace(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -418,7 +451,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #restoreWorkspace,
@@ -429,10 +462,10 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<bool> transferOwnership(
+  _i5.Future<bool> transferOwnership(
     _i3.Session? session,
     int? workspaceId,
     int? newOwnerId,
@@ -448,11 +481,11 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<_i2.Workspace> initiateDeleteWorkspace(
+  _i5.Future<_i2.Workspace> initiateDeleteWorkspace(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -466,7 +499,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #initiateDeleteWorkspace,
@@ -477,7 +510,7 @@ class MockWorkspaceService extends _i1.Mock implements _i5.WorkspaceService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 }
 
 /// A class which mocks [MemberService].
@@ -489,7 +522,7 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
   }
 
   @override
-  _i6.Future<List<_i2.WorkspaceSummary>> getMyWorkspaces(
+  _i5.Future<List<_i2.WorkspaceSummary>> getMyWorkspaces(
     _i3.Session? session,
     int? userId,
   ) =>
@@ -501,12 +534,12 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
             userId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.WorkspaceSummary>>.value(
+        returnValue: _i5.Future<List<_i2.WorkspaceSummary>>.value(
             <_i2.WorkspaceSummary>[]),
-      ) as _i6.Future<List<_i2.WorkspaceSummary>>);
+      ) as _i5.Future<List<_i2.WorkspaceSummary>>);
 
   @override
-  _i6.Future<_i2.WorkspaceMember> updateMemberRole(
+  _i5.Future<_i2.WorkspaceMember> updateMemberRole(
     _i3.Session? session, {
     required int? memberId,
     required int? workspaceId,
@@ -525,7 +558,7 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
           },
         ),
         returnValue:
-            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+            _i5.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
           this,
           Invocation.method(
             #updateMemberRole,
@@ -538,10 +571,10 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
             },
           ),
         )),
-      ) as _i6.Future<_i2.WorkspaceMember>);
+      ) as _i5.Future<_i2.WorkspaceMember>);
 
   @override
-  _i6.Future<_i2.WorkspaceMember> removeMember(
+  _i5.Future<_i2.WorkspaceMember> removeMember(
     _i3.Session? session, {
     required int? memberId,
     required int? workspaceId,
@@ -558,7 +591,7 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
           },
         ),
         returnValue:
-            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+            _i5.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
           this,
           Invocation.method(
             #removeMember,
@@ -570,10 +603,10 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
             },
           ),
         )),
-      ) as _i6.Future<_i2.WorkspaceMember>);
+      ) as _i5.Future<_i2.WorkspaceMember>);
 
   @override
-  _i6.Future<_i2.WorkspaceMember> leaveWorkspace(
+  _i5.Future<_i2.WorkspaceMember> leaveWorkspace(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -588,7 +621,7 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
           ],
         ),
         returnValue:
-            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+            _i5.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
           this,
           Invocation.method(
             #leaveWorkspace,
@@ -599,7 +632,7 @@ class MockMemberService extends _i1.Mock implements _i7.MemberService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.WorkspaceMember>);
+      ) as _i5.Future<_i2.WorkspaceMember>);
 }
 
 /// A class which mocks [InvitationService].
@@ -611,7 +644,7 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
   }
 
   @override
-  _i6.Future<_i2.WorkspaceInvitation> inviteMember(
+  _i5.Future<_i2.WorkspaceInvitation> inviteMember(
     _i3.Session? session,
     String? email,
     int? workspaceId,
@@ -629,7 +662,7 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<_i2.WorkspaceInvitation>.value(
+        returnValue: _i5.Future<_i2.WorkspaceInvitation>.value(
             _FakeWorkspaceInvitation_2(
           this,
           Invocation.method(
@@ -643,10 +676,10 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.WorkspaceInvitation>);
+      ) as _i5.Future<_i2.WorkspaceInvitation>);
 
   @override
-  _i6.Future<_i2.WorkspaceMember> acceptInvitation(
+  _i5.Future<_i2.WorkspaceMember> acceptInvitation(
     _i3.Session? session,
     String? token, {
     int? userId,
@@ -661,7 +694,7 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
           {#userId: userId},
         ),
         returnValue:
-            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+            _i5.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
           this,
           Invocation.method(
             #acceptInvitation,
@@ -672,7 +705,7 @@ class MockInvitationService extends _i1.Mock implements _i8.InvitationService {
             {#userId: userId},
           ),
         )),
-      ) as _i6.Future<_i2.WorkspaceMember>);
+      ) as _i5.Future<_i2.WorkspaceMember>);
 }
 
 /// A class which mocks [CatalogService].
@@ -684,7 +717,7 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
   }
 
   @override
-  _i6.Future<_i2.CatalogSnapshot> getCatalogSnapshot(
+  _i5.Future<_i2.CatalogSnapshot> getCatalogSnapshot(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -697,7 +730,7 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
           ],
         ),
         returnValue:
-            _i6.Future<_i2.CatalogSnapshot>.value(_FakeCatalogSnapshot_3(
+            _i5.Future<_i2.CatalogSnapshot>.value(_FakeCatalogSnapshot_3(
           this,
           Invocation.method(
             #getCatalogSnapshot,
@@ -707,10 +740,10 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.CatalogSnapshot>);
+      ) as _i5.Future<_i2.CatalogSnapshot>);
 
   @override
-  _i6.Future<_i2.Catalog> createProduct(
+  _i5.Future<_i2.Catalog> createProduct(
     _i3.Session? session, {
     required int? workspaceId,
     required _i2.Catalog? catalogData,
@@ -726,7 +759,7 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
             #actorId: actorId,
           },
         ),
-        returnValue: _i6.Future<_i2.Catalog>.value(_FakeCatalog_4(
+        returnValue: _i5.Future<_i2.Catalog>.value(_FakeCatalog_4(
           this,
           Invocation.method(
             #createProduct,
@@ -738,10 +771,10 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
             },
           ),
         )),
-      ) as _i6.Future<_i2.Catalog>);
+      ) as _i5.Future<_i2.Catalog>);
 
   @override
-  _i6.Future<List<_i2.Catalog>> listProducts(
+  _i5.Future<List<_i2.Catalog>> listProducts(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -755,11 +788,11 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
-      ) as _i6.Future<List<_i2.Catalog>>);
+        returnValue: _i5.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
+      ) as _i5.Future<List<_i2.Catalog>>);
 
   @override
-  _i6.Future<_i2.Catalog> updateProduct(
+  _i5.Future<_i2.Catalog> updateProduct(
     _i3.Session? session, {
     required int? workspaceId,
     required int? catalogId,
@@ -779,7 +812,7 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
             #actorId: actorId,
           },
         ),
-        returnValue: _i6.Future<_i2.Catalog>.value(_FakeCatalog_4(
+        returnValue: _i5.Future<_i2.Catalog>.value(_FakeCatalog_4(
           this,
           Invocation.method(
             #updateProduct,
@@ -793,10 +826,10 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
             },
           ),
         )),
-      ) as _i6.Future<_i2.Catalog>);
+      ) as _i5.Future<_i2.Catalog>);
 
   @override
-  _i6.Future<void> archiveProduct(
+  _i5.Future<void> archiveProduct(
     _i3.Session? session,
     int? workspaceId,
     int? catalogId,
@@ -812,9 +845,9 @@ class MockCatalogService extends _i1.Mock implements _i9.CatalogService {
             actorId,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 }
 
 /// A class which mocks [InventoryService].
@@ -826,7 +859,7 @@ class MockInventoryService extends _i1.Mock implements _i10.InventoryService {
   }
 
   @override
-  _i6.Future<List<_i2.Inventory>> listInventory(
+  _i5.Future<List<_i2.Inventory>> listInventory(
     _i3.Session? session, {
     required int? workspaceId,
     required int? actorId,
@@ -842,11 +875,11 @@ class MockInventoryService extends _i1.Mock implements _i10.InventoryService {
             #includeDiscontinued: includeDiscontinued,
           },
         ),
-        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
-      ) as _i6.Future<List<_i2.Inventory>>);
+        returnValue: _i5.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i5.Future<List<_i2.Inventory>>);
 
   @override
-  _i6.Future<List<_i2.Inventory>> getLowStockItems(
+  _i5.Future<List<_i2.Inventory>> getLowStockItems(
     _i3.Session? session, {
     required int? workspaceId,
     required int? actorId,
@@ -860,11 +893,11 @@ class MockInventoryService extends _i1.Mock implements _i10.InventoryService {
             #actorId: actorId,
           },
         ),
-        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
-      ) as _i6.Future<List<_i2.Inventory>>);
+        returnValue: _i5.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i5.Future<List<_i2.Inventory>>);
 
   @override
-  _i6.Future<void> updateThreshold(
+  _i5.Future<void> updateThreshold(
     _i3.Session? session, {
     required int? workspaceId,
     required int? catalogId,
@@ -882,9 +915,9 @@ class MockInventoryService extends _i1.Mock implements _i10.InventoryService {
             #actorId: actorId,
           },
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 }
 
 /// A class which mocks [LedgerService].
@@ -896,7 +929,7 @@ class MockLedgerService extends _i1.Mock implements _i11.LedgerService {
   }
 
   @override
-  _i6.Future<_i2.Ledger> createTransaction(
+  _i5.Future<_i2.Ledger> createTransaction(
     _i3.Session? session, {
     required int? workspaceId,
     required int? actorId,
@@ -924,7 +957,7 @@ class MockLedgerService extends _i1.Mock implements _i11.LedgerService {
             #counterpartyName: counterpartyName,
           },
         ),
-        returnValue: _i6.Future<_i2.Ledger>.value(_FakeLedger_5(
+        returnValue: _i5.Future<_i2.Ledger>.value(_FakeLedger_5(
           this,
           Invocation.method(
             #createTransaction,
@@ -942,10 +975,10 @@ class MockLedgerService extends _i1.Mock implements _i11.LedgerService {
             },
           ),
         )),
-      ) as _i6.Future<_i2.Ledger>);
+      ) as _i5.Future<_i2.Ledger>);
 
   @override
-  _i6.Future<List<_i2.Ledger>> listTransactions(
+  _i5.Future<List<_i2.Ledger>> listTransactions(
     _i3.Session? session, {
     required int? workspaceId,
     required int? actorId,
@@ -965,11 +998,11 @@ class MockLedgerService extends _i1.Mock implements _i11.LedgerService {
             #to: to,
           },
         ),
-        returnValue: _i6.Future<List<_i2.Ledger>>.value(<_i2.Ledger>[]),
-      ) as _i6.Future<List<_i2.Ledger>>);
+        returnValue: _i5.Future<List<_i2.Ledger>>.value(<_i2.Ledger>[]),
+      ) as _i5.Future<List<_i2.Ledger>>);
 
   @override
-  _i6.Future<_i2.Ledger> getTransaction(
+  _i5.Future<_i2.Ledger> getTransaction(
     _i3.Session? session, {
     required int? ledgerId,
     required int? workspaceId,
@@ -985,7 +1018,7 @@ class MockLedgerService extends _i1.Mock implements _i11.LedgerService {
             #actorId: actorId,
           },
         ),
-        returnValue: _i6.Future<_i2.Ledger>.value(_FakeLedger_5(
+        returnValue: _i5.Future<_i2.Ledger>.value(_FakeLedger_5(
           this,
           Invocation.method(
             #getTransaction,
@@ -997,7 +1030,7 @@ class MockLedgerService extends _i1.Mock implements _i11.LedgerService {
             },
           ),
         )),
-      ) as _i6.Future<_i2.Ledger>);
+      ) as _i5.Future<_i2.Ledger>);
 }
 
 /// A class which mocks [WorkspaceRepo].
@@ -1009,7 +1042,7 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
   }
 
   @override
-  _i6.Future<_i13.UserInfo?> getUserInfo(
+  _i5.Future<_i13.UserInfo?> getUserInfo(
     _i3.Session? session,
     int? userId,
   ) =>
@@ -1021,11 +1054,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             userId,
           ],
         ),
-        returnValue: _i6.Future<_i13.UserInfo?>.value(),
-      ) as _i6.Future<_i13.UserInfo?>);
+        returnValue: _i5.Future<_i13.UserInfo?>.value(),
+      ) as _i5.Future<_i13.UserInfo?>);
 
   @override
-  _i6.Future<_i2.Workspace?> findByNameAndOwner(
+  _i5.Future<_i2.Workspace?> findByNameAndOwner(
     _i3.Session? session,
     String? name,
     int? userId,
@@ -1039,11 +1072,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             userId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace?>.value(),
-      ) as _i6.Future<_i2.Workspace?>);
+        returnValue: _i5.Future<_i2.Workspace?>.value(),
+      ) as _i5.Future<_i2.Workspace?>);
 
   @override
-  _i6.Future<_i2.Workspace> create(
+  _i5.Future<_i2.Workspace> create(
     _i3.Session? session,
     _i2.Workspace? workspace,
     int? ownerId,
@@ -1057,7 +1090,7 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             ownerId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #create,
@@ -1068,10 +1101,10 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<_i2.Workspace?> findWorkspaceById(
+  _i5.Future<_i2.Workspace?> findWorkspaceById(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1083,11 +1116,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace?>.value(),
-      ) as _i6.Future<_i2.Workspace?>);
+        returnValue: _i5.Future<_i2.Workspace?>.value(),
+      ) as _i5.Future<_i2.Workspace?>);
 
   @override
-  _i6.Future<_i2.Workspace?> findWorkspaceByPublicId(
+  _i5.Future<_i2.Workspace?> findWorkspaceByPublicId(
     _i3.Session? session,
     String? publicId,
   ) =>
@@ -1099,11 +1132,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             publicId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace?>.value(),
-      ) as _i6.Future<_i2.Workspace?>);
+        returnValue: _i5.Future<_i2.Workspace?>.value(),
+      ) as _i5.Future<_i2.Workspace?>);
 
   @override
-  _i6.Future<List<_i2.Workspace>> findChildWorkspaces(
+  _i5.Future<List<_i2.Workspace>> findChildWorkspaces(
     _i3.Session? session,
     int? parentId,
   ) =>
@@ -1115,11 +1148,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             parentId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
-      ) as _i6.Future<List<_i2.Workspace>>);
+        returnValue: _i5.Future<List<_i2.Workspace>>.value(<_i2.Workspace>[]),
+      ) as _i5.Future<List<_i2.Workspace>>);
 
   @override
-  _i6.Future<_i2.Workspace> update(
+  _i5.Future<_i2.Workspace> update(
     _i3.Session? session,
     _i2.Workspace? workspace,
   ) =>
@@ -1131,7 +1164,7 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             workspace,
           ],
         ),
-        returnValue: _i6.Future<_i2.Workspace>.value(_FakeWorkspace_0(
+        returnValue: _i5.Future<_i2.Workspace>.value(_FakeWorkspace_0(
           this,
           Invocation.method(
             #update,
@@ -1141,10 +1174,10 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Workspace>);
+      ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i6.Future<bool> doesChildWorkspaceExist(
+  _i5.Future<bool> doesChildWorkspaceExist(
     _i3.Session? session,
     String? name,
     int? parentId,
@@ -1158,11 +1191,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             parentId,
           ],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<bool> archiveWorkspace(
+  _i5.Future<bool> archiveWorkspace(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1174,11 +1207,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<bool> restoreWorkspace(
+  _i5.Future<bool> restoreWorkspace(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1190,11 +1223,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<bool> softDeleteWorkspace(
+  _i5.Future<bool> softDeleteWorkspace(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1206,11 +1239,11 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<bool> hardDeleteWorkspace(
+  _i5.Future<bool> hardDeleteWorkspace(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1222,8 +1255,8 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 }
 
 /// A class which mocks [MemberRepo].
@@ -1235,7 +1268,7 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
   }
 
   @override
-  _i6.Future<_i2.WorkspaceMember?> findMemberByWorkspaceId(
+  _i5.Future<_i2.WorkspaceMember?> findMemberByWorkspaceId(
     _i3.Session? session,
     int? userId,
     int? workspaceId,
@@ -1249,11 +1282,11 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<_i2.WorkspaceMember?>.value(),
-      ) as _i6.Future<_i2.WorkspaceMember?>);
+        returnValue: _i5.Future<_i2.WorkspaceMember?>.value(),
+      ) as _i5.Future<_i2.WorkspaceMember?>);
 
   @override
-  _i6.Future<List<_i2.WorkspaceSummary>> findUserWorkspaces(
+  _i5.Future<List<_i2.WorkspaceSummary>> findUserWorkspaces(
     _i3.Session? session,
     int? userId,
   ) =>
@@ -1265,12 +1298,12 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
             userId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.WorkspaceSummary>>.value(
+        returnValue: _i5.Future<List<_i2.WorkspaceSummary>>.value(
             <_i2.WorkspaceSummary>[]),
-      ) as _i6.Future<List<_i2.WorkspaceSummary>>);
+      ) as _i5.Future<List<_i2.WorkspaceSummary>>);
 
   @override
-  _i6.Future<_i2.WorkspaceMember?> findMemberByEmail(
+  _i5.Future<_i2.WorkspaceMember?> findMemberByEmail(
     _i3.Session? session,
     String? email,
     int? workspaceId,
@@ -1284,11 +1317,11 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<_i2.WorkspaceMember?>.value(),
-      ) as _i6.Future<_i2.WorkspaceMember?>);
+        returnValue: _i5.Future<_i2.WorkspaceMember?>.value(),
+      ) as _i5.Future<_i2.WorkspaceMember?>);
 
   @override
-  _i6.Future<void> updateMemberRole(
+  _i5.Future<void> updateMemberRole(
     _i3.Session? session,
     int? memberId,
     _i2.WorkspaceRole? role,
@@ -1304,12 +1337,12 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<bool> transferOwnership(
+  _i5.Future<bool> transferOwnership(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -1325,11 +1358,11 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
             newOwnerId,
           ],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<_i2.WorkspaceMember> deactivateMember(
+  _i5.Future<_i2.WorkspaceMember> deactivateMember(
     _i3.Session? session,
     int? memberId,
     int? workspaceId,
@@ -1344,7 +1377,7 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
           ],
         ),
         returnValue:
-            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+            _i5.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
           this,
           Invocation.method(
             #deactivateMember,
@@ -1355,10 +1388,10 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.WorkspaceMember>);
+      ) as _i5.Future<_i2.WorkspaceMember>);
 
   @override
-  _i6.Future<List<_i2.WorkspaceMemberInfo>>
+  _i5.Future<List<_i2.WorkspaceMemberInfo>>
       findMembersWithUserInfoByWorkspaceId(
     _i3.Session? session,
     int? workspaceId,
@@ -1371,9 +1404,9 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
                 workspaceId,
               ],
             ),
-            returnValue: _i6.Future<List<_i2.WorkspaceMemberInfo>>.value(
+            returnValue: _i5.Future<List<_i2.WorkspaceMemberInfo>>.value(
                 <_i2.WorkspaceMemberInfo>[]),
-          ) as _i6.Future<List<_i2.WorkspaceMemberInfo>>);
+          ) as _i5.Future<List<_i2.WorkspaceMemberInfo>>);
 }
 
 /// A class which mocks [InvitationRepo].
@@ -1385,7 +1418,7 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
   }
 
   @override
-  _i6.Future<_i2.WorkspaceInvitation> createInvitation(
+  _i5.Future<_i2.WorkspaceInvitation> createInvitation(
     _i3.Session? session,
     _i2.WorkspaceInvitation? invitation,
   ) =>
@@ -1397,7 +1430,7 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
             invitation,
           ],
         ),
-        returnValue: _i6.Future<_i2.WorkspaceInvitation>.value(
+        returnValue: _i5.Future<_i2.WorkspaceInvitation>.value(
             _FakeWorkspaceInvitation_2(
           this,
           Invocation.method(
@@ -1408,10 +1441,10 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.WorkspaceInvitation>);
+      ) as _i5.Future<_i2.WorkspaceInvitation>);
 
   @override
-  _i6.Future<_i2.WorkspaceInvitation?> findInvitationByToken(
+  _i5.Future<_i2.WorkspaceInvitation?> findInvitationByToken(
     _i3.Session? session,
     String? token,
   ) =>
@@ -1423,11 +1456,11 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
             token,
           ],
         ),
-        returnValue: _i6.Future<_i2.WorkspaceInvitation?>.value(),
-      ) as _i6.Future<_i2.WorkspaceInvitation?>);
+        returnValue: _i5.Future<_i2.WorkspaceInvitation?>.value(),
+      ) as _i5.Future<_i2.WorkspaceInvitation?>);
 
   @override
-  _i6.Future<void> deleteInvitation(
+  _i5.Future<void> deleteInvitation(
     _i3.Session? session,
     String? token, {
     _i3.Transaction? transaction,
@@ -1441,12 +1474,12 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
           ],
           {#transaction: transaction},
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i6.Future<_i2.WorkspaceMember> acceptInvitation(
+  _i5.Future<_i2.WorkspaceMember> acceptInvitation(
     _i3.Session? session,
     _i2.WorkspaceInvitation? invitation,
     int? userId,
@@ -1463,7 +1496,7 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
           ],
         ),
         returnValue:
-            _i6.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+            _i5.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
           this,
           Invocation.method(
             #acceptInvitation,
@@ -1475,10 +1508,10 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.WorkspaceMember>);
+      ) as _i5.Future<_i2.WorkspaceMember>);
 
   @override
-  _i6.Future<_i2.WorkspaceInvitation?> checkForExistingInvitation(
+  _i5.Future<_i2.WorkspaceInvitation?> checkForExistingInvitation(
     _i3.Session? session,
     String? email,
     int? workspaceId,
@@ -1492,11 +1525,11 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<_i2.WorkspaceInvitation?>.value(),
-      ) as _i6.Future<_i2.WorkspaceInvitation?>);
+        returnValue: _i5.Future<_i2.WorkspaceInvitation?>.value(),
+      ) as _i5.Future<_i2.WorkspaceInvitation?>);
 
   @override
-  _i6.Future<_i2.WorkspaceInvitation?> checkIfTokenIsUnique(
+  _i5.Future<_i2.WorkspaceInvitation?> checkIfTokenIsUnique(
     _i3.Session? session,
     String? token,
   ) =>
@@ -1508,8 +1541,8 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
             token,
           ],
         ),
-        returnValue: _i6.Future<_i2.WorkspaceInvitation?>.value(),
-      ) as _i6.Future<_i2.WorkspaceInvitation?>);
+        returnValue: _i5.Future<_i2.WorkspaceInvitation?>.value(),
+      ) as _i5.Future<_i2.WorkspaceInvitation?>);
 }
 
 /// A class which mocks [CatalogRepo].
@@ -1521,7 +1554,7 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
   }
 
   @override
-  _i6.Future<int> countByWorkspaceId(
+  _i5.Future<int> countByWorkspaceId(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1533,11 +1566,11 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<int>.value(0),
-      ) as _i6.Future<int>);
+        returnValue: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
 
   @override
-  _i6.Future<_i2.Catalog?> findLastByWorkspaceId(
+  _i5.Future<_i2.Catalog?> findLastByWorkspaceId(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1549,11 +1582,11 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Catalog?>.value(),
-      ) as _i6.Future<_i2.Catalog?>);
+        returnValue: _i5.Future<_i2.Catalog?>.value(),
+      ) as _i5.Future<_i2.Catalog?>);
 
   @override
-  _i6.Future<_i2.Catalog?> findById(
+  _i5.Future<_i2.Catalog?> findById(
     _i3.Session? session,
     int? catalogId,
   ) =>
@@ -1565,11 +1598,11 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             catalogId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Catalog?>.value(),
-      ) as _i6.Future<_i2.Catalog?>);
+        returnValue: _i5.Future<_i2.Catalog?>.value(),
+      ) as _i5.Future<_i2.Catalog?>);
 
   @override
-  _i6.Future<bool> isSkuTaken(
+  _i5.Future<bool> isSkuTaken(
     _i3.Session? session,
     String? sku,
     int? workspaceId, {
@@ -1585,11 +1618,11 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
           ],
           {#excludeCatalogId: excludeCatalogId},
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<List<_i2.Catalog>> listProducts(
+  _i5.Future<List<_i2.Catalog>> listProducts(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1601,11 +1634,11 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
-      ) as _i6.Future<List<_i2.Catalog>>);
+        returnValue: _i5.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
+      ) as _i5.Future<List<_i2.Catalog>>);
 
   @override
-  _i6.Future<_i2.Catalog> insertWithTransaction(
+  _i5.Future<_i2.Catalog> insertWithTransaction(
     _i3.Session? session,
     _i2.Catalog? catalog,
     _i3.Transaction? transaction,
@@ -1619,7 +1652,7 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             transaction,
           ],
         ),
-        returnValue: _i6.Future<_i2.Catalog>.value(_FakeCatalog_4(
+        returnValue: _i5.Future<_i2.Catalog>.value(_FakeCatalog_4(
           this,
           Invocation.method(
             #insertWithTransaction,
@@ -1630,10 +1663,10 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Catalog>);
+      ) as _i5.Future<_i2.Catalog>);
 
   @override
-  _i6.Future<_i2.Catalog> update(
+  _i5.Future<_i2.Catalog> update(
     _i3.Session? session,
     _i2.Catalog? catalog, {
     _i3.Transaction? transaction,
@@ -1647,7 +1680,7 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
           ],
           {#transaction: transaction},
         ),
-        returnValue: _i6.Future<_i2.Catalog>.value(_FakeCatalog_4(
+        returnValue: _i5.Future<_i2.Catalog>.value(_FakeCatalog_4(
           this,
           Invocation.method(
             #update,
@@ -1658,10 +1691,10 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             {#transaction: transaction},
           ),
         )),
-      ) as _i6.Future<_i2.Catalog>);
+      ) as _i5.Future<_i2.Catalog>);
 
   @override
-  _i6.Future<_i13.UserInfo?> getUserInfo(
+  _i5.Future<_i13.UserInfo?> getUserInfo(
     _i3.Session? session,
     int? userId,
   ) =>
@@ -1673,11 +1706,11 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             userId,
           ],
         ),
-        returnValue: _i6.Future<_i13.UserInfo?>.value(),
-      ) as _i6.Future<_i13.UserInfo?>);
+        returnValue: _i5.Future<_i13.UserInfo?>.value(),
+      ) as _i5.Future<_i13.UserInfo?>);
 
   @override
-  _i6.Future<List<_i2.Catalog>> findByIds(
+  _i5.Future<List<_i2.Catalog>> findByIds(
     _i3.Session? session,
     List<int>? catalogIds,
     int? workspaceId,
@@ -1691,8 +1724,8 @@ class MockCatalogRepo extends _i1.Mock implements _i14.CatalogRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
-      ) as _i6.Future<List<_i2.Catalog>>);
+        returnValue: _i5.Future<List<_i2.Catalog>>.value(<_i2.Catalog>[]),
+      ) as _i5.Future<List<_i2.Catalog>>);
 }
 
 /// A class which mocks [InventoryRepo].
@@ -1704,7 +1737,7 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
   }
 
   @override
-  _i6.Future<_i2.Inventory> insert(
+  _i5.Future<_i2.Inventory> insert(
     _i3.Session? session,
     _i2.Inventory? inventory, {
     _i3.Transaction? transaction,
@@ -1718,7 +1751,7 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
           ],
           {#transaction: transaction},
         ),
-        returnValue: _i6.Future<_i2.Inventory>.value(_FakeInventory_6(
+        returnValue: _i5.Future<_i2.Inventory>.value(_FakeInventory_6(
           this,
           Invocation.method(
             #insert,
@@ -1729,10 +1762,10 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
             {#transaction: transaction},
           ),
         )),
-      ) as _i6.Future<_i2.Inventory>);
+      ) as _i5.Future<_i2.Inventory>);
 
   @override
-  _i6.Future<_i2.Inventory?> findByCatalogId(
+  _i5.Future<_i2.Inventory?> findByCatalogId(
     _i3.Session? session,
     int? catalogId,
   ) =>
@@ -1744,11 +1777,11 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
             catalogId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Inventory?>.value(),
-      ) as _i6.Future<_i2.Inventory?>);
+        returnValue: _i5.Future<_i2.Inventory?>.value(),
+      ) as _i5.Future<_i2.Inventory?>);
 
   @override
-  _i6.Future<_i2.Inventory> update(
+  _i5.Future<_i2.Inventory> update(
     _i3.Session? session,
     _i2.Inventory? inventory, {
     _i3.Transaction? transaction,
@@ -1762,7 +1795,7 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
           ],
           {#transaction: transaction},
         ),
-        returnValue: _i6.Future<_i2.Inventory>.value(_FakeInventory_6(
+        returnValue: _i5.Future<_i2.Inventory>.value(_FakeInventory_6(
           this,
           Invocation.method(
             #update,
@@ -1773,10 +1806,10 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
             {#transaction: transaction},
           ),
         )),
-      ) as _i6.Future<_i2.Inventory>);
+      ) as _i5.Future<_i2.Inventory>);
 
   @override
-  _i6.Future<List<_i2.Inventory>> listWithCatalog(
+  _i5.Future<List<_i2.Inventory>> listWithCatalog(
     _i3.Session? session,
     int? workspaceId, {
     bool? includeDiscontinued = false,
@@ -1790,11 +1823,11 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
           ],
           {#includeDiscontinued: includeDiscontinued},
         ),
-        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
-      ) as _i6.Future<List<_i2.Inventory>>);
+        returnValue: _i5.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i5.Future<List<_i2.Inventory>>);
 
   @override
-  _i6.Future<List<_i2.Inventory>> getLowStockWithCatalog(
+  _i5.Future<List<_i2.Inventory>> getLowStockWithCatalog(
     _i3.Session? session,
     int? workspaceId,
   ) =>
@@ -1806,11 +1839,11 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
-      ) as _i6.Future<List<_i2.Inventory>>);
+        returnValue: _i5.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i5.Future<List<_i2.Inventory>>);
 
   @override
-  _i6.Future<List<_i2.Inventory>> findByCatalogIds(
+  _i5.Future<List<_i2.Inventory>> findByCatalogIds(
     _i3.Session? session,
     List<int>? catalogIds,
     int? workspaceId,
@@ -1824,11 +1857,11 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
             workspaceId,
           ],
         ),
-        returnValue: _i6.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
-      ) as _i6.Future<List<_i2.Inventory>>);
+        returnValue: _i5.Future<List<_i2.Inventory>>.value(<_i2.Inventory>[]),
+      ) as _i5.Future<List<_i2.Inventory>>);
 
   @override
-  _i6.Future<_i2.Inventory?> findByCatalogIdForUpdate(
+  _i5.Future<_i2.Inventory?> findByCatalogIdForUpdate(
     _i3.Session? session,
     int? catalogId,
     int? workspaceId,
@@ -1844,8 +1877,8 @@ class MockInventoryRepo extends _i1.Mock implements _i15.InventoryRepo {
             transaction,
           ],
         ),
-        returnValue: _i6.Future<_i2.Inventory?>.value(),
-      ) as _i6.Future<_i2.Inventory?>);
+        returnValue: _i5.Future<_i2.Inventory?>.value(),
+      ) as _i5.Future<_i2.Inventory?>);
 }
 
 /// A class which mocks [LedgerRepo].
@@ -1857,7 +1890,7 @@ class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
   }
 
   @override
-  _i6.Future<_i2.Ledger> insertWithTransaction(
+  _i5.Future<_i2.Ledger> insertWithTransaction(
     _i3.Session? session,
     _i2.Ledger? ledger,
     _i3.Transaction? transaction,
@@ -1871,7 +1904,7 @@ class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
             transaction,
           ],
         ),
-        returnValue: _i6.Future<_i2.Ledger>.value(_FakeLedger_5(
+        returnValue: _i5.Future<_i2.Ledger>.value(_FakeLedger_5(
           this,
           Invocation.method(
             #insertWithTransaction,
@@ -1882,10 +1915,10 @@ class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Ledger>);
+      ) as _i5.Future<_i2.Ledger>);
 
   @override
-  _i6.Future<_i2.Ledger> updateWithTransaction(
+  _i5.Future<_i2.Ledger> updateWithTransaction(
     _i3.Session? session,
     _i2.Ledger? ledger,
     _i3.Transaction? transaction,
@@ -1899,7 +1932,7 @@ class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
             transaction,
           ],
         ),
-        returnValue: _i6.Future<_i2.Ledger>.value(_FakeLedger_5(
+        returnValue: _i5.Future<_i2.Ledger>.value(_FakeLedger_5(
           this,
           Invocation.method(
             #updateWithTransaction,
@@ -1910,10 +1943,10 @@ class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
             ],
           ),
         )),
-      ) as _i6.Future<_i2.Ledger>);
+      ) as _i5.Future<_i2.Ledger>);
 
   @override
-  _i6.Future<_i2.Ledger?> findById(
+  _i5.Future<_i2.Ledger?> findById(
     _i3.Session? session,
     int? ledgerId,
   ) =>
@@ -1925,11 +1958,11 @@ class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
             ledgerId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Ledger?>.value(),
-      ) as _i6.Future<_i2.Ledger?>);
+        returnValue: _i5.Future<_i2.Ledger?>.value(),
+      ) as _i5.Future<_i2.Ledger?>);
 
   @override
-  _i6.Future<_i2.Ledger?> findByIdWithLineItems(
+  _i5.Future<_i2.Ledger?> findByIdWithLineItems(
     _i3.Session? session,
     int? ledgerId,
   ) =>
@@ -1941,11 +1974,11 @@ class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
             ledgerId,
           ],
         ),
-        returnValue: _i6.Future<_i2.Ledger?>.value(),
-      ) as _i6.Future<_i2.Ledger?>);
+        returnValue: _i5.Future<_i2.Ledger?>.value(),
+      ) as _i5.Future<_i2.Ledger?>);
 
   @override
-  _i6.Future<List<_i2.Ledger>> list(
+  _i5.Future<List<_i2.Ledger>> list(
     _i3.Session? session,
     int? workspaceId, {
     _i2.TransactionType? transactionType,
@@ -1965,8 +1998,54 @@ class MockLedgerRepo extends _i1.Mock implements _i16.LedgerRepo {
             #to: to,
           },
         ),
-        returnValue: _i6.Future<List<_i2.Ledger>>.value(<_i2.Ledger>[]),
-      ) as _i6.Future<List<_i2.Ledger>>);
+        returnValue: _i5.Future<List<_i2.Ledger>>.value(<_i2.Ledger>[]),
+      ) as _i5.Future<List<_i2.Ledger>>);
+}
+
+/// A class which mocks [LedgerLineItemRepo].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLedgerLineItemRepo extends _i1.Mock
+    implements _i17.LedgerLineItemRepo {
+  MockLedgerLineItemRepo() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Future<List<_i2.LedgerLineItem>> insertManyWithTransaction(
+    _i3.Session? session,
+    List<_i2.LedgerLineItem>? items,
+    _i3.Transaction? transaction,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #insertManyWithTransaction,
+          [
+            session,
+            items,
+            transaction,
+          ],
+        ),
+        returnValue:
+            _i5.Future<List<_i2.LedgerLineItem>>.value(<_i2.LedgerLineItem>[]),
+      ) as _i5.Future<List<_i2.LedgerLineItem>>);
+
+  @override
+  _i5.Future<List<_i2.LedgerLineItem>> findByLedgerId(
+    _i3.Session? session,
+    int? ledgerId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findByLedgerId,
+          [
+            session,
+            ledgerId,
+          ],
+        ),
+        returnValue:
+            _i5.Future<List<_i2.LedgerLineItem>>.value(<_i2.LedgerLineItem>[]),
+      ) as _i5.Future<List<_i2.LedgerLineItem>>);
 }
 
 /// A class which mocks [Session].
@@ -2014,16 +2093,16 @@ class MockSession extends _i1.Mock implements _i3.Session {
       ) as DateTime);
 
   @override
-  _i6.Future<_i3.AuthenticationInfo?> get authenticated => (super.noSuchMethod(
+  _i5.Future<_i3.AuthenticationInfo?> get authenticated => (super.noSuchMethod(
         Invocation.getter(#authenticated),
-        returnValue: _i6.Future<_i3.AuthenticationInfo?>.value(),
-      ) as _i6.Future<_i3.AuthenticationInfo?>);
+        returnValue: _i5.Future<_i3.AuthenticationInfo?>.value(),
+      ) as _i5.Future<_i3.AuthenticationInfo?>);
 
   @override
-  _i6.Future<bool> get isUserSignedIn => (super.noSuchMethod(
+  _i5.Future<bool> get isUserSignedIn => (super.noSuchMethod(
         Invocation.getter(#isUserSignedIn),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
   _i3.Database get db => (super.noSuchMethod(
@@ -2076,7 +2155,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
   @override
   String get endpoint => (super.noSuchMethod(
         Invocation.getter(#endpoint),
-        returnValue: _i17.dummyValue<String>(
+        returnValue: _i18.dummyValue<String>(
           this,
           Invocation.getter(#endpoint),
         ),
@@ -2148,7 +2227,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
       );
 
   @override
-  _i6.Future<int?> close({
+  _i5.Future<int?> close({
     dynamic error,
     StackTrace? stackTrace,
   }) =>
@@ -2161,8 +2240,8 @@ class MockSession extends _i1.Mock implements _i3.Session {
             #stackTrace: stackTrace,
           },
         ),
-        returnValue: _i6.Future<int?>.value(),
-      ) as _i6.Future<int?>);
+        returnValue: _i5.Future<int?>.value(),
+      ) as _i5.Future<int?>);
 
   @override
   void log(
@@ -2188,7 +2267,7 @@ class MockSession extends _i1.Mock implements _i3.Session {
 /// A class which mocks [EmailHandler].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockEmailHandler extends _i1.Mock implements _i18.EmailHandler {
+class MockEmailHandler extends _i1.Mock implements _i19.EmailHandler {
   MockEmailHandler() {
     _i1.throwOnMissingStub(this);
   }
@@ -2203,7 +2282,7 @@ class MockEmailHandler extends _i1.Mock implements _i18.EmailHandler {
       ) as _i3.Session);
 
   @override
-  _i6.Future<bool> sendVerificationEmail({
+  _i5.Future<bool> sendVerificationEmail({
     required String? email,
     required String? verificationCode,
     required String? userName,
@@ -2218,11 +2297,11 @@ class MockEmailHandler extends _i1.Mock implements _i18.EmailHandler {
             #userName: userName,
           },
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<bool> sendPasswordResetEmail({
+  _i5.Future<bool> sendPasswordResetEmail({
     required String? email,
     required String? resetCode,
     required String? userName,
@@ -2237,11 +2316,11 @@ class MockEmailHandler extends _i1.Mock implements _i18.EmailHandler {
             #userName: userName,
           },
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i6.Future<bool> sendInvitation(
+  _i5.Future<bool> sendInvitation(
     String? email,
     String? token,
     String? workspaceName,
@@ -2257,6 +2336,471 @@ class MockEmailHandler extends _i1.Mock implements _i18.EmailHandler {
             role,
           ],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+}
+
+/// A class which mocks [Database].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDatabase extends _i1.Mock implements _i3.Database {
+  MockDatabase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Future<List<T>> find<T extends _i3.TableRow<dynamic>>({
+    _i3.Expression<dynamic>? where,
+    int? limit,
+    int? offset,
+    _i3.Column<dynamic>? orderBy,
+    List<_i3.Order>? orderByList,
+    bool? orderDescending = false,
+    _i3.Transaction? transaction,
+    _i3.Include? include,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #find,
+          [],
+          {
+            #where: where,
+            #limit: limit,
+            #offset: offset,
+            #orderBy: orderBy,
+            #orderByList: orderByList,
+            #orderDescending: orderDescending,
+            #transaction: transaction,
+            #include: include,
+          },
+        ),
+        returnValue: _i5.Future<List<T>>.value(<T>[]),
+      ) as _i5.Future<List<T>>);
+
+  @override
+  _i5.Future<T?> findFirstRow<T extends _i3.TableRow<dynamic>>({
+    _i3.Expression<dynamic>? where,
+    int? offset,
+    _i3.Column<dynamic>? orderBy,
+    List<_i3.Order>? orderByList,
+    bool? orderDescending = false,
+    _i3.Transaction? transaction,
+    _i3.Include? include,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findFirstRow,
+          [],
+          {
+            #where: where,
+            #offset: offset,
+            #orderBy: orderBy,
+            #orderByList: orderByList,
+            #orderDescending: orderDescending,
+            #transaction: transaction,
+            #include: include,
+          },
+        ),
+        returnValue: _i5.Future<T?>.value(),
+      ) as _i5.Future<T?>);
+
+  @override
+  _i5.Future<T?> findById<T extends _i3.TableRow<dynamic>>(
+    Object? id, {
+    _i3.Transaction? transaction,
+    _i3.Include? include,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #findById,
+          [id],
+          {
+            #transaction: transaction,
+            #include: include,
+          },
+        ),
+        returnValue: _i5.Future<T?>.value(),
+      ) as _i5.Future<T?>);
+
+  @override
+  _i5.Future<List<T>> update<T extends _i3.TableRow<dynamic>>(
+    List<T>? rows, {
+    List<_i3.Column<dynamic>>? columns,
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #update,
+          [rows],
+          {
+            #columns: columns,
+            #transaction: transaction,
+          },
+        ),
+        returnValue: _i5.Future<List<T>>.value(<T>[]),
+      ) as _i5.Future<List<T>>);
+
+  @override
+  _i5.Future<T> updateRow<T extends _i3.TableRow<dynamic>>(
+    T? row, {
+    List<_i3.Column<dynamic>>? columns,
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateRow,
+          [row],
+          {
+            #columns: columns,
+            #transaction: transaction,
+          },
+        ),
+        returnValue: _i18.ifNotNull(
+              _i18.dummyValueOrNull<T>(
+                this,
+                Invocation.method(
+                  #updateRow,
+                  [row],
+                  {
+                    #columns: columns,
+                    #transaction: transaction,
+                  },
+                ),
+              ),
+              (T v) => _i5.Future<T>.value(v),
+            ) ??
+            _FakeFuture_17<T>(
+              this,
+              Invocation.method(
+                #updateRow,
+                [row],
+                {
+                  #columns: columns,
+                  #transaction: transaction,
+                },
+              ),
+            ),
+      ) as _i5.Future<T>);
+
+  @override
+  _i5.Future<List<T>> insert<T extends _i3.TableRow<dynamic>>(
+    List<T>? rows, {
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #insert,
+          [rows],
+          {#transaction: transaction},
+        ),
+        returnValue: _i5.Future<List<T>>.value(<T>[]),
+      ) as _i5.Future<List<T>>);
+
+  @override
+  _i5.Future<T> insertRow<T extends _i3.TableRow<dynamic>>(
+    T? row, {
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #insertRow,
+          [row],
+          {#transaction: transaction},
+        ),
+        returnValue: _i18.ifNotNull(
+              _i18.dummyValueOrNull<T>(
+                this,
+                Invocation.method(
+                  #insertRow,
+                  [row],
+                  {#transaction: transaction},
+                ),
+              ),
+              (T v) => _i5.Future<T>.value(v),
+            ) ??
+            _FakeFuture_17<T>(
+              this,
+              Invocation.method(
+                #insertRow,
+                [row],
+                {#transaction: transaction},
+              ),
+            ),
+      ) as _i5.Future<T>);
+
+  @override
+  _i5.Future<List<T>> delete<T extends _i3.TableRow<dynamic>>(
+    List<T>? rows, {
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #delete,
+          [rows],
+          {#transaction: transaction},
+        ),
+        returnValue: _i5.Future<List<T>>.value(<T>[]),
+      ) as _i5.Future<List<T>>);
+
+  @override
+  _i5.Future<T> deleteRow<T extends _i3.TableRow<dynamic>>(
+    T? row, {
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #deleteRow,
+          [row],
+          {#transaction: transaction},
+        ),
+        returnValue: _i18.ifNotNull(
+              _i18.dummyValueOrNull<T>(
+                this,
+                Invocation.method(
+                  #deleteRow,
+                  [row],
+                  {#transaction: transaction},
+                ),
+              ),
+              (T v) => _i5.Future<T>.value(v),
+            ) ??
+            _FakeFuture_17<T>(
+              this,
+              Invocation.method(
+                #deleteRow,
+                [row],
+                {#transaction: transaction},
+              ),
+            ),
+      ) as _i5.Future<T>);
+
+  @override
+  _i5.Future<List<T>> deleteWhere<T extends _i3.TableRow<dynamic>>({
+    required _i3.Expression<dynamic>? where,
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #deleteWhere,
+          [],
+          {
+            #where: where,
+            #transaction: transaction,
+          },
+        ),
+        returnValue: _i5.Future<List<T>>.value(<T>[]),
+      ) as _i5.Future<List<T>>);
+
+  @override
+  _i5.Future<int> count<T extends _i3.TableRow<dynamic>>({
+    _i3.Expression<dynamic>? where,
+    int? limit,
+    bool? useCache = true,
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #count,
+          [],
+          {
+            #where: where,
+            #limit: limit,
+            #useCache: useCache,
+            #transaction: transaction,
+          },
+        ),
+        returnValue: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<_i3.DatabaseResult> unsafeQuery(
+    String? query, {
+    int? timeoutInSeconds,
+    _i3.Transaction? transaction,
+    _i3.QueryParameters? parameters,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #unsafeQuery,
+          [query],
+          {
+            #timeoutInSeconds: timeoutInSeconds,
+            #transaction: transaction,
+            #parameters: parameters,
+          },
+        ),
+        returnValue:
+            _i5.Future<_i3.DatabaseResult>.value(_FakeDatabaseResult_18(
+          this,
+          Invocation.method(
+            #unsafeQuery,
+            [query],
+            {
+              #timeoutInSeconds: timeoutInSeconds,
+              #transaction: transaction,
+              #parameters: parameters,
+            },
+          ),
+        )),
+      ) as _i5.Future<_i3.DatabaseResult>);
+
+  @override
+  _i5.Future<int> unsafeExecute(
+    String? query, {
+    int? timeoutInSeconds,
+    _i3.Transaction? transaction,
+    _i3.QueryParameters? parameters,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #unsafeExecute,
+          [query],
+          {
+            #timeoutInSeconds: timeoutInSeconds,
+            #transaction: transaction,
+            #parameters: parameters,
+          },
+        ),
+        returnValue: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<_i3.DatabaseResult> unsafeSimpleQuery(
+    String? query, {
+    int? timeoutInSeconds,
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #unsafeSimpleQuery,
+          [query],
+          {
+            #timeoutInSeconds: timeoutInSeconds,
+            #transaction: transaction,
+          },
+        ),
+        returnValue:
+            _i5.Future<_i3.DatabaseResult>.value(_FakeDatabaseResult_18(
+          this,
+          Invocation.method(
+            #unsafeSimpleQuery,
+            [query],
+            {
+              #timeoutInSeconds: timeoutInSeconds,
+              #transaction: transaction,
+            },
+          ),
+        )),
+      ) as _i5.Future<_i3.DatabaseResult>);
+
+  @override
+  _i5.Future<int> unsafeSimpleExecute(
+    String? query, {
+    int? timeoutInSeconds,
+    _i3.Transaction? transaction,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #unsafeSimpleExecute,
+          [query],
+          {
+            #timeoutInSeconds: timeoutInSeconds,
+            #transaction: transaction,
+          },
+        ),
+        returnValue: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<R> transaction<R>(
+    _i3.TransactionFunction<R>? transactionFunction, {
+    _i3.TransactionSettings? settings,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #transaction,
+          [transactionFunction],
+          {#settings: settings},
+        ),
+        returnValue: _i18.ifNotNull(
+              _i18.dummyValueOrNull<R>(
+                this,
+                Invocation.method(
+                  #transaction,
+                  [transactionFunction],
+                  {#settings: settings},
+                ),
+              ),
+              (R v) => _i5.Future<R>.value(v),
+            ) ??
+            _FakeFuture_17<R>(
+              this,
+              Invocation.method(
+                #transaction,
+                [transactionFunction],
+                {#settings: settings},
+              ),
+            ),
+      ) as _i5.Future<R>);
+
+  @override
+  _i5.Future<bool> testConnection() => (super.noSuchMethod(
+        Invocation.method(
+          #testConnection,
+          [],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+}
+
+/// A class which mocks [Transaction].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockTransaction extends _i1.Mock implements _i3.Transaction {
+  MockTransaction() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  Map<String, dynamic> get runtimeParameters => (super.noSuchMethod(
+        Invocation.getter(#runtimeParameters),
+        returnValue: <String, dynamic>{},
+      ) as Map<String, dynamic>);
+
+  @override
+  _i5.Future<void> cancel() => (super.noSuchMethod(
+        Invocation.method(
+          #cancel,
+          [],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<_i3.Savepoint> createSavepoint() => (super.noSuchMethod(
+        Invocation.method(
+          #createSavepoint,
+          [],
+        ),
+        returnValue: _i5.Future<_i3.Savepoint>.value(_FakeSavepoint_19(
+          this,
+          Invocation.method(
+            #createSavepoint,
+            [],
+          ),
+        )),
+      ) as _i5.Future<_i3.Savepoint>);
+
+  @override
+  _i5.Future<void> setRuntimeParameters(
+          _i3.RuntimeParametersListBuilder? builder) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #setRuntimeParameters,
+          [builder],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 }

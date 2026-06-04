@@ -3,6 +3,7 @@ import 'package:hololine_server/src/modules/catalog/repositories/inventory_repo.
 import 'package:hololine_server/src/modules/catalog/usecase/catalog_service.dart';
 import 'package:hololine_server/src/modules/inventory/usecase/inventory_service.dart';
 import 'package:hololine_server/src/modules/ledger/repositories/ledger_repo.dart';
+import 'package:hololine_server/src/modules/ledger/repositories/ledger_line_item_repo.dart';
 import 'package:hololine_server/src/modules/ledger/usecase/ledger_service.dart';
 import 'package:hololine_server/src/modules/workspace/repositories/repositories.dart';
 import 'package:hololine_server/src/modules/workspace/usecase/services.dart';
@@ -23,7 +24,10 @@ import 'package:serverpod/serverpod.dart';
   CatalogRepo,
   InventoryRepo,
   LedgerRepo,
+  LedgerLineItemRepo,
   Session,
-  EmailHandler
+  EmailHandler,
+  Database,
+  Transaction,
 ])
 void main() {}

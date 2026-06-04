@@ -53,7 +53,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
 
   @override
   Future<List<WorkspaceSummary>> getMyWorkspaces() async {
-    return await _client.workspace.getMyWorkspaces();
+    return await _client.workspaceMember.getMyWorkspaces();
   }
 
   @override
@@ -74,7 +74,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     int workspaceId,
     WorkspaceRole role,
   ) async {
-    return await _client.workspace.updateMemberRole(
+    return await _client.workspaceMember.updateMemberRole(
       memberId: memberId,
       workspaceId: workspaceId,
       role: role,
@@ -86,7 +86,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     int memberId,
     int workspaceId,
   ) async {
-    return await _client.workspace.removeMember(
+    return await _client.workspaceMember.removeMember(
       memberId: memberId,
       workspaceId: workspaceId,
     );
@@ -96,7 +96,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   Future<WorkspaceMember> leaveWorkspace(
     int workspaceId,
   ) async {
-    return await _client.workspace.leaveWorkspace(
+    return await _client.workspaceMember.leaveWorkspace(
       workspaceId: workspaceId,
     );
   }
@@ -110,7 +110,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     int workspaceId,
     WorkspaceRole role,
   ) async {
-    return await _client.workspace.inviteMember(
+    return await _client.workspaceInvitation.inviteMember(
       email,
       workspaceId,
       role,
@@ -121,7 +121,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   Future<WorkspaceMember> acceptInvitation(
     String invitationCode,
   ) async {
-    return await _client.workspace.acceptInvitation(
+    return await _client.workspaceInvitation.acceptInvitation(
       invitationCode,
     );
   }

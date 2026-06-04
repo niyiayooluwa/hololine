@@ -977,7 +977,7 @@ void main() {
       // ASSERT
       // Verify that the workspace was found (implicitly checked by not throwing NotFoundException)
       verify(mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId))
-          .called(1);
+          .called(2);
 
       // Verify that the actor and target member were found
       verify(mockMemberRepo.findMemberByWorkspaceId(

@@ -485,6 +485,15 @@ void main() {
                 role: WorkspaceRole.member,
                 joinedAt: DateTime.now().toUtc(),
               ));
+      
+      when(mockMemberRepo.deactivateMember(any, any, any))
+          .thenAnswer((invocation) async => WorkspaceMember(
+                userInfoId: invocation.positionalArguments[1],
+                workspaceId: invocation.positionalArguments[2],
+                role: WorkspaceRole.member,
+                joinedAt: DateTime.now().toUtc(),
+                isActive: false,
+              ));
 
       await memberService.removeMember(
         mockSession,
