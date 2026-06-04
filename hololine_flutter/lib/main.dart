@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hololine_flutter/core/application/providers.dart';
-import 'package:hololine_flutter/routing/router_config.dart';
+import 'package:hololine_flutter/core/router/router_config.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -21,10 +21,7 @@ Future<void> main() async {
 
   // Run the app, wrapping the root widget in an UncontrolledProviderScope.
   // This makes the providers from our container available to the entire app.
-  runApp(UncontrolledProviderScope(
-    container: container,
-    child: const MyApp(),
-  ));
+  runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
 }
 
 /// Root widget of the application.
@@ -40,11 +37,9 @@ class MyApp extends ConsumerWidget {
 
     return ShadApp.router(
       title: 'Hololine',
-      theme: ShadThemeData(
-        colorScheme: const ShadBlueColorScheme.light(),
-      ),
-      darkTheme: ShadThemeData(colorScheme: const ShadBlueColorScheme.dark()),
-      themeMode: ThemeMode.system,
+      theme: ShadThemeData(colorScheme: const ShadVioletColorScheme.light()),
+      //darkTheme: ShadThemeData(colorScheme: const ShadBlueColorScheme.dark()),
+      //themeMode: ThemeMode.system,
       //debugShowCheckedModeBanner: true,
       routerConfig: router,
     );

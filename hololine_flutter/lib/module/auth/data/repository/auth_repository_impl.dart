@@ -1,10 +1,10 @@
 import 'package:dart_either/dart_either.dart';
 import 'package:hololine_flutter/core/application/providers.dart';
-import 'package:hololine_flutter/module/auth/data/remote/auth_remote_data_source.dart';
-import 'package:hololine_flutter/module/auth/data/remote/auth_remote_data_source_impl.dart';
-import 'package:hololine_flutter/domain/failures/exception_handler.dart';
-import 'package:hololine_flutter/domain/failures/failures.dart';
-import 'package:hololine_flutter/module/auth/domain/repository/auth_repository.dart';
+import 'package:hololine_flutter/module/auth/data/repository/auth_remote_data_source.dart';
+import 'package:hololine_flutter/module/auth/data/repository/auth_remote_data_source_impl.dart';
+import 'package:hololine_flutter/core/errors/exception_handler.dart';
+import 'package:hololine_flutter/core/errors/failures.dart';
+import 'package:hololine_flutter/module/auth/data/repository/auth_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
