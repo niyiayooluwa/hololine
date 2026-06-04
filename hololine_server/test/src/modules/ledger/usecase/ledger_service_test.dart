@@ -216,5 +216,200 @@ void main() {
         transaction: anyNamed('transaction'),
       )).called(1);
     });
+
+    test('throws CurrencyMismatchException when line items have different currencies', () async {
+      // ---- Arrange ----
+      final lineItems = [
+        LedgerLineItem(
+          workspaceId: workspaceId,
+          ledgerId: 0,
+          catalogId: 101,
+          catalogName: 'Widget 1',
+          quantity: 1.0,
+          unitPrice: 1000,
+          unit: 'pcs',
+          subtotal: 1000,
+          position: 0,
+          createdAt: DateTime.now(),
+        ),
+        LedgerLineItem(
+          workspaceId: workspaceId,
+          ledgerId: 0,
+          catalogId: 102,
+          catalogName: 'Widget 2',
+          quantity: 1.0,
+          unitPrice: 10,
+          unit: 'pcs',
+          subtotal: 10,
+          position: 1,
+          createdAt: DateTime.now(),
+        )
+      ];
+
+      when(mockMemberRepo.findMemberByWorkspaceId(any, actorId, workspaceId))
+          .thenAnswer((_) async => WorkspaceMember(
+                userInfoId: actorId,
+                workspaceId: workspaceId,
+                role: WorkspaceRole.member,
+                isActive: true,
+                joinedAt: DateTime.now(),
+              ));
+
+      final catalog1 = Catalog(
+        id: 101,
+        workspaceId: workspaceId,
+        name: 'Widget 1',
+        price: 1000,
+        unit: 'pcs',
+        currency: 'NGN',
+        type: 'product',
+        addedByName: 'Admin',
+        createdAt: DateTime.now(),
+        lastModifiedAt: DateTime.now(),
+      );
+      final catalog2 = Catalog(
+        id: 102,
+        workspaceId: workspaceId,
+        name: 'Widget 2',
+        price: 10,
+        unit: 'pcs',
+        currency: 'USD', // Different currency
+        type: 'product',
+        addedByName: 'Admin',
+        createdAt: DateTime.now(),
+        lastModifiedAt: DateTime.now(),
+      );
+      
+      when(mockCatalogRepo.findByIds(any, argThat(containsAll([101, 102])), workspaceId))
+          .thenAnswer((_) async => [catalog1, catalog2]);
+
+      // ---- Act & Assert ----
+      expect(
+        () => ledgerService.createTransaction(
+          mockSession,
+          workspaceId: workspaceId,
+          actorId: actorId,
+          lineItems: lineItems,
+          transactionType: TransactionType.sale,
+          paymentStatus: PaymentStatus.paid,
+          transactionAt: DateTime.now(),
+        ),
+        throwsA(isA<CurrencyMismatchException>()),
+      );
+    });
+  });
+
+  group('LedgerService.listTransactions', () {
+    const workspaceId = 1;
+    const actorId = 42;
+
+    test('calls repository after permission check', () async {
+      when(mockMemberRepo.findMemberByWorkspaceId(any, actorId, workspaceId))
+          .thenAnswer((_) async => WorkspaceMember(
+                userInfoId: actorId,
+                workspaceId: workspaceId,
+                role: WorkspaceRole.member,
+                isActive: true,
+                joinedAt: DateTime.now(),
+              ));
+
+      when(mockLedgerRepo.list(any, workspaceId,
+              transactionType: anyNamed('transactionType'),
+              from: anyNamed('from'),
+              to: anyNamed('to')))
+          .thenAnswer((_) async => []);
+
+      final result = await ledgerService.listTransactions(
+        mockSession,
+        workspaceId: workspaceId,
+        actorId: actorId,
+      );
+
+      expect(result, isEmpty);
+      verify(mockLedgerRepo.list(any, workspaceId,
+              transactionType: null, from: null, to: null))
+          .called(1);
+    });
+  });
+
+  group('LedgerService.getTransaction', () {
+    const workspaceId = 1;
+    const actorId = 42;
+    const ledgerId = 100;
+
+    test('returns ledger with line items when authorized', () async {
+      when(mockMemberRepo.findMemberByWorkspaceId(any, actorId, workspaceId))
+          .thenAnswer((_) async => WorkspaceMember(
+                userInfoId: actorId,
+                workspaceId: workspaceId,
+                role: WorkspaceRole.member,
+                isActive: true,
+                joinedAt: DateTime.now(),
+              ));
+
+      final ledger = Ledger(
+        id: ledgerId,
+        workspaceId: workspaceId,
+        transactionType: TransactionType.sale,
+        paymentStatus: PaymentStatus.paid,
+        totalAmount: 5000,
+        transactionAt: DateTime.now(),
+        createdByName: 'Alice',
+        createdById: actorId,
+        createdAt: DateTime.now(),
+        lastModifiedAt: DateTime.now(),
+        lineItems: [],
+      );
+
+      when(mockLedgerRepo.findByIdWithLineItems(any, ledgerId))
+          .thenAnswer((_) async => ledger);
+
+      final result = await ledgerService.getTransaction(
+        mockSession,
+        ledgerId: ledgerId,
+        workspaceId: workspaceId,
+        actorId: actorId,
+      );
+
+      expect(result.id, ledgerId);
+      expect(result.workspaceId, workspaceId);
+    });
+
+    test('throws UnauthorizedException if ledger belongs to different workspace', () async {
+      when(mockMemberRepo.findMemberByWorkspaceId(any, actorId, workspaceId))
+          .thenAnswer((_) async => WorkspaceMember(
+                userInfoId: actorId,
+                workspaceId: workspaceId,
+                role: WorkspaceRole.member,
+                isActive: true,
+                joinedAt: DateTime.now(),
+              ));
+
+      final ledger = Ledger(
+        id: ledgerId,
+        workspaceId: 999, // Different workspace
+        transactionType: TransactionType.sale,
+        paymentStatus: PaymentStatus.paid,
+        totalAmount: 5000,
+        transactionAt: DateTime.now(),
+        createdByName: 'Alice',
+        createdById: actorId,
+        createdAt: DateTime.now(),
+        lastModifiedAt: DateTime.now(),
+      );
+
+      when(mockLedgerRepo.findByIdWithLineItems(any, ledgerId))
+          .thenAnswer((_) async => ledger);
+
+      expect(
+        () => ledgerService.getTransaction(
+          mockSession,
+          ledgerId: ledgerId,
+          workspaceId: workspaceId,
+          actorId: actorId,
+        ),
+        throwsA(isA<UnauthorizedException>()),
+      );
+    });
   });
 }
