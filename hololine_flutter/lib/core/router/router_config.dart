@@ -1,10 +1,10 @@
 import 'package:go_router/go_router.dart';
-import 'package:hololine_flutter/feature/auth/presentation/login/screen/login_screen.dart';
-import 'package:hololine_flutter/feature/auth/presentation/login/screen/reset_password_screen.dart';
-import 'package:hololine_flutter/feature/auth/presentation/login/screen/reset_password_request_screen.dart';
-import 'package:hololine_flutter/feature/auth/presentation/login/screen/register_screen.dart';
-import 'package:hololine_flutter/feature/auth/presentation/login/screen/verification_screen.dart';
 import 'package:hololine_flutter/components/index.dart'; // Keep for showcase if needed later
+import 'package:hololine_flutter/feature/auth/presentation/screen/login_screen.dart';
+import 'package:hololine_flutter/feature/auth/presentation/screen/register_screen.dart';
+import 'package:hololine_flutter/feature/auth/presentation/screen/reset_password_request_screen.dart';
+import 'package:hololine_flutter/feature/auth/presentation/screen/reset_password_screen.dart';
+import 'package:hololine_flutter/feature/auth/presentation/screen/verification_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
