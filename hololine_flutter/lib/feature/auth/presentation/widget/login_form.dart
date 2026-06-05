@@ -50,7 +50,7 @@ class LoginForm extends HookConsumerWidget {
                 id: 'email',
                 controller: formState.emailController,
                 label: const Text('Email'),
-                placeholder: const Text('Enter your email'),
+                placeholder: const Text('johndoe@somemail.com'),
                 keyboardType: TextInputType.emailAddress,
                 validator: (v) {
                   if (v.isEmpty) {
@@ -69,7 +69,7 @@ class LoginForm extends HookConsumerWidget {
                 id: 'password',
                 controller: formState.passwordController,
                 label: const Text('Password'),
-                placeholder: const Text('Enter your password'),
+                placeholder: const Text('••••••••••••••••••••••'),
                 obscureText: !formState.isPasswordVisible.value,
                 trailing: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
@@ -132,14 +132,14 @@ class LoginForm extends HookConsumerWidget {
                   child: const Text("Sign In"),
                 ),
               ),
-
-              SizedBox(height: 24),
-
-              // SIGN UP LINK
-              _buildSignUpLink(context),
             ],
           ),
         ),
+
+        SizedBox(height: 24),
+
+        // SIGN UP LINK
+        _buildSignUpLink(context),
       ],
     );
   }
@@ -189,24 +189,28 @@ Widget _buildRememberMeRow(
       Row(
         //mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: 24,
-            width: 24,
+          SizedBox.square(
+            dimension: 20,
             child: Checkbox(
               value: rememberMe.value,
               onChanged: (value) => rememberMe.value = value ?? false,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),
-          const SizedBox(width: 1),
+          const SizedBox(width: 4),
           Text('Remember me', style: theme.textTheme.small),
         ],
       ),
-      ShadButton.link(
-        onPressed: () {
+      GestureDetector(
+        onTap: () {
           context.go('/auth/forgot-password');
         },
-        child: const Text('Forgot Password?'),
+        child: Text(
+          'Forgot Password?',
+          style: theme.textTheme.small.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
       ),
     ],
   );
@@ -214,26 +218,23 @@ Widget _buildRememberMeRow(
 
 // SIGN UP LINK
 Widget _buildSignUpLink(BuildContext context) {
-  final theme = Theme.of(context);
+  final theme = ShadTheme.of(context);
 
   return Center(
     child: Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Text("Don't have an account? ", style: theme.textTheme.bodyMedium),
-        TextButton(
-          onPressed: () {
+        Text("Not a member yet? ", style: theme.textTheme.muted),
+        GestureDetector(
+          onTap: () {
             context.go('/auth/signup');
           },
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            minimumSize: const Size(0, 36),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: const Text(
-            'Sign Up',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          child: Text(
+            'Register now!',
+            style: theme.textTheme.small.copyWith(
+              color: theme.colorScheme.primary,
+            ),
           ),
         ),
       ],

@@ -11,8 +11,14 @@ void showErrorToast(BuildContext context, Failure failure) {
   );
 }
 
-void showSuccessToast(BuildContext context, String message) {
-  ShadToaster.of(context).show(ShadToast(title: Text(message)));
+void showSuccessToast(
+  BuildContext context, {
+  required String title,
+  required String message,
+}) {
+  ShadToaster.of(
+    context,
+  ).show(ShadToast(title: Text(title), description: Text(message)));
 }
 
 (String, String) _toastContent(Failure failure) {

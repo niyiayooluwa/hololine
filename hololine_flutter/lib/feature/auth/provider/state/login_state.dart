@@ -7,7 +7,8 @@ class LoginFormState {
   final TextEditingController passwordController;
   final ValueNotifier<bool> isPasswordVisible;
   final ValueNotifier<bool> rememberMe;
-  final ValueNotifier<bool> isFormValid;final GlobalKey<ShadFormState> formKey;
+  final ValueNotifier<bool> isFormValid;
+  final GlobalKey<ShadFormState> formKey;
 
   LoginFormState({
     required this.emailController,
