@@ -30,9 +30,9 @@ LoginFormState useLoginForm() {
 
   useEffect(() {
     void updateFormValidity() {
-      isFormValid.value = 
-        emailController.text.trim().isNotEmpty && 
-        passwordController.text.trim().isNotEmpty;
+      isFormValid.value =
+          emailController.text.trim().isNotEmpty &&
+          passwordController.text.trim().isNotEmpty;
     }
 
     emailController.addListener(updateFormValidity);

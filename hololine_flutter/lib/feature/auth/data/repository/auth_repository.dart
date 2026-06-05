@@ -14,15 +14,12 @@ abstract class AuthRepository {
     String password,
   );
 
-  Future<Either<Failure, UserInfo?>> verifyWithOtp(
-    String email, 
-    String otp,
-  );
+  Future<Either<Failure, UserInfo?>> verifyWithOtp(String email, String otp);
 
   Future<Either<Failure, bool>> initiatePasswordReset(String email);
 
   Future<Either<Failure, bool>> resetPassword(
-      String verificationCode,
-      String password,
+    String verificationCode,
+    String password,
   );
 }

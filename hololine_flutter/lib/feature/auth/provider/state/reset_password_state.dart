@@ -30,10 +30,10 @@ ResetPasswordState useResetPasswordState() {
   final isFormValid = useState(false);
   final page = useState(1);
 
-
   useEffect(() {
     void updateFormValidity() {
-      isFormValid.value = codeController.text.trim().isNotEmpty &&
+      isFormValid.value =
+          codeController.text.trim().isNotEmpty &&
           passwordController.text.trim().isNotEmpty &&
           confirmPasswordController.text.trim().isNotEmpty &&
           (passwordController.text == confirmPasswordController.text);
@@ -48,11 +48,7 @@ ResetPasswordState useResetPasswordState() {
       passwordController.removeListener(updateFormValidity);
       confirmPasswordController.removeListener(updateFormValidity);
     };
-  }, [
-    codeController,
-    passwordController,
-    confirmPasswordController,
-  ]);
+  }, [codeController, passwordController, confirmPasswordController]);
 
   return ResetPasswordState(
     codeController: codeController,

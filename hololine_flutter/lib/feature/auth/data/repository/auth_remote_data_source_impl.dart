@@ -16,16 +16,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   ///
   /// Requires a [serverpodClient] to interact with the backend.
   AuthRemoteDataSourceImpl({required Client serverpodClient})
-      : _client = serverpodClient;
+    : _client = serverpodClient;
 
   /// Authenticates a user with their [email] and [password].
   ///
   /// Returns an [AuthenticationResponse] on success.
   @override
-  Future<AuthenticationResponse> login(
-    String email,
-    String password,
-  ) async {
+  Future<AuthenticationResponse> login(String email, String password) async {
     // Calls the `authenticate` method from the Serverpod auth email module.
     return await _client.modules.auth.email.authenticate(email, password);
   }
@@ -36,14 +33,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   /// and [password]. This typically triggers a verification email.
   /// Returns `true` if the request was sent successfully.
   @override
-  Future<bool> register(
-    String userName,
-    String email,
-    String password,
-  ) async {
+  Future<bool> register(String userName, String email, String password) async {
     // Calls the `createAccountRequest` method to start the sign-up flow.
-    return await _client.modules.auth.email
-        .createAccountRequest(userName, email, password);
+    return await _client.modules.auth.email.createAccountRequest(
+      userName,
+      email,
+      password,
+    );
   }
 
   /// Verifies a new user account using an [email] and a one-time password [otp].
@@ -72,13 +68,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   ///
   /// Returns `true` if the password was reset successfully.
   @override
-  Future<bool> resetPassword(
-    String verificationCode,
-    String password,
-  ) async {
+  Future<bool> resetPassword(String verificationCode, String password) async {
     // Calls the `resetPassword` method to set the new password.
-    return await _client.modules.auth.email
-        .resetPassword(verificationCode, password);
+    return await _client.modules.auth.email.resetPassword(
+      verificationCode,
+      password,
+    );
   }
 }
 
@@ -89,4 +84,3 @@ final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) {
   final client = ref.watch(clientProvider);
   return AuthRemoteDataSourceImpl(serverpodClient: client);
 });
-

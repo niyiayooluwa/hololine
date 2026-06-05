@@ -47,7 +47,7 @@ class ResetPasswordController extends _$ResetPasswordController {
           AuthFailure('Invalid email or password'),
           StackTrace.current,
         );
-      }
+      },
     );
   }
 }

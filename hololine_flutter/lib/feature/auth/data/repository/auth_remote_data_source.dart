@@ -16,11 +16,7 @@ abstract class AuthRemoteDataSource {
   /// Sends the [userName], [email], and [password] to the server to create
   /// an account request. This typically triggers a verification email.
   /// Returns `true` if the request was successfully sent.
-  Future<bool> register(
-    String userName,
-    String email,
-    String password,
-  );
+  Future<bool> register(String userName, String email, String password);
 
   /// Verifies a new user's account using their [email] and a one-time [otp].
   /// Returns the [UserInfo] on successful verification, otherwise `null`.

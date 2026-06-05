@@ -59,8 +59,11 @@ class AuthRepositoryImpl implements AuthRepository {
   ) async {
     try {
       // Attempt to register a new user.
-      final response =
-          await remoteDataSource.register(userName, email, password);
+      final response = await remoteDataSource.register(
+        userName,
+        email,
+        password,
+      );
       // On success, return `true` wrapped in a `Right`.
       return Right(response);
     } catch (e) {
