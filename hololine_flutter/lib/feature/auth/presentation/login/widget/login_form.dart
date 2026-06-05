@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hololine_flutter/core/errors/failures.dart';
+import 'package:hololine_flutter/core/utils/toast_helper.dart';
 import 'package:hololine_flutter/feature/auth/provider/notifier/login_controller.dart';
 import 'package:hololine_flutter/feature/auth/provider/state/login_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -14,11 +16,10 @@ class LoginForm extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(loginControllerProvider, (_, next) {
       next.whenOrNull(
-        error: (error, _) {
-          /*showErrorToast(
-            context,
-            error is Failure ? error : const ServerFailure('Login failed'),
-          );*/
+        error: (e, _) {
+          if (e is Failure) {
+            showErrorToast(context, e);
+          }
         },
       );
     });
@@ -152,7 +153,7 @@ Widget _buildHeader(BuildContext context, {required bool showLogo}) {
     children: [
       if (showLogo) ...[
         SvgPicture.asset(
-          'assets/svgs/Osaka-colored.svg',
+          'assets/svgs/logos/Osaka-colored.svg',
           height: 40,
           fit: BoxFit.contain,
           alignment: Alignment.centerLeft,
@@ -166,12 +167,6 @@ Widget _buildHeader(BuildContext context, {required bool showLogo}) {
         style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.w500),
       ),
       const SizedBox(height: 6),
-
-      Text(
-        "Login to your account",
-        style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
-      ),
-      const SizedBox(height: 36),
 
       Text(
         "Enter your email and password to sign in.",
@@ -192,7 +187,7 @@ Widget _buildRememberMeRow(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Row(
-        mainAxisSize: MainAxisSize.min,
+        //mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
             height: 24,
@@ -203,11 +198,11 @@ Widget _buildRememberMeRow(
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 1),
           Text('Remember me', style: theme.textTheme.small),
         ],
       ),
-      ShadButton.ghost(
+      ShadButton.link(
         onPressed: () {
           context.go('/auth/forgot-password');
         },
