@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/core/errors/failures.dart';
+import 'package:hololine_flutter/core/utils/toast_helper.dart';
 import 'package:hololine_flutter/feature/auth/provider/notifier/reset_password_request_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -22,38 +23,25 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
       previous,
       next,
     ) {
-      next.when(
+      next.whenOrNull(
         data: (response) {
           if (response == true) {
+            showSuccessToast(
+              context,
+              title: 'Request Successful',
+              message: 'Check your email for the verification code.',
+            );
             context.go(
               '/auth/reset-password/verify',
               extra: emailController.text.trim(),
             );
-          } else {
-            ShadToaster.of(context).show(
-              const ShadToast(
-                title: Text('Reset Failed'),
-                description: Text('Unable to process reset password request.'),
-              ),
-            );
           }
         },
-        error: (error, stackTrace) {
-          String message;
+        error: (error, _) {
           if (error is Failure) {
-            message = error.message;
-          } else {
-            message = error.toString();
+            showErrorToast(context, error);
           }
-
-          ShadToaster.of(context).show(
-            ShadToast.destructive(
-              title: const Text('Request Failed'),
-              description: Text(message),
-            ),
-          );
         },
-        loading: () {},
       );
     });
 
@@ -71,7 +59,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
           key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // EMAIL INPUT FIELD
               ShadInputFormField(
@@ -153,7 +141,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showLogo) ...[
           SvgPicture.asset(
@@ -175,7 +163,6 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
         Text(
           "Please enter the email linked with your account and we’ll send you a One-Time Password(OTP).",
           style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
-          textAlign: TextAlign.center,
         ),
       ],
     );

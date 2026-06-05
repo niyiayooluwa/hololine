@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/core/errors/failures.dart';
+import 'package:hololine_flutter/core/utils/toast_helper.dart';
 import 'package:hololine_flutter/feature/auth/provider/notifier/verification_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_client/module.dart';
@@ -27,34 +28,22 @@ class VerificationForm extends HookConsumerWidget {
       previous,
       next,
     ) {
-      next.when(
+      next.whenOrNull(
         data: (user) {
           if (user != null) {
-            ShadToaster.of(context).show(
-              const ShadToast(
-                title: Text('Verification Successful'),
-                description: Text('You have been verified successfully.'),
-              ),
+            showSuccessToast(
+              context,
+              title: 'Verification Successful',
+              message: 'You have been verified successfully.',
             );
             context.go('/workspacelist');
           }
         },
-        error: (error, stackTrace) {
-          String message;
+        error: (error, _) {
           if (error is Failure) {
-            message = error.message;
-          } else {
-            message = error.toString();
+            showErrorToast(context, error);
           }
-
-          ShadToaster.of(context).show(
-            ShadToast.destructive(
-              title: const Text('Verification Failed'),
-              description: Text(message),
-            ),
-          );
         },
-        loading: () {},
       );
     });
 
@@ -72,7 +61,7 @@ class VerificationForm extends HookConsumerWidget {
           key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // OTP INPUT FIELD
               ShadInputOTPFormField(
@@ -166,7 +155,7 @@ class VerificationForm extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showLogo) ...[
           SvgPicture.asset(

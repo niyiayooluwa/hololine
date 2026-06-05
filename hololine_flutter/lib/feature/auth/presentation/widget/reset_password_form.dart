@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/core/errors/failures.dart';
+import 'package:hololine_flutter/core/utils/toast_helper.dart';
 import 'package:hololine_flutter/feature/auth/provider/notifier/reset_password_controller.dart';
 import 'package:hololine_flutter/feature/auth/provider/state/reset_password_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -21,35 +22,22 @@ class ResetPasswordForm extends HookConsumerWidget {
       previous,
       next,
     ) {
-      next.when(
+      next.whenOrNull(
         data: (response) {
           if (response == true) {
-            context.go('/auth/login');
-          } else {
-            ShadToaster.of(context).show(
-              const ShadToast(
-                title: Text('Reset Failed'),
-                description: Text('Unable to process reset password request.'),
-              ),
+            showSuccessToast(
+              context,
+              title: 'Password Reset Successful',
+              message: 'You can now log in with your new password.',
             );
+            context.go('/auth/login');
           }
         },
-        error: (error, stackTrace) {
-          String message;
+        error: (error, _) {
           if (error is Failure) {
-            message = error.message;
-          } else {
-            message = error.toString();
+            showErrorToast(context, error);
           }
-
-          ShadToaster.of(context).show(
-            ShadToast.destructive(
-              title: const Text('Reset Failed'),
-              description: Text(message),
-            ),
-          );
         },
-        loading: () {},
       );
     });
 
@@ -68,14 +56,14 @@ class ResetPasswordForm extends HookConsumerWidget {
           key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (page == 1) ...[
                 // OTP INPUT FIELD
                 ShadInputOTPFormField(
                   id: 'otp',
                   maxLength: 6,
-                  //label: const Text('Verification Code'),
+                  label: const Text('Verification Code'),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp('^[a-zA-Z0-9]+')),
                   ],
@@ -257,7 +245,7 @@ class ResetPasswordForm extends HookConsumerWidget {
     final isPageOne = page == 1;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (showLogo) ...[
           SvgPicture.asset(
