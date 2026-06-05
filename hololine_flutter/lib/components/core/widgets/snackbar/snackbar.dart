@@ -32,38 +32,31 @@ class HoloSnackbar extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
-          border: Border.all(
-            color: foregroundColor,
-            width: 3,
-          ),
+          border: Border.all(color: foregroundColor, width: 3),
           borderRadius: BorderRadius.circular(12),
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(children: [
-              Icon(
-                Icons.info_outline_rounded,
-                color: foregroundColor,
-                size: 16,
-              ),
-              SizedBox(width: 12),
-              Text(
-                message,
-                style:
-                    theme.textTheme.bodySmall?.copyWith(color: foregroundColor),
-              )
-            ]),
-            Icon(
-              Icons.cancel_outlined,
-              color: foregroundColor,
-              size: 16,
-            )
+            Row(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  color: foregroundColor,
+                  size: 16,
+                ),
+                SizedBox(width: 12),
+                Text(
+                  message,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: foregroundColor,
+                  ),
+                ),
+              ],
+            ),
+            Icon(Icons.cancel_outlined, color: foregroundColor, size: 16),
           ],
         ),
       ),

@@ -36,8 +36,6 @@ final clientProvider = Provider<Client>((ref) {
 final sessionProvider = Provider<SessionManager>((ref) {
   final client = ref.watch(clientProvider);
 
-  final sessionManager = SessionManager(
-    caller: client.modules.auth,
-  );
+  final sessionManager = SessionManager(caller: client.modules.auth);
   return sessionManager;
 });

@@ -39,8 +39,9 @@ class HoloTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final textColor =
-        hasError ? theme.colorScheme.error : theme.colorScheme.grey400;
+    final textColor = hasError
+        ? theme.colorScheme.error
+        : theme.colorScheme.grey400;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,9 +50,7 @@ class HoloTextField extends StatelessWidget {
         if (label != null) ...[
           Text(
             label!,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: textColor,
-            ),
+            style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
           ),
           const SizedBox(height: 4),
         ],
@@ -81,10 +80,7 @@ class HoloTextField extends StatelessWidget {
             ),
             prefixIcon: leading,
             suffixIcon: trailing != null
-                ? GestureDetector(
-                    onTap: onTrailingTap,
-                    child: trailing,
-                  )
+                ? GestureDetector(onTap: onTrailingTap, child: trailing)
                 : null,
             isCollapsed: true,
             border: InputBorder.none,
@@ -112,15 +108,17 @@ Widget preview() {
     height: 500,
     width: 500,
     child: Container(
-        decoration:
-            BoxDecoration(color: const Color.fromARGB(255, 118, 125, 131)),
-        child: Center(
-          child: HoloTextField(
-            label: 'Login',
-            //hint: 'This is the hint text',
-            leading: Icon(Icons.email_outlined, size: 16),
-            trailing: Icon(Icons.lock_outline, size: 16),
-          ),
-        )),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 118, 125, 131),
+      ),
+      child: Center(
+        child: HoloTextField(
+          label: 'Login',
+          //hint: 'This is the hint text',
+          leading: Icon(Icons.email_outlined, size: 16),
+          trailing: Icon(Icons.lock_outline, size: 16),
+        ),
+      ),
+    ),
   );
 }

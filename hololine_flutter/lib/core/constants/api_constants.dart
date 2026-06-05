@@ -3,6 +3,6 @@ class ApiConstants {
   // The defaultValue acts as safety net if the variable isn't passed.
   static const String baseUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'https://niyiayooluwa-hololine.hf.space/', 
+    defaultValue: 'https://niyiayooluwa-hololine.hf.space/',
   );
 }

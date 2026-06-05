@@ -29,6 +29,7 @@ String? validatePhoneNumber(String phoneNumber) {
   }
   return null;
 }
+
 /// Validates a password.
 ///
 /// Returns an error message if invalid, otherwise null.
@@ -63,4 +64,3 @@ String? validateName(String name) {
   }
   return null;
 }
-

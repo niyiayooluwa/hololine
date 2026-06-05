@@ -5,7 +5,8 @@ sealed class Failure {
 
 class AuthFailure extends Failure {
   const AuthFailure([super.message = 'Authentication failed.']);
-  const AuthFailure.invalidEmail() : super('Please enter a valid email address.');
+  const AuthFailure.invalidEmail()
+    : super('Please enter a valid email address.');
   const AuthFailure.invalidPassword() : super('Password cannot be empty.');
 }
 
@@ -38,7 +39,9 @@ class CurrencyMismatchFailure extends Failure {
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure([super.message = 'No internet connection. Please check your network.']);
+  const NetworkFailure([
+    super.message = 'No internet connection. Please check your network.',
+  ]);
 }
 
 class ServerFailure extends Failure {

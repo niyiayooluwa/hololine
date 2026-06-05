@@ -31,8 +31,9 @@ class ComponentShowcase extends HookConsumerWidget {
             : const Color.fromARGB(255, 247, 247, 247),
         appBar: AppBar(
           title: const Text('Component Library'),
-          backgroundColor:
-              isDarkMode.value ? const Color(0xFF0F172A) : Colors.white,
+          backgroundColor: isDarkMode.value
+              ? const Color(0xFF0F172A)
+              : Colors.white,
           elevation: 0,
           actions: [
             Padding(
@@ -69,8 +70,9 @@ class ComponentShowcase extends HookConsumerWidget {
             Container(
               width: 250,
               decoration: BoxDecoration(
-                color:
-                    isDarkMode.value ? const Color(0xFF0F172A) : Colors.white,
+                color: isDarkMode.value
+                    ? const Color(0xFF0F172A)
+                    : Colors.white,
                 border: Border(
                   right: BorderSide(
                     color: isDarkMode.value
@@ -85,8 +87,10 @@ class ComponentShowcase extends HookConsumerWidget {
                 children: categories.keys.map((category) {
                   final isSelected = selectedCategory.value == category;
                   return Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       gradient: isSelected
                           ? const LinearGradient(
@@ -99,13 +103,14 @@ class ComponentShowcase extends HookConsumerWidget {
                       title: Text(
                         category,
                         style: TextStyle(
-                          fontWeight:
-                              isSelected ? FontWeight.w600 : FontWeight.normal,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.normal,
                           color: isSelected
                               ? Colors.white
                               : isDarkMode.value
-                                  ? Colors.white70
-                                  : Colors.black87,
+                              ? Colors.white70
+                              : Colors.black87,
                         ),
                       ),
                       onTap: () => selectedCategory.value = category,
@@ -139,8 +144,9 @@ class ComponentShowcase extends HookConsumerWidget {
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDarkMode.value ? Colors.white : Colors.black87,
+                          color: isDarkMode.value
+                              ? Colors.white
+                              : Colors.black87,
                         ),
                       ),
                     ],
@@ -208,10 +214,11 @@ class ComponentShowcase extends HookConsumerWidget {
       _buildComponentCard(
         'Basic Card',
         HLCard(
-            child: const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('This is a card'),
-        )),
+          child: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text('This is a card'),
+          ),
+        ),
         "HLCard(\n  child: Text('This is a card'),\n)",
       ),
     ];
@@ -231,37 +238,25 @@ class ComponentShowcase extends HookConsumerWidget {
     return [
       _buildComponentCard(
         'Success Snackbar',
-        HoloSnackbar(
-          type: ErrorType.success,
-          message: 'Success message!',
-        ),
+        HoloSnackbar(type: ErrorType.success, message: 'Success message!'),
         "HoloSnackbar(\n  type: ErrorType.success,\n  message: 'This is a success message!',\n)",
         height: 200,
       ),
       _buildComponentCard(
         'Error Snackbar',
-        HoloSnackbar(
-          type: ErrorType.error,
-          message: 'Error message!',
-        ),
+        HoloSnackbar(type: ErrorType.error, message: 'Error message!'),
         "HoloSnackbar(\n  type: ErrorType.error,\n  message: 'This is an error message!',\n)",
         height: 200,
       ),
       _buildComponentCard(
         'Warning Snackbar',
-        HoloSnackbar(
-          type: ErrorType.warning,
-          message: 'Warning message!',
-        ),
+        HoloSnackbar(type: ErrorType.warning, message: 'Warning message!'),
         "HoloSnackbar(\n  type: ErrorType.warning,\n  message: 'This is a warning message!',\n)",
         height: 200,
       ),
       _buildComponentCard(
         'Info Snackbar',
-        HoloSnackbar(
-          type: ErrorType.info,
-          message: 'Info message!',
-        ),
+        HoloSnackbar(type: ErrorType.info, message: 'Info message!'),
         "HoloSnackbar(\n  type: ErrorType.info,\n  message: 'This is an info message!',\n)",
         height: 200,
       ),
@@ -368,11 +363,7 @@ class ComponentShowcase extends HookConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    Expanded(
-                      child: Center(
-                        child: component,
-                      ),
-                    ),
+                    Expanded(child: Center(child: component)),
                   ],
                 ),
               ),

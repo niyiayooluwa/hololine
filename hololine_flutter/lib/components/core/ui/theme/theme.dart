@@ -18,8 +18,9 @@ class AppTheme {
   // ==================== COLOR PALETTE ====================
 
   // Primary Blues - Trust & Authority
-  static const Color _primaryBlue =
-      Color(0xFF5465FF); // Primary color (updated to #5465FF)
+  static const Color _primaryBlue = Color(
+    0xFF5465FF,
+  ); // Primary color (updated to #5465FF)
   static const Color _primaryBlueLight = Color(0xFF60A5FA);
   static const Color _primaryBlueDark = Color(0xFF1E40AF);
   static const Color _primaryBlueSubtle = Color(0xFFEFF6FF); // Backgrounds
@@ -297,51 +298,51 @@ class AppTheme {
   // ==================== ELEVATION & SHADOWS ====================
 
   static List<BoxShadow> get elevation1 => [
-        BoxShadow(
-          color: _black.withValues(alpha: 0.05),
-          blurRadius: 2,
-          offset: const Offset(0, 1),
-        ),
-      ];
+    BoxShadow(
+      color: _black.withValues(alpha: 0.05),
+      blurRadius: 2,
+      offset: const Offset(0, 1),
+    ),
+  ];
 
   static List<BoxShadow> get elevation2 => [
-        BoxShadow(
-          color: _black.withValues(alpha: 0.1),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-        BoxShadow(
-          color: _black.withValues(alpha: 0.06),
-          blurRadius: 4,
-          offset: const Offset(0, 1),
-        ),
-      ];
+    BoxShadow(
+      color: _black.withValues(alpha: 0.1),
+      blurRadius: 8,
+      offset: const Offset(0, 2),
+    ),
+    BoxShadow(
+      color: _black.withValues(alpha: 0.06),
+      blurRadius: 4,
+      offset: const Offset(0, 1),
+    ),
+  ];
 
   static List<BoxShadow> get elevation3 => [
-        BoxShadow(
-          color: _black.withValues(alpha: 0.12),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-        BoxShadow(
-          color: _black.withValues(alpha: 0.08),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ];
+    BoxShadow(
+      color: _black.withValues(alpha: 0.12),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    ),
+    BoxShadow(
+      color: _black.withValues(alpha: 0.08),
+      blurRadius: 8,
+      offset: const Offset(0, 2),
+    ),
+  ];
 
   static List<BoxShadow> get elevation4 => [
-        BoxShadow(
-          color: _black.withValues(alpha: 0.14),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
-        ),
-        BoxShadow(
-          color: _black.withValues(alpha: 0.10),
-          blurRadius: 16,
-          offset: const Offset(0, 4),
-        ),
-      ];
+    BoxShadow(
+      color: _black.withValues(alpha: 0.14),
+      blurRadius: 24,
+      offset: const Offset(0, 8),
+    ),
+    BoxShadow(
+      color: _black.withValues(alpha: 0.10),
+      blurRadius: 16,
+      offset: const Offset(0, 4),
+    ),
+  ];
 
   // ==================== LIGHT THEME ====================
 
@@ -387,33 +388,34 @@ class AppTheme {
 
       // Elevated Button
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          backgroundColor: _primaryBlue,
-          foregroundColor: _white,
-          disabledBackgroundColor: _gray200,
-          disabledForegroundColor: _gray400,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          textStyle: GoogleFonts.inter(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0,
-          ),
-        ).copyWith(
-          overlayColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.hovered)) {
-              return _white.withValues(alpha: 0.1);
-            }
-            if (states.contains(WidgetState.pressed)) {
-              return _white.withValues(alpha: 0.2);
-            }
-            return null;
-          }),
-        ),
+        style:
+            ElevatedButton.styleFrom(
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: _primaryBlue,
+              foregroundColor: _white,
+              disabledBackgroundColor: _gray200,
+              disabledForegroundColor: _gray400,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              textStyle: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0,
+              ),
+            ).copyWith(
+              overlayColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.hovered)) {
+                  return _white.withValues(alpha: 0.1);
+                }
+                if (states.contains(WidgetState.pressed)) {
+                  return _white.withValues(alpha: 0.2);
+                }
+                return null;
+              }),
+            ),
       ),
 
       // Outlined Button
@@ -440,9 +442,7 @@ class AppTheme {
           foregroundColor: _primaryBlue,
           disabledForegroundColor: _gray400,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -520,9 +520,7 @@ class AppTheme {
           color: _gray700,
         ),
         side: BorderSide.none,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
 
       // Dialog
@@ -531,9 +529,7 @@ class AppTheme {
         backgroundColor: _white,
         surfaceTintColor: Colors.transparent,
         shadowColor: _black.withValues(alpha: 0.1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         titleTextStyle: GoogleFonts.inter(
           fontSize: 20,
           fontWeight: FontWeight.w700,
@@ -610,9 +606,7 @@ class AppTheme {
       listTileTheme: ListTileThemeData(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         minVerticalPadding: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         tileColor: Colors.transparent,
         selectedTileColor: _primaryBlueSubtle,
         textColor: _gray900,
@@ -801,9 +795,7 @@ class AppTheme {
         backgroundColor: _darkSurface,
         surfaceTintColor: Colors.transparent,
         shadowColor: _black.withValues(alpha: 0.3),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         titleTextStyle: GoogleFonts.inter(
           fontSize: 20,
           fontWeight: FontWeight.w700,
@@ -880,9 +872,7 @@ class AppTheme {
       listTileTheme: ListTileThemeData(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         minVerticalPadding: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         tileColor: Colors.transparent,
         selectedTileColor: _primaryBlueDark,
         textColor: _gray100,

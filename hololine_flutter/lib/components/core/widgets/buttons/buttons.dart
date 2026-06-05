@@ -56,10 +56,7 @@ class HoloButton extends StatelessWidget {
             SizedBox(
               width: 16,
               height: 16,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: fg,
-              ),
+              child: CircularProgressIndicator(strokeWidth: 2, color: fg),
             ),
             const SizedBox(width: 8),
           ],
