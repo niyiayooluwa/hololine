@@ -72,7 +72,7 @@ class VerificationForm extends HookConsumerWidget {
           key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // OTP INPUT FIELD
               ShadInputOTPFormField(
@@ -166,7 +166,7 @@ class VerificationForm extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (showLogo) ...[
           SvgPicture.asset(

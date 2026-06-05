@@ -68,14 +68,14 @@ class ResetPasswordForm extends HookConsumerWidget {
           key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (page == 1) ...[
                 // OTP INPUT FIELD
                 ShadInputOTPFormField(
                   id: 'otp',
                   maxLength: 6,
-                  label: const Text('Verification Code'),
+                  //label: const Text('Verification Code'),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp('^[a-zA-Z0-9]+')),
                   ],
@@ -257,7 +257,7 @@ class ResetPasswordForm extends HookConsumerWidget {
     final isPageOne = page == 1;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (showLogo) ...[
           SvgPicture.asset(

@@ -71,7 +71,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
           key: formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // EMAIL INPUT FIELD
               ShadInputFormField(
@@ -153,7 +153,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (showLogo) ...[
           SvgPicture.asset(
@@ -175,6 +175,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
         Text(
           "Please enter the email linked with your account and we’ll send you a One-Time Password(OTP).",
           style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
+          textAlign: TextAlign.center,
         ),
       ],
     );
