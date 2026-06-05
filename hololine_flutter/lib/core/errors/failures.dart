@@ -1,53 +1,46 @@
 sealed class Failure {
   final String message;
-
   const Failure(this.message);
 }
 
-class ServerFailure extends Failure {
-  const ServerFailure(super.message);
+class AuthFailure extends Failure {
+  const AuthFailure([super.message = 'Authentication failed.']);
+  const AuthFailure.invalidEmail() : super('Please enter a valid email address.');
+  const AuthFailure.invalidPassword() : super('Password cannot be empty.');
 }
 
-class CacheFailure extends Failure {
-  const CacheFailure(super.message);
-}
-
-// Add more specific failures
-class NotFoundFailure extends ServerFailure {
+class NotFoundFailure extends Failure {
   const NotFoundFailure(super.message);
 }
 
-class PermissionDeniedFailure extends ServerFailure {
+class PermissionDeniedFailure extends Failure {
   const PermissionDeniedFailure(super.message);
 }
 
-class AuthFailure extends Failure {
-  const AuthFailure(super.message);
-
-  factory AuthFailure.weakPassword() =>
-      const AuthFailure('Password is too weak.');
-
-  factory AuthFailure.emailInUse() =>
-      const AuthFailure('Email is already in use. Try logging in instead.');
-
-  factory AuthFailure.invalidEmail() =>
-      const AuthFailure('Invalid email address.');
-
-  factory AuthFailure.userNotFound() => const AuthFailure('User not found.');
-
-  factory AuthFailure.wrongPassword() =>
-      const AuthFailure('Incorrect password.');
-
-  factory AuthFailure.invalidCredentials() =>
-      const AuthFailure('Email or password is incorrect.');
-
-  factory AuthFailure.accountLocked(String message) => AuthFailure(message);
-}
-
-class ConflictFailure extends ServerFailure {
+class ConflictFailure extends Failure {
   const ConflictFailure(super.message);
 }
 
-class InvalidStateFailure extends ServerFailure {
+class InvalidStateFailure extends Failure {
   const InvalidStateFailure(super.message);
+}
+
+class InsufficientStockFailure extends Failure {
+  const InsufficientStockFailure(super.message);
+}
+
+class DuplicateSkuFailure extends Failure {
+  const DuplicateSkuFailure(super.message);
+}
+
+class CurrencyMismatchFailure extends Failure {
+  const CurrencyMismatchFailure(super.message);
+}
+
+class NetworkFailure extends Failure {
+  const NetworkFailure([super.message = 'No internet connection. Please check your network.']);
+}
+
+class ServerFailure extends Failure {
+  const ServerFailure([super.message = 'Something went wrong on our end.']);
 }

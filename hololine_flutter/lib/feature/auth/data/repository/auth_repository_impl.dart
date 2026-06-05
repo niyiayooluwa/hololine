@@ -47,7 +47,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(response);
     } catch (e) {
       // On failure, handle the exception and wrap the resulting `Failure` in a `Left`.
-      return Left(ExceptionHandler.handleException(e));
+      return Left(ExceptionHandler.handle(e));
     }
   }
 
@@ -65,7 +65,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(response);
     } catch (e) {
       // On failure, handle the exception.
-      return Left(ExceptionHandler.handleException(e));
+      return Left(ExceptionHandler.handle(e));
     }
   }
 
@@ -81,7 +81,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(response);
     } catch (e) {
       // On failure, handle the exception.
-      return Left(ExceptionHandler.handleException(e));
+      return Left(ExceptionHandler.handle(e));
     }
   }
 
@@ -94,7 +94,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(response);
     } catch (e) {
       // On failure, handle the exception.
-      return Left(ExceptionHandler.handleException(e));
+      return Left(ExceptionHandler.handle(e));
     }
   }
 
@@ -113,7 +113,7 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(response);
     } catch (e) {
       // On failure, handle the exception.
-      return Left(ExceptionHandler.handleException(e));
+      return Left(ExceptionHandler.handle(e));
     }
   }
 }

@@ -1,85 +1,111 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:hololine_flutter/core/errors/failures.dart';
 import 'package:hololine_client/hololine_client.dart';
+import 'package:hololine_flutter/core/errors/exceptions.dart';
+import 'package:hololine_flutter/core/errors/failures.dart';
 
 class ExceptionHandler {
-  static Failure handleException(dynamic exception) {
-    // Get the exception type name as a string
-    final exceptionType = exception.runtimeType.toString();
-    final message = exception.toString();
+  ExceptionHandler._();
 
-    // Match against the exception types thrown from your server
-    switch (exceptionType) {
-      case 'AuthenticationException':
-        return AuthFailure(message);
-      case 'NotFoundException':
-        return NotFoundFailure(message);
-      case 'PermissionDeniedException':
-        return PermissionDeniedFailure(message);
-      case 'ConflictException':
-        return ConflictFailure(message);
-      case 'ExternalServiceException':
-        return ServerFailure(message);
-      case 'InvalidStateException':
-        return InvalidStateFailure(message);
-      default:
-        // Handle common network and parsing exceptions with user-friendly messages
-        if (exception is SocketException) {
-          return const ServerFailure(
-              'No internet connection. Please check your network.');
-        }
-
-        if (exception is FormatException) {
-          return const ServerFailure('Received unexpected data from server.');
-        }
-
-        if (exception is TimeoutException) {
-          return const ServerFailure('Request timed out. Please try again.');
-        }
-
-        // Normalize common network-related messages to a clear offline message.
-        final lower = message.toLowerCase();
-
-        // Common substrings that indicate network/connectivity problems.
-        final networkIndicators = [
-          'failed host lookup',
-          'socketexception',
-          'connection refused',
-          'no address associated with hostname',
-          'network is unreachable',
-          'host lookup',
-          'connection timed out',
-          'tls',
-          'handshake',
-          'certificate',
-          'failed to fetch',
-        ];
-
-        if (exception is SocketException ||
-            networkIndicators.any((s) => lower.contains(s)) ||
-            ((lower.contains('statuscode') || lower.contains('status code')) &&
-                lower.contains('-1'))) {
-          return const ServerFailure(
-              'No internet connection. Please check your network.');
-        }
-
-        // Serverpod client may throw a verbose client exception like
-        // "Serverpod client exception: unknown server response code ...".
-        // But we must pass through the real message for the UI to display it logically.
-        if (exception is ServerpodClientException) {
-          return ServerFailure(exception.message);
-        }
-
-        if (exceptionType.toLowerCase().contains('serverpod') ||
-            lower.contains('unknown server response') ||
-            lower.contains('serverpod client exception')) {
-          return const ServerFailure('Hmm.. Something went wrong on our end');
-        }
-
-        // Fallback for unknown exceptions: use the friendly generic message.
-        return const ServerFailure('Hmm.. Something went wrong on our end');
+  /// Call this in every repository catch block.
+  /// Returns a [Failure] — never throws.
+  ///
+  /// Usage:
+  /// ```dart
+  /// try {
+  ///   return await client.workspace.getWorkspaceDetails(publicId);
+  /// } catch (e) {
+  ///   throw ExceptionHandler.handle(e);
+  /// }
+  /// ```
+  static Failure handle(Object exception) {
+    // ServerpodClientException wraps server-thrown exceptions.
+    // Parse it into a typed HololineException first, then map to Failure.
+    if (exception is ServerpodClientException) {
+      return _failureFromHololineException(_parse(exception));
     }
+
+    // Already a typed HololineException (shouldn't normally happen
+    // but handles direct throws in tests or local code).
+    if (exception is HololineException) {
+      return _failureFromHololineException(exception);
+    }
+
+    // Network errors
+    if (exception is SocketException) {
+      return const NetworkFailure();
+    }
+
+    if (exception is TimeoutException) {
+      return const NetworkFailure('Request timed out. Please try again.');
+    }
+
+    if (exception is FormatException) {
+      return const ServerFailure('Received unexpected data from server.');
+    }
+
+    // Catch-all network string patterns
+    final lower = exception.toString().toLowerCase();
+    const networkIndicators = [
+      'failed host lookup',
+      'socketexception',
+      'connection refused',
+      'no address associated with hostname',
+      'network is unreachable',
+      'connection timed out',
+      'tls handshake',
+      'certificate',
+      'failed to fetch',
+    ];
+
+    if (networkIndicators.any((s) => lower.contains(s))) {
+      return const NetworkFailure();
+    }
+
+    return const ServerFailure();
   }
+
+  /// Parses a [ServerpodClientException] into a typed [HololineException].
+  /// Your server toString() format is: 'ExceptionClassName: message'
+  static HololineException _parse(ServerpodClientException e) {
+    final raw = e.message;
+    final colonIndex = raw.indexOf(':');
+
+    final className = colonIndex != -1
+        ? raw.substring(0, colonIndex).trim()
+        : raw.trim();
+
+    final message = colonIndex != -1
+        ? raw.substring(colonIndex + 1).trim()
+        : raw.trim();
+
+    return switch (className) {
+      'NotFoundException' => NotFoundException(message),
+      'PermissionDeniedException' => PermissionDeniedException(message),
+      'InvalidStateException' => InvalidStateException(message),
+      'ConflictException' => ConflictException(message),
+      'AuthenticationException' => AuthenticationException(message),
+      'UnauthorizedException' => UnauthorizedException(message),
+      'InsufficientStockException' => InsufficientStockException(message),
+      'DuplicateSkuException' => DuplicateSkuException(message),
+      'CurrencyMismatchException' => CurrencyMismatchException(message),
+      _ => UnknownServerException(raw),
+    };
+  }
+
+  /// Maps a typed [HololineException] to a [Failure].
+  static Failure _failureFromHololineException(HololineException e) =>
+      switch (e) {
+        NotFoundException() => NotFoundFailure(e.message),
+        PermissionDeniedException() => PermissionDeniedFailure(e.message),
+        InvalidStateException() => InvalidStateFailure(e.message),
+        ConflictException() => ConflictFailure(e.message),
+        AuthenticationException() => AuthFailure(e.message),
+        UnauthorizedException() => AuthFailure(e.message),
+        InsufficientStockException() => InsufficientStockFailure(e.message),
+        DuplicateSkuException() => DuplicateSkuFailure(e.message),
+        CurrencyMismatchException() => CurrencyMismatchFailure(e.message),
+        UnknownServerException() => ServerFailure(e.message),
+      };
 }
