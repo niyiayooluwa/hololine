@@ -57,35 +57,36 @@ class RegisterForm extends HookConsumerWidget {
             mainAxisSize: .min,
             crossAxisAlignment: .start,
             children: [
-              // FIRST NAME FIELD
-              ShadInputFormField(
-                id: 'first_name',
-                controller: formState.firstNameController,
-                label: const Text('First Name'),
-                placeholder: const Text('John'),
-                keyboardType: TextInputType.name,
-                validator: (v) {
-                  if (v.isEmpty) {
-                    return 'Please enter your first name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // LAST NAME FIELD
-              ShadInputFormField(
-                id: 'last_name',
-                controller: formState.lastNameController,
-                label: const Text('Last Name'),
-                placeholder: const Text('Williams'),
-                keyboardType: TextInputType.name,
-                validator: (v) {
-                  if (v.isEmpty) {
-                    return 'Please enter your last name';
-                  }
-                  return null;
-                },
+              Row(
+                children: [
+                  Expanded(
+                    child: ShadInputFormField(
+                      id: 'first_name',
+                      controller: formState.firstNameController,
+                      label: const Text('First Name'),
+                      placeholder: const Text('John'),
+                      keyboardType: TextInputType.name,
+                      validator: (v) {
+                        if (v.isEmpty) return 'Please enter your first name';
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ShadInputFormField(
+                      id: 'last_name',
+                      controller: formState.lastNameController,
+                      label: const Text('Last Name'),
+                      placeholder: const Text('Williams'),
+                      keyboardType: TextInputType.name,
+                      validator: (v) {
+                        if (v.isEmpty) return 'Please enter your last name';
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
 

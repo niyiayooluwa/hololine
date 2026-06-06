@@ -155,7 +155,7 @@ class VerificationForm extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (showLogo) ...[
           SvgPicture.asset(

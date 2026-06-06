@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/core/errors/failures.dart';
+import 'package:hololine_flutter/core/utils/logging.dart';
 import 'package:hololine_flutter/core/utils/toast_helper.dart';
 import 'package:hololine_flutter/feature/auth/provider/notifier/reset_password_request_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -53,7 +54,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildHeader(context, showLogo: showLogo),
-        const SizedBox(height: 36),
+        const SizedBox(height: 24),
 
         ShadForm(
           key: formKey,
@@ -64,7 +65,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
               // EMAIL INPUT FIELD
               ShadInputFormField(
                 id: 'email',
-                label: const Text('Email'),
+                //label: const Text('Email'),
                 placeholder: const Text('Enter your email'),
                 keyboardType: TextInputType.emailAddress,
                 controller: emailController,
@@ -141,7 +142,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (showLogo) ...[
           SvgPicture.asset(
@@ -150,7 +151,6 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
             fit: BoxFit.contain,
             alignment: Alignment.centerLeft,
           ),
-          const SizedBox(height: 24),
         ],
         const SizedBox(height: 32),
 
@@ -163,6 +163,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
         Text(
           "Please enter the email linked with your account and we’ll send you a One-Time Password(OTP).",
           style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
+          textAlign: TextAlign.center,
         ),
       ],
     );
