@@ -25,10 +25,6 @@ class LoginForm extends HookConsumerWidget {
     });
     final formState = useLoginForm();
 
-    final vm = ref.watch(loginControllerProvider);
-    final controller = ref.read(loginControllerProvider.notifier);
-    final isLoading = vm.isLoading;
-
     final formKey = formState.formKey;
 
     return Column(
@@ -36,7 +32,7 @@ class LoginForm extends HookConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildHeader(context, showLogo: showLogo),
+        _Header(showLogo: showLogo),
         const SizedBox(height: 36),
 
         ShadForm(
@@ -98,39 +94,47 @@ class LoginForm extends HookConsumerWidget {
               SizedBox(height: 16),
 
               // REMEMBER ME & FORGOT PASSWORD ROW
-              _buildRememberMeRow(context, formState.rememberMe),
+              _RemeberMeRow(formState.rememberMe),
 
               SizedBox(height: 24),
 
               // SIGN IN BUTTON
-              SizedBox(
-                width: double.infinity,
-                child: ShadButton(
-                  enabled: formState.isFormValid.value && !isLoading,
-                  onPressed: formState.isFormValid.value && !isLoading
-                      ? () async {
-                          if (formKey.currentState!.validate()) {
-                            final email = formState.emailController.text.trim();
-                            final password = formState.passwordController.text
-                                .trim();
+              Consumer(
+                builder: (context, ref, child) {
+                  final vm = ref.watch(loginControllerProvider);
+                  final isLoading = vm.isLoading;
 
-                            await controller.login(email, password);
+                  return ShadButton(
+                    width: double.infinity,
+                    enabled: formState.isFormValid.value && !isLoading,
+                    onPressed: formState.isFormValid.value && !isLoading
+                        ? () async {
+                            if (formKey.currentState!.validate()) {
+                              final email = formState.emailController.text
+                                  .trim();
+                              final password = formState.passwordController.text
+                                  .trim();
+
+                              await ref
+                                  .read(loginControllerProvider.notifier)
+                                  .login(email, password);
+                            }
                           }
-                        }
-                      : null,
-                  leading: vm.isLoading
-                      ? SizedBox.square(
-                          dimension: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: ShadTheme.of(
-                              context,
-                            ).colorScheme.primaryForeground,
-                          ),
-                        )
-                      : null,
-                  child: const Text("Sign In"),
-                ),
+                        : null,
+                    leading: vm.isLoading
+                        ? SizedBox.square(
+                            dimension: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: ShadTheme.of(
+                                context,
+                              ).colorScheme.primaryForeground,
+                            ),
+                          )
+                        : null,
+                    child: const Text("Sign In"),
+                  );
+                },
               ),
             ],
           ),
@@ -139,105 +143,120 @@ class LoginForm extends HookConsumerWidget {
         SizedBox(height: 24),
 
         // SIGN UP LINK
-        _buildSignUpLink(context),
+        const _SignupLink(),
       ],
     );
   }
 }
 
-Widget _buildHeader(BuildContext context, {required bool showLogo}) {
-  final theme = ShadTheme.of(context);
+class _Header extends StatelessWidget {
+  final bool showLogo;
+  const _Header({this.showLogo = false});
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      if (showLogo) ...[
-        SvgPicture.asset(
-          'assets/svgs/logos/Osaka-colored.svg',
-          height: 40,
-          fit: BoxFit.contain,
-          alignment: Alignment.centerLeft,
-        ),
-        const SizedBox(height: 24),
-      ],
-      const SizedBox(height: 32),
+  @override
+  Widget build(BuildContext context) {
+    final theme = ShadTheme.of(context);
 
-      Text(
-        'Welcome back!',
-        style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.w500),
-      ),
-      const SizedBox(height: 6),
-
-      Text(
-        "Enter your email and password to sign in.",
-        style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
-      ),
-    ],
-  );
-}
-
-Widget _buildRememberMeRow(
-  BuildContext context,
-  ValueNotifier<bool> rememberMe,
-) {
-  final theme = ShadTheme.of(context);
-
-  // TABLET & DESKTOP: Side by side
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Row(
-        //mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox.square(
-            dimension: 20,
-            child: Checkbox(
-              value: rememberMe.value,
-              onChanged: (value) => rememberMe.value = value ?? false,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-          ),
-          const SizedBox(width: 4),
-          Text('Remember me', style: theme.textTheme.small),
-        ],
-      ),
-      GestureDetector(
-        onTap: () {
-          context.go('/auth/forgot-password');
-        },
-        child: Text(
-          'Forgot Password?',
-          style: theme.textTheme.small.copyWith(
-            color: theme.colorScheme.primary,
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-// SIGN UP LINK
-Widget _buildSignUpLink(BuildContext context) {
-  final theme = ShadTheme.of(context);
-
-  return Center(
-    child: Wrap(
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Not a member yet? ", style: theme.textTheme.muted),
+        if (showLogo) ...[
+          SvgPicture.asset(
+            'assets/svgs/logos/Osaka-colored.svg',
+            height: 40,
+            fit: BoxFit.contain,
+            alignment: Alignment.centerLeft,
+          ),
+          const SizedBox(height: 24),
+        ],
+        const SizedBox(height: 32),
+
+        Text(
+          'Welcome back!',
+          style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 6),
+
+        Text(
+          "Enter your email and password to sign in.",
+          style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
+        ),
+      ],
+    );
+  }
+}
+
+class _RemeberMeRow extends StatelessWidget {
+  const _RemeberMeRow(this.rememberMe);
+
+  final ValueNotifier<bool> rememberMe;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = ShadTheme.of(context);
+
+    // TABLET & DESKTOP: Side by side
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          //mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox.square(
+              dimension: 20,
+              child: Checkbox(
+                value: rememberMe.value,
+                onChanged: (value) => rememberMe.value = value ?? false,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text('Remember me', style: theme.textTheme.small),
+          ],
+        ),
         GestureDetector(
           onTap: () {
-            context.go('/auth/signup');
+            context.go('/auth/forgot-password');
           },
           child: Text(
-            'Register now!',
+            'Forgot Password?',
             style: theme.textTheme.small.copyWith(
               color: theme.colorScheme.primary,
             ),
           ),
         ),
       ],
-    ),
-  );
+    );
+  }
+}
+
+// SIGN UP LINK
+class _SignupLink extends StatelessWidget {
+  const _SignupLink();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = ShadTheme.of(context);
+
+    return Center(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text("Not a member yet? ", style: theme.textTheme.muted),
+          GestureDetector(
+            onTap: () {
+              context.go('/auth/signup');
+            },
+            child: Text(
+              'Register now!',
+              style: theme.textTheme.small.copyWith(
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

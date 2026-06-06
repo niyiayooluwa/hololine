@@ -16,10 +16,7 @@ class RegisterForm extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formState = useRegisterForm();
-    final vm = ref.watch(signupControllerProvider);
-    final controller = ref.read(signupControllerProvider.notifier);
     final formKey = formState.formKey;
-    final theme = ShadTheme.of(context);
 
     ref.listen(signupControllerProvider, (_, next) {
       next.whenOrNull(
@@ -30,7 +27,6 @@ class RegisterForm extends HookConsumerWidget {
               title: 'Signup Successful. ',
               message: 'Please verify your email to continue.',
             );
-            // Navigate to verification screen
             final email = formState.emailController.text.trim();
             context.go('/auth/verification', extra: email);
           }
@@ -44,18 +40,18 @@ class RegisterForm extends HookConsumerWidget {
     });
 
     return Column(
-      mainAxisAlignment: .center,
-      mainAxisSize: .min,
-      crossAxisAlignment: .stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildHeader(context, showLogo: showLogo),
+        _Header(showLogo: showLogo),
         const SizedBox(height: 36),
 
         ShadForm(
           key: formKey,
           child: Column(
-            mainAxisSize: .min,
-            crossAxisAlignment: .start,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -119,21 +115,20 @@ class RegisterForm extends HookConsumerWidget {
                 trailing: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: IconButton(
-                    // Reduce the splash/hitbox size
                     constraints: const BoxConstraints(),
                     padding: EdgeInsets.zero,
                     icon: Icon(
                       formState.isPasswordVisible.value
                           ? Icons.visibility_off
                           : Icons.visibility,
-                      size: 20, // Explicit size helps alignment
+                      size: 20,
                     ),
                     onPressed: () => formState.isPasswordVisible.value =
                         !formState.isPasswordVisible.value,
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // CONFIRM PASSWORD FIELD
               ShadInputFormField(
@@ -145,14 +140,13 @@ class RegisterForm extends HookConsumerWidget {
                 trailing: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: IconButton(
-                    // Reduce the splash/hitbox size
                     constraints: const BoxConstraints(),
                     padding: EdgeInsets.zero,
                     icon: Icon(
                       formState.isConfirmPasswordVisible.value
                           ? Icons.visibility_off
                           : Icons.visibility,
-                      size: 20, // Explicit size helps alignment
+                      size: 20,
                     ),
                     onPressed: () => formState.isConfirmPasswordVisible.value =
                         !formState.isConfirmPasswordVisible.value,
@@ -171,104 +165,122 @@ class RegisterForm extends HookConsumerWidget {
               const SizedBox(height: 24),
 
               // SIGN UP BUTTON
-              ShadButton(
-                enabled: formState.isFormValid.value && !vm.isLoading,
-                width: double.infinity,
-                leading: vm.isLoading
-                    ? SizedBox.square(
-                        dimension: 16,
-                        child: SpinKitRipple(
-                          color: theme.colorScheme.secondary,
-                        ),
-                      )
-                    : null,
-                onPressed: formState.isFormValid.value && !vm.isLoading
-                    ? () async {
-                        if (formKey.currentState!.validate()) {
-                          final firstName = formState.firstNameController.text
-                              .trim();
-                          final lastName = formState.lastNameController.text
-                              .trim();
-                          final userName = '$firstName $lastName';
-                          final email = formState.emailController.text.trim();
-                          final password = formState.passwordController.text
-                              .trim();
+              Consumer(
+                builder: (context, ref, child) {
+                  final vm = ref.watch(signupControllerProvider);
+                  final isLoading = vm.isLoading;
+                  final theme = ShadTheme.of(context);
 
-                          await controller.signup(userName, email, password);
-                        }
-                      }
-                    : null,
-                child: const Text("Sign up"),
+                  return ShadButton(
+                    enabled: formState.isFormValid.value && !isLoading,
+                    width: double.infinity,
+                    leading: isLoading
+                        ? SizedBox.square(
+                            dimension: 16,
+                            child: SpinKitRipple(
+                              color: theme.colorScheme.secondary,
+                            ),
+                          )
+                        : null,
+                    onPressed: formState.isFormValid.value && !isLoading
+                        ? () async {
+                            if (formKey.currentState!.validate()) {
+                              final firstName = formState
+                                  .firstNameController
+                                  .text
+                                  .trim();
+                              final lastName = formState.lastNameController.text
+                                  .trim();
+                              final userName = '$firstName $lastName';
+                              final email = formState.emailController.text
+                                  .trim();
+                              final password = formState.passwordController.text
+                                  .trim();
+
+                              await ref
+                                  .read(signupControllerProvider.notifier)
+                                  .signup(userName, email, password);
+                            }
+                          }
+                        : null,
+                    child: const Text("Sign up"),
+                  );
+                },
               ),
             ],
           ),
         ),
 
-        SizedBox(height: 24),
+        const SizedBox(height: 24),
 
         // SIGN UP LINK
-        _buildSignInLink(context),
+        const _SignInLink(),
       ],
     );
   }
 }
 
-Widget _buildHeader(BuildContext context, {required bool showLogo}) {
-  final theme = ShadTheme.of(context);
+class _Header extends StatelessWidget {
+  final bool showLogo;
+  const _Header({this.showLogo = false});
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      if (showLogo) ...[
-        SvgPicture.asset(
-          'assets/svgs/logos/Osaka-colored.svg',
-          height: 40,
-          fit: BoxFit.contain,
-          alignment: Alignment.centerLeft,
+  @override
+  Widget build(BuildContext context) {
+    final theme = ShadTheme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (showLogo) ...[
+          SvgPicture.asset(
+            'assets/svgs/logos/Osaka-colored.svg',
+            height: 40,
+            fit: BoxFit.contain,
+            alignment: Alignment.centerLeft,
+          ),
+          const SizedBox(height: 24),
+        ],
+        const SizedBox(height: 32),
+
+        Text(
+          'Create an Account!',
+          style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.w500),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 6),
+
+        Text(
+          "Let’s get started! It only takes a minute to join.",
+          style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
+        ),
       ],
-      const SizedBox(height: 32),
-
-      Text(
-        'Create an Account!',
-        style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.w500),
-      ),
-      const SizedBox(height: 6),
-
-      Text(
-        "Let’s get started! It only takes a minute to join.",
-        style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
-      ),
-    ],
-  );
+    );
+  }
 }
 
-// SIGN UP LINK
-Widget _buildSignInLink(BuildContext context) {
-  final theme = Theme.of(context);
+class _SignInLink extends StatelessWidget {
+  const _SignInLink();
 
-  return Center(
-    child: Wrap(
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        Text("Already have an account? ", style: theme.textTheme.bodyMedium),
-        TextButton(
-          onPressed: () {
-            context.go('/auth/login');
-          },
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            minimumSize: const Size(0, 36),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text("Already have an account? ", style: theme.textTheme.bodyMedium),
+          GestureDetector(
+            onTap: () {
+              context.go('/auth/login');
+            },
+            child: const Text(
+              'Log in here',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
-          child: const Text(
-            'Log in here',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }

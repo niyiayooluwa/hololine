@@ -15,8 +15,7 @@ class ResetPasswordForm extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formState = useResetPasswordState();
-    final controller = ref.read(resetPasswordControllerProvider.notifier);
-    final state = ref.watch(resetPasswordControllerProvider);
+    final formKey = GlobalKey<ShadFormState>();
 
     ref.listen<AsyncValue<bool?>>(resetPasswordControllerProvider, (
       previous,
@@ -41,7 +40,6 @@ class ResetPasswordForm extends HookConsumerWidget {
       );
     });
 
-    final formKey = GlobalKey<ShadFormState>();
     final page = formState.page.value;
 
     return Column(
@@ -49,7 +47,7 @@ class ResetPasswordForm extends HookConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildHeader(context, page: page, showLogo: showLogo),
+        _Header(page: page, showLogo: showLogo),
         const SizedBox(height: 36),
 
         ShadForm(
@@ -63,7 +61,6 @@ class ResetPasswordForm extends HookConsumerWidget {
                 ShadInputOTPFormField(
                   id: 'otp',
                   maxLength: 6,
-                  //label: const Text('Verification Code'),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp('^[a-zA-Z0-9]+')),
                   ],
@@ -97,19 +94,14 @@ class ResetPasswordForm extends HookConsumerWidget {
                 // VERIFY CODE BUTTON
                 SizedBox(
                   width: double.infinity,
-                  child: ValueListenableBuilder(
-                    valueListenable: formState.codeController,
-                    builder: (context, value, child) {
-                      return ShadButton(
-                        enabled: formState.codeController.text.length == 6,
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            formState.page.value = 2;
-                          }
-                        },
-                        child: const Text("Verify Code"),
-                      );
+                  child: ShadButton(
+                    enabled: formState.codeController.text.length == 6,
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        formState.page.value = 2;
+                      }
                     },
+                    child: const Text("Verify Code"),
                   ),
                 ),
               ] else ...[
@@ -173,33 +165,39 @@ class ResetPasswordForm extends HookConsumerWidget {
                 const SizedBox(height: 24),
 
                 // RESET PASSWORD BUTTON
-                SizedBox(
-                  width: double.infinity,
-                  child: ShadButton(
-                    enabled: formState.isFormValid.value && !state.isLoading,
-                    onPressed: formState.isFormValid.value && !state.isLoading
-                        ? () async {
-                            if (formKey.currentState!.validate()) {
-                              final code = formState.codeController.text.trim();
-                              final password = formState.passwordController.text
-                                  .trim();
-                              controller.resetPassword(code, password);
-                            }
-                          }
-                        : null,
-                    leading: state.isLoading
-                        ? SizedBox.square(
-                            dimension: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: ShadTheme.of(
-                                context,
-                              ).colorScheme.primaryForeground,
-                            ),
-                          )
-                        : null,
-                    child: const Text("Reset Password"),
-                  ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final state = ref.watch(resetPasswordControllerProvider);
+                    final isLoading = state.isLoading;
+
+                    return SizedBox(
+                      width: double.infinity,
+                      child: ShadButton(
+                        enabled: formState.isFormValid.value && !isLoading,
+                        onPressed: formState.isFormValid.value && !isLoading
+                            ? () async {
+                                if (formKey.currentState!.validate()) {
+                                  final code = formState.codeController.text.trim();
+                                  final password = formState.passwordController.text.trim();
+                                  ref.read(resetPasswordControllerProvider.notifier).resetPassword(code, password);
+                                }
+                              }
+                            : null,
+                        leading: isLoading
+                            ? SizedBox.square(
+                                dimension: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: ShadTheme.of(
+                                    context,
+                                  ).colorScheme.primaryForeground,
+                                ),
+                              )
+                            : null,
+                        child: const Text("Reset Password"),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
 
@@ -216,17 +214,8 @@ class ResetPasswordForm extends HookConsumerWidget {
               ],
               if (page == 1) ...[
                 const SizedBox(height: 16),
-                Center(
-                  child: ShadButton.ghost(
-                    onPressed: () {
-                      context.go('/auth/login');
-                    },
-                    leading: const Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: Icon(LucideIcons.arrowLeft, size: 16),
-                    ),
-                    child: const Text("Return to Login Page"),
-                  ),
+                const Center(
+                  child: _ReturnToLoginLink(),
                 ),
               ],
             ],
@@ -235,12 +224,19 @@ class ResetPasswordForm extends HookConsumerWidget {
       ],
     );
   }
+}
 
-  Widget _buildHeader(
-    BuildContext context, {
-    required int page,
-    required bool showLogo,
-  }) {
+class _Header extends StatelessWidget {
+  final int page;
+  final bool showLogo;
+
+  const _Header({
+    required this.page,
+    this.showLogo = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
     final isPageOne = page == 1;
 
@@ -271,6 +267,24 @@ class ResetPasswordForm extends HookConsumerWidget {
           style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
         ),
       ],
+    );
+  }
+}
+
+class _ReturnToLoginLink extends StatelessWidget {
+  const _ReturnToLoginLink();
+
+  @override
+  Widget build(BuildContext context) {
+    return ShadButton.ghost(
+      onPressed: () {
+        context.go('/auth/login');
+      },
+      leading: const Padding(
+        padding: EdgeInsets.only(right: 8.0),
+        child: Icon(LucideIcons.arrowLeft, size: 16),
+      ),
+      child: const Text("Return to Login Page"),
     );
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/core/errors/failures.dart';
 import 'package:hololine_flutter/core/utils/toast_helper.dart';
 import 'package:hololine_flutter/feature/auth/provider/notifier/verification_controller.dart';
+import 'package:hololine_flutter/feature/auth/provider/state/verification_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:serverpod_auth_client/module.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -20,9 +20,8 @@ class VerificationForm extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final otpController = useTextEditingController();
-    final controller = ref.read(verificationControllerProvider.notifier);
-    final state = ref.watch(verificationControllerProvider);
+    final formState = useVerificationState();
+    final formKey = formState.formKey;
 
     ref.listen<AsyncValue<UserInfo?>>(verificationControllerProvider, (
       previous,
@@ -47,14 +46,12 @@ class VerificationForm extends HookConsumerWidget {
       );
     });
 
-    final formKey = GlobalKey<ShadFormState>();
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildHeader(context, showLogo: showLogo),
+        _Header(email: email, showLogo: showLogo),
         const SizedBox(height: 36),
 
         ShadForm(
@@ -70,7 +67,7 @@ class VerificationForm extends HookConsumerWidget {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp('^[a-zA-Z0-9]+')),
                 ],
-                onChanged: (v) => otpController.text = v,
+                onChanged: (v) => formState.otpController.text = v,
                 validator: (v) {
                   if (v.contains(' ')) {
                     return 'Fill the whole OTP code';
@@ -99,50 +96,42 @@ class VerificationForm extends HookConsumerWidget {
               const SizedBox(height: 24),
 
               // SIGN IN BUTTON
-              SizedBox(
-                width: double.infinity,
-                child: ValueListenableBuilder(
-                  valueListenable: otpController,
-                  builder: (context, value, child) {
-                    return ShadButton(
-                      onPressed: value.text.length == 6 && !state.isLoading
-                          ? () async {
-                              if (formKey.currentState!.validate()) {
-                                final otp = otpController.text.trim();
-                                await controller.verifyOtp(email, otp);
-                              }
+              Consumer(
+                builder: (context, ref, child) {
+                  final state = ref.watch(verificationControllerProvider);
+                  final isLoading = state.isLoading;
+
+                  return ShadButton(
+                    width: double.infinity,
+                    enabled: formState.isFormValid.value && !isLoading,
+                    onPressed: formState.isFormValid.value && !isLoading
+                        ? () async {
+                            if (formKey.currentState!.validate()) {
+                              final otp = formState.otpController.text.trim();
+                              await ref.read(verificationControllerProvider.notifier).verifyOtp(email, otp);
                             }
-                          : null,
-                      leading: state.isLoading
-                          ? SizedBox.square(
-                              dimension: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ShadTheme.of(
-                                  context,
-                                ).colorScheme.primaryForeground,
-                              ),
-                            )
-                          : null,
-                      child: const Text("Verify Code"),
-                    );
-                  },
-                ),
+                          }
+                        : null,
+                    leading: isLoading
+                        ? SizedBox.square(
+                            dimension: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: ShadTheme.of(
+                                context,
+                              ).colorScheme.primaryForeground,
+                            ),
+                          )
+                        : null,
+                    child: const Text("Verify Code"),
+                  );
+                },
               ),
 
               const SizedBox(height: 16),
 
-              Center(
-                child: ShadButton.ghost(
-                  onPressed: () {
-                    context.go('/auth/login');
-                  },
-                  leading: const Padding(
-                    padding: EdgeInsets.only(right: 8.0),
-                    child: Icon(LucideIcons.arrowLeft, size: 16),
-                  ),
-                  child: const Text("Return to Login Page"),
-                ),
+              const Center(
+                child: _ReturnToLoginLink(),
               ),
             ],
           ),
@@ -150,8 +139,19 @@ class VerificationForm extends HookConsumerWidget {
       ],
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context, {required bool showLogo}) {
+class _Header extends StatelessWidget {
+  final String email;
+  final bool showLogo;
+
+  const _Header({
+    required this.email,
+    this.showLogo = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
 
     return Column(
@@ -179,6 +179,24 @@ class VerificationForm extends HookConsumerWidget {
           style: theme.textTheme.muted.copyWith(fontSize: 14, height: 1.5),
         ),
       ],
+    );
+  }
+}
+
+class _ReturnToLoginLink extends StatelessWidget {
+  const _ReturnToLoginLink();
+
+  @override
+  Widget build(BuildContext context) {
+    return ShadButton.ghost(
+      onPressed: () {
+        context.go('/auth/login');
+      },
+      leading: const Padding(
+        padding: EdgeInsets.only(right: 8.0),
+        child: Icon(LucideIcons.arrowLeft, size: 16),
+      ),
+      child: const Text("Return to Login Page"),
     );
   }
 }

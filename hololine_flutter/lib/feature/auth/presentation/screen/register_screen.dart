@@ -1,14 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:hololine_flutter/feature/auth/presentation/shared/image_widget.dart';
 import 'package:hololine_flutter/feature/auth/presentation/widget/register_form.dart';
-import 'package:hololine_flutter/components/core/components.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class SignupScreen extends HookConsumerWidget {
+class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: ShadResponsiveBuilder(
         builder: (context, breakpoint) {
@@ -36,14 +35,15 @@ class _SignupDesktopLayout extends StatelessWidget {
         // Right panel — form
         Expanded(
           flex: 45,
-          child: SingleChildScrollView(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 480),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 48, vertical: 64),
-                  child: const RegisterForm(showLogo: false),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 48,
+                  vertical: 64,
                 ),
+                child: const RegisterForm(showLogo: false),
               ),
             ),
           ),
@@ -58,15 +58,13 @@ class _SignupMobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-              child: const RegisterForm(),
-            ),
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+            child: const RegisterForm(),
           ),
         ),
       ),

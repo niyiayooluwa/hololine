@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hololine_flutter/feature/auth/presentation/shared/image_widget.dart';
 import 'package:hololine_flutter/feature/auth/presentation/widget/verification_form.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class VerificationScreen extends HookConsumerWidget {
+class VerificationScreen extends StatelessWidget {
   final String email;
   const VerificationScreen({super.key, required this.email});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: ShadResponsiveBuilder(
         builder: (context, breakpoint) {
@@ -41,7 +40,7 @@ class _VerificationDesktopLayout extends StatelessWidget {
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 48,
                   vertical: 64,
@@ -62,15 +61,13 @@ class _VerificationMobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-              child: VerificationForm(email: email),
-            ),
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+            child: VerificationForm(email: email),
           ),
         ),
       ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/core/errors/failures.dart';
 import 'package:hololine_flutter/core/utils/toast_helper.dart';
 import 'package:hololine_flutter/feature/auth/provider/notifier/reset_password_request_controller.dart';
+import 'package:hololine_flutter/feature/auth/provider/state/reset_password_request_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -13,11 +13,8 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final emailController = useTextEditingController();
-    final controller = ref.read(
-      resetPasswordRequestControllerProvider.notifier,
-    );
-    final state = ref.watch(resetPasswordRequestControllerProvider);
+    final formState = useResetPasswordRequestState();
+    final formKey = formState.formKey;
 
     ref.listen<AsyncValue<bool?>>(resetPasswordRequestControllerProvider, (
       previous,
@@ -33,7 +30,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
             );
             context.go(
               '/auth/reset-password/verify',
-              extra: emailController.text.trim(),
+              extra: formState.emailController.text.trim(),
             );
           }
         },
@@ -45,14 +42,12 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
       );
     });
 
-    final formKey = GlobalKey<ShadFormState>();
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildHeader(context, showLogo: showLogo),
+        _Header(showLogo: showLogo),
         const SizedBox(height: 24),
 
         ShadForm(
@@ -64,10 +59,9 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
               // EMAIL INPUT FIELD
               ShadInputFormField(
                 id: 'email',
-                //label: const Text('Email'),
                 placeholder: const Text('Enter your email'),
                 keyboardType: TextInputType.emailAddress,
-                controller: emailController,
+                controller: formState.emailController,
                 validator: (v) {
                   if (v.isEmpty) {
                     return 'Email is required';
@@ -84,51 +78,42 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
               const SizedBox(height: 24),
 
               // RESET PASSWORD BUTTON
-              SizedBox(
-                width: double.infinity,
-                child: ValueListenableBuilder(
-                  valueListenable: emailController,
-                  builder: (context, value, child) {
-                    return ShadButton(
-                      enabled: !state.isLoading,
-                      onPressed: !state.isLoading
-                          ? () async {
-                              if (formKey.currentState!.validate()) {
-                                final email = emailController.text.trim();
-                                await controller.resetPasswordRequest(email);
-                              }
+              Consumer(
+                builder: (context, ref, child) {
+                  final state = ref.watch(resetPasswordRequestControllerProvider);
+                  final isLoading = state.isLoading;
+
+                  return ShadButton(
+                    width: double.infinity,
+                    enabled: formState.isFormValid.value && !isLoading,
+                    onPressed: formState.isFormValid.value && !isLoading
+                        ? () async {
+                            if (formKey.currentState!.validate()) {
+                              final email = formState.emailController.text.trim();
+                              await ref.read(resetPasswordRequestControllerProvider.notifier).resetPasswordRequest(email);
                             }
-                          : null,
-                      leading: state.isLoading
-                          ? SizedBox.square(
-                              dimension: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ShadTheme.of(
-                                  context,
-                                ).colorScheme.primaryForeground,
-                              ),
-                            )
-                          : null,
-                      child: const Text("Reset Password"),
-                    );
-                  },
-                ),
+                          }
+                        : null,
+                    leading: isLoading
+                        ? SizedBox.square(
+                            dimension: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: ShadTheme.of(
+                                context,
+                              ).colorScheme.primaryForeground,
+                            ),
+                          )
+                        : null,
+                    child: const Text("Reset Password"),
+                  );
+                },
               ),
 
               const SizedBox(height: 16),
 
-              Center(
-                child: ShadButton.ghost(
-                  onPressed: () {
-                    context.go('/auth/login');
-                  },
-                  leading: const Padding(
-                    padding: EdgeInsets.only(right: 8.0),
-                    child: Icon(LucideIcons.arrowLeft, size: 16),
-                  ),
-                  child: const Text("Return to Login Page"),
-                ),
+              const Center(
+                child: _ReturnToLoginLink(),
               ),
             ],
           ),
@@ -136,8 +121,14 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
       ],
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context, {required bool showLogo}) {
+class _Header extends StatelessWidget {
+  final bool showLogo;
+  const _Header({this.showLogo = false});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
 
     return Column(
@@ -165,6 +156,24 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
           textAlign: TextAlign.center,
         ),
       ],
+    );
+  }
+}
+
+class _ReturnToLoginLink extends StatelessWidget {
+  const _ReturnToLoginLink();
+
+  @override
+  Widget build(BuildContext context) {
+    return ShadButton.ghost(
+      onPressed: () {
+        context.go('/auth/login');
+      },
+      leading: const Padding(
+        padding: EdgeInsets.only(right: 8.0),
+        child: Icon(LucideIcons.arrowLeft, size: 16),
+      ),
+      child: const Text("Return to Login Page"),
     );
   }
 }
