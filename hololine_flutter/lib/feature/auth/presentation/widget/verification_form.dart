@@ -35,7 +35,7 @@ class VerificationForm extends HookConsumerWidget {
               title: 'Verification Successful',
               message: 'You have been verified successfully.',
             );
-            context.go('/workspacelist');
+            context.go('/gate');
           }
         },
         error: (error, _) {

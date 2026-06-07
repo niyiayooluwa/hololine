@@ -16,12 +16,18 @@ class LoginForm extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(loginControllerProvider, (_, next) {
-      next.whenOrNull(
+      next.when(
+        data: (response) {
+          if (response != null && response.success) {
+            context.go('/gate');
+          }
+        },
         error: (e, _) {
           if (e is Failure) {
             showErrorToast(context, e);
           }
         },
+        loading: () {},
       );
     });
     final formState = useLoginForm();
