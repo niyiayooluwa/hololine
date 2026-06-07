@@ -123,32 +123,26 @@ class MemberRepo {
     await WorkspaceMember.db.updateRow(session, member);
   }
 
-  Future<bool> transferOwnership(
+  Future<void> transferOwnership(
     Session session,
     int workspaceId,
     int actorId,
     int newOwnerId,
   ) async {
-    try {
-      await session.db.transaction((transaction) async {
-        await updateMemberRole(
-          session,
-          newOwnerId,
-          WorkspaceRole.owner,
-          workspaceId,
-        );
-        await updateMemberRole(
-          session,
-          actorId,
-          WorkspaceRole.admin,
-          workspaceId,
-        );
-      });
+    final actorMember = await WorkspaceMember.db.findById(session, actorId);
+    final targetMember = await WorkspaceMember.db.findById(session, newOwnerId);
 
-      return true;
-    } catch (e) {
-      return false;
+    if (actorMember == null || targetMember == null) {
+      throw NotFoundException('One or both members could not be found.');
     }
+
+    targetMember.role = WorkspaceRole.owner;
+    actorMember.role = WorkspaceRole.admin;
+
+    await session.db.transaction((transaction) async {
+      await WorkspaceMember.db.updateRow(session, targetMember, transaction: transaction);
+      await WorkspaceMember.db.updateRow(session, actorMember, transaction: transaction);
+    });
   }
 
   /// Deactivates a workspace member identified by [memberId].

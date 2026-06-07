@@ -165,7 +165,7 @@ class InvitationService {
       final isExpired = DateTime.now().toUtc().isAfter(existingInvitation.expiresAt);
 
       if (isExpired) {
-        await _invitationRepository.deleteInvitation(session, existingInvitation.token);
+        await _invitationRepository.deleteInvitation(session, existingInvitation);
       } else {
         throw ConflictException('An invitation has already been sent to this email address.');
       }
@@ -259,7 +259,7 @@ class InvitationService {
     await _assertWorkspaceIsMutable(session, invitation.workspaceId);
 
     if (DateTime.now().toUtc().isAfter(invitation.expiresAt)) {
-      await _invitationRepository.deleteInvitation(session, token);
+      await _invitationRepository.deleteInvitation(session, invitation);
       throw InvalidStateException('Invitation has expired.');
     }
 
@@ -274,7 +274,7 @@ class InvitationService {
     );
 
     if (existingMember != null && existingMember.isActive) {
-      await _invitationRepository.deleteInvitation(session, token);
+      await _invitationRepository.deleteInvitation(session, invitation);
       throw ConflictException('You are already a member of this workspace.');
     }
 
@@ -283,7 +283,6 @@ class InvitationService {
       session,
       invitation,
       actualUserId,
-      token,
     );
 
     return newMember;

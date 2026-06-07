@@ -279,22 +279,13 @@ class WorkspaceService {
       policy: RolePolicy.canArchiveWorkspace,
     );
 
-    final success = await _workspaceRepository.archiveWorkspace(session, workspaceId);
-
-    if (!success) {
-      throw Exception('Failed to archive workspace: database transaction failed');
+    final workspace = await _workspaceRepository.findWorkspaceById(session, workspaceId);
+    if (workspace == null) {
+      throw NotFoundException('Workspace not found');
     }
 
-    final archivedWorkspace = await _workspaceRepository.findWorkspaceById(
-      session,
-      workspaceId,
-    );
-
-    if (archivedWorkspace == null) {
-      throw NotFoundException('Failed to fetch archived workspace details');
-    }
-
-    return archivedWorkspace;
+    workspace.archivedAt = DateTime.now().toUtc();
+    return await _workspaceRepository.update(session, workspace);
   }
 
   /// Restores a previously archived workspace to active operational status.
@@ -329,22 +320,8 @@ class WorkspaceService {
       checkMutability: false, // Bypassed because it IS archived
     );
 
-    final success = await _workspaceRepository.restoreWorkspace(session, workspaceId);
-
-    if (!success) {
-      throw Exception('Failed to restore workspace: database transaction failed');
-    }
-    
-    final restoredWorkspace = await _workspaceRepository.findWorkspaceById(
-      session,
-      workspaceId,
-    );
-
-    if (restoredWorkspace == null) {
-      throw NotFoundException('Failed to fetch restored workspace details');
-    }
-
-    return restoredWorkspace;
+    workspace.archivedAt = null;
+    return await _workspaceRepository.update(session, workspace);
   }
 
   /// Transfers full ownership of a workspace to a new active member.
@@ -352,13 +329,13 @@ class WorkspaceService {
   /// The actor must satisfy the [RolePolicy.canTransferOwnership] requirement (must be current owner).
   /// The target user ([newOwnerId]) must be an active member of the same workspace.
   ///
-  /// Returns `true` if the database transaction succeeds.
+  /// Returns the actor's demoted [WorkspaceMember] record.
   ///
   /// Throws:
   /// - [PermissionDeniedException] if the actor attempts to transfer ownership to themselves.
   /// - [NotFoundException] if the target member is not found.
   /// - [InvalidStateException] if the target member is inactive.
-  Future<bool> transferOwnership(
+  Future<WorkspaceMember> transferOwnership(
     Session session,
     int workspaceId,
     int newOwnerId,
@@ -389,14 +366,20 @@ class WorkspaceService {
       throw InvalidStateException('Cannot transfer ownership to an inactive member');
     }
 
-    final success = await _memberRepository.transferOwnership(
+    await _memberRepository.transferOwnership(
         session, workspaceId, actorId, newOwnerId);
 
-    if (!success) {
-      throw Exception('Failed to transfer ownership: database transaction failed');
+    final demotedMember = await _memberRepository.findMemberByWorkspaceId(
+      session,
+      actorId,
+      workspaceId,
+    );
+
+    if (demotedMember == null) {
+      throw Exception('Failed to fetch demoted member record');
     }
 
-    return success;
+    return demotedMember;
   }
 
   /// Initiates the soft-deletion process for a workspace, starting the deletion timer.
@@ -417,21 +400,13 @@ class WorkspaceService {
       policy: RolePolicy.canInitiateDelete,
     );
 
-    final success = await _workspaceRepository.softDeleteWorkspace(session, workspaceId);
-
-    if (!success) {
-      throw Exception('Failed to initiate workspace deletion: database transaction failed');
+    final workspace = await _workspaceRepository.findWorkspaceById(session, workspaceId);
+    if (workspace == null) {
+      throw NotFoundException('Workspace not found');
     }
 
-    final deletedWorkspace = await _workspaceRepository.findWorkspaceById(
-      session,
-      workspaceId,
-    );
-
-    if (deletedWorkspace == null) {
-      throw NotFoundException('Failed to fetch deleted workspace details');
-    }
-
-    return deletedWorkspace;
+    workspace.pendingDeletionUntil =
+        DateTime.now().toUtc().add(const Duration(hours: 99));
+    return await _workspaceRepository.update(session, workspace);
   }
 }
