@@ -92,8 +92,8 @@ void main() {
               mockSession, email, workspaceId))
           .thenAnswer((_) async => null);
 
-      when(mockInvitationRepo.deleteInvitation(mockSession, token))
-          .thenAnswer((_) async => true);
+      when(mockInvitationRepo.deleteInvitation(mockSession, any))
+          .thenAnswer((_) async {});
 
       // Use 'any' matcher for token since the service generates a random one
       when(mockInvitationRepo.checkIfTokenIsUnique(mockSession, any))
@@ -380,7 +380,6 @@ void main() {
         mockSession,
         expectedInvitation,
         userId,
-        token,
       )).thenAnswer((_) async => newMember);
     });
 
@@ -408,7 +407,6 @@ void main() {
         mockSession,
         expectedInvitation,
         userId,
-        token,
       )).called(1);
     });
 
