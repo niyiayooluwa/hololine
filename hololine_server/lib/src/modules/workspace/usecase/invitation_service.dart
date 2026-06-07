@@ -7,20 +7,28 @@ import 'package:serverpod/server.dart';
 
 import '../repositories/repositories.dart';
 
+/// Manages the creation, validation, and acceptance of workspace invitations.
 class InvitationService {
   final WorkspaceRepo _workspaceRepository;
   final MemberRepo _memberRepository;
   final InvitationRepo _invitationRepository;
   final EmailHandler _emailHandler;
 
-
   InvitationService(
     this._workspaceRepository,
     this._memberRepository,
     this._invitationRepository,
-    this._emailHandler
+    this._emailHandler,
   );
 
+  /// Validates that a workspace exists and is currently mutable.
+  /// 
+  /// A workspace is considered immutable if it has been archived, deleted,
+  /// or is pending deletion.
+  /// 
+  /// Throws:
+  /// - [NotFoundException] if the workspace does not exist.
+  /// - [InvalidStateException] if the workspace is archived or deleted.
   Future<Workspace> _assertWorkspaceIsMutable(
     Session session,
     int workspaceId,
@@ -38,32 +46,38 @@ class InvitationService {
       throw InvalidStateException('This workspace has been archived');
     }
 
+    if (workspace.deletedAt != null || workspace.pendingDeletionUntil != null) {
+      throw InvalidStateException('This workspace is deleted or pending deletion');
+    }
+
     return workspace;
   }
 
-  /// Invites a user to join the workspace by sending an email invitation.
-  ///
-  /// The [email] receives an invitation with a unique token that expires
-  /// after 7 days. If an existing invitation for this email exists and has
-  /// expired, it will be deleted and a new one created.
-  ///
-  /// The [actorId] must have permission to manage members in the workspace.
-  ///
-  /// Throws an [Exception] if the workspace is not found, the actor lacks
-  /// permissions, the user is already a member, a valid invitation already
-  /// exists, or if email delivery fails.
-  Future<WorkspaceInvitation> inviteMember(
-    Session session,
-    String email,
-    int workspaceId,
-    WorkspaceRole role,
-    int actorId,
-  ) async {
-    final workspace = await _assertWorkspaceIsMutable(session, workspaceId);
-    
-    final workspaceName = workspace.name;
+  /// THE MASTER GUARD GATE
+  /// 
+  /// Centralizes all authorization and state validation logic for internal actions.
+  /// Validates that the [actorId] corresponds to an active member of the workspace
+  /// and that their assigned role satisfies the provided [policy].
+  /// 
+  /// Parameters:
+  /// - [checkMutability]: If true, ensures the workspace is not archived or deleted
+  ///   before checking permissions. Defaults to true.
+  /// 
+  /// Returns the validated [Member] object if successful.
+  /// 
+  /// Throws:
+  /// - [PermissionDeniedException] if the user is not a member, is inactive, or lacks the required role.
+  Future<WorkspaceMember> _enforceAccess(
+    Session session, {
+    required int workspaceId,
+    required int actorId,
+    required bool Function(WorkspaceRole role) policy,
+    bool checkMutability = true,
+  }) async {
+    if (checkMutability) {
+      await _assertWorkspaceIsMutable(session, workspaceId);
+    }
 
-    // Verify Permissions
     final actor = await _memberRepository.findMemberByWorkspaceId(
       session,
       actorId,
@@ -71,85 +85,109 @@ class InvitationService {
     );
 
     if (actor == null) {
-      throw PermissionDeniedException(
-          'Action not allowed. You are not a member of this workspace.');
+      throw PermissionDeniedException('You are not a member of this workspace');
     }
 
     if (!actor.isActive) {
-      throw PermissionDeniedException(
-          'Permission denied. Your membership is inactive.');
+      throw PermissionDeniedException('Permission denied. Your membership is inactive');
     }
 
-    if (!RolePolicy.canManageMembers(actor.role)) {
-      throw PermissionDeniedException(
-          'Permission denied. Insufficient privileges');
+    if (!policy(actor.role)) {
+      throw PermissionDeniedException('Permission denied. Insufficient privileges');
     }
 
-    // Check if the user is already a member of the workspace.
+    return actor;
+  }
+
+  /// Invites a user to join the workspace by sending an email invitation.
+  ///
+  /// The specified [email] receives an invitation containing a unique token that 
+  /// expires after 15 minutes. If an existing invitation for this email exists 
+  /// and has expired, it will be automatically deleted and a new one generated.
+  ///
+  /// The [actorId] must belong to an active member whose role satisfies the 
+  /// [RolePolicy.canManageMembers] requirement.
+  ///
+  /// Throws:
+  /// - [PermissionDeniedException] if the actor lacks permissions or is inactive.
+  /// - [ConflictException] if the user is already a member, or if a valid, unexpired 
+  ///   invitation already exists for this email.
+  /// - [InvalidStateException] if a unique token cannot be generated after 10 attempts.
+  /// - [ExternalServiceException] if the email delivery handler fails.
+  Future<WorkspaceInvitation> inviteMember(
+    Session session,
+    String email,
+    int workspaceId,
+    WorkspaceRole role,
+    int actorId,
+  ) async {
+    // 1. The Guard Gate (Absorbs membership, active status, and role checks)
+    await _enforceAccess(
+      session,
+      workspaceId: workspaceId,
+      actorId: actorId,
+      policy: RolePolicy.canManageMembers,
+    );
+
+    // Fetch the workspace purely to get the name for the email payload
+    final workspace = await _workspaceRepository.findWorkspaceById(session, workspaceId);
+    final workspaceName = workspace!.name;
+
+    // 2. Business Logic: Check if already a member
     WorkspaceMember? existingMember;
     try {
       existingMember = await _memberRepository.findMemberByEmail(
-      session,
-      email,
-      workspaceId,
+        session,
+        email,
+        workspaceId,
       );
     } on NotFoundException {
-      // Member not found by email — that's fine, continue to invite.
       existingMember = null;
     }
 
     if (existingMember != null) {
-      throw ConflictException(
-      'This user is already a member of the workspace.',
-      );
+      throw ConflictException('This user is already a member of the workspace.');
     }
 
-    // Check for an existing, unaccepted invitation for this email.
+    // 3. Business Logic: Check for pending invitations
     WorkspaceInvitation? existingInvitation;
     try {
       existingInvitation = await _invitationRepository.checkForExistingInvitation(
-      session,
-      email,
-      workspaceId,
+        session,
+        email,
+        workspaceId,
       );
     } on NotFoundException {
       existingInvitation = null;
     }
 
     if (existingInvitation != null) {
-      final expiryDate = existingInvitation.expiresAt;
-      final currentTime = DateTime.now().toUtc();
-      final bool isExpired = currentTime.isAfter(expiryDate);
+      final isExpired = DateTime.now().toUtc().isAfter(existingInvitation.expiresAt);
 
       if (isExpired) {
-        await _invitationRepository.deleteInvitation(
-            session, existingInvitation.token);
+        await _invitationRepository.deleteInvitation(session, existingInvitation.token);
       } else {
-        throw ConflictException(
-            'An invitation has already been sent to this email address.');
+        throw ConflictException('An invitation has already been sent to this email address.');
       }
     }
 
-    // Generate unique token
+    // 4. Token Generation
     String token;
     int attempts = 0;
     bool isUnique;
 
     do {
       token = generateCustomToken();
-      final existing = await _invitationRepository.checkIfTokenIsUnique(
-        session,
-        token,
-      );
+      final existing = await _invitationRepository.checkIfTokenIsUnique(session, token);
       isUnique = existing == null;
       attempts++;
     } while (!isUnique && attempts < 10);
 
     if (!isUnique) {
-      throw InvalidStateException(
-          'Failed to generate a unique invitation token after 10 attempts.');
+      throw InvalidStateException('Failed to generate a unique invitation token after 10 attempts.');
     }
 
+    // 5. Send Email
     final sendEmail = await _emailHandler.sendInvitation(
       email,
       token,
@@ -161,7 +199,7 @@ class InvitationService {
       throw ExternalServiceException('Failed to send invitation email.');
     }
 
-    // Create and store the invitation
+    // 6. Save Invitation
     final invitation = WorkspaceInvitation(
       workspaceId: workspaceId,
       inviteeEmail: email,
@@ -176,60 +214,59 @@ class InvitationService {
 
   /// Accepts a workspace invitation using a unique [token].
   ///
-  /// The authenticated user's email must match the one on the invitation.
+  /// The authenticated user's email must strictly match the `inviteeEmail` on the invitation.
   /// This method validates the token, checks for expiration, and ensures the
-  /// user is not already a member before adding them to the workspace.
+  /// user is not already an active member before granting them access.
+  /// 
+  /// Note: The `_enforceAccess` guard gate is intentionally bypassed here because 
+  /// the actor is not yet a member of the workspace.
   ///
-  /// Throws an [Exception] if the token is invalid, the invitation has expired,
-  /// the user is not the intended invitee, or if the user is already a member.
+  /// Throws:
+  /// - [AuthenticationException] if the user is not currently authenticated.
+  /// - [NotFoundException] if the token is invalid or the user profile has no email.
+  /// - [InvalidStateException] if the invitation has expired.
+  /// - [PermissionDeniedException] if the authenticated user's email does not match the invitation.
+  /// - [ConflictException] if the user is already an active member of the workspace.
   Future<WorkspaceMember> acceptInvitation(
     Session session,
     String token, {
     int? userId,
   }) async {
-    // If userId is not provided, extract it from session authentication
     final actualUserId = userId ?? (await session.authenticated)?.userId;
 
-    // Throw an exception if the user is not authenticated
     if (actualUserId == null) {
       throw AuthenticationException('User not authenticated');
     }
 
-    // Find the user's information using their userID
     final user = await _workspaceRepository.getUserInfo(session, actualUserId);
 
-    // Throw an exception if the user is not found or has no email
     if (user == null || user.email == null) {
       throw NotFoundException('Authenticated user not found or has no email.');
     }
+    
     final userEmail = user.email!;
 
-    // Find the invitation using the provided token
     final invitation = await _invitationRepository.findInvitationByToken(
       session,
       token,
     );
 
-    // Throw an exception if the invitation is not found
     if (invitation == null) {
       throw NotFoundException('Invalid invitation token.');
     }
 
+    // Ensure they aren't trying to join an archived/deleted workspace
     await _assertWorkspaceIsMutable(session, invitation.workspaceId);
 
-    // Check if the invitation has expired and delete it if it has
     if (DateTime.now().toUtc().isAfter(invitation.expiresAt)) {
       await _invitationRepository.deleteInvitation(session, token);
       throw InvalidStateException('Invitation has expired.');
     }
 
-    // Throw an exception is the user's email is not the as the invited email
     if (invitation.inviteeEmail != userEmail) {
-      throw PermissionDeniedException(
-          'This invitation is for a different user.');
+      throw PermissionDeniedException('This invitation is for a different user.');
     }
 
-    // Check if the user is a member of the workspace already
     final existingMember = await _memberRepository.findMemberByWorkspaceId(
       session,
       actualUserId,
@@ -237,13 +274,11 @@ class InvitationService {
     );
 
     if (existingMember != null && existingMember.isActive) {
-      // If the member is inactive, we can consider reactivating them,
-      // but for now, we'll just prevent adding a duplicate.
       await _invitationRepository.deleteInvitation(session, token);
       throw ConflictException('You are already a member of this workspace.');
     }
 
-    // Use a transaction to ensure atomicity
+    // Process the transaction to add the member and delete the token
     final newMember = await _invitationRepository.acceptInvitation(
       session,
       invitation,
