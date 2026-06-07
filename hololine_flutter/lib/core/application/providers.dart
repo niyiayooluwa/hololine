@@ -39,3 +39,31 @@ final sessionProvider = Provider<SessionManager>((ref) {
   final sessionManager = SessionManager(caller: client.modules.auth);
   return sessionManager;
 });
+
+/// A Notifier to manage the active workspace summary selection state.
+class ActiveWorkspaceNotifier extends Notifier<WorkspaceSummary?> {
+  @override
+  WorkspaceSummary? build() => null;
+
+  void select(WorkspaceSummary? workspace) {
+    state = workspace;
+  }
+}
+
+/// Provider to track the active workspace summary selected by the user.
+final activeWorkspaceProvider =
+    NotifierProvider<ActiveWorkspaceNotifier, WorkspaceSummary?>(
+      ActiveWorkspaceNotifier.new,
+    );
+
+/// Provider to get the current role of the logged-in user in the active workspace.
+final currentWorkspaceRoleProvider = Provider<WorkspaceRole?>((ref) {
+  final activeWorkspace = ref.watch(activeWorkspaceProvider);
+  return activeWorkspace?.role;
+});
+
+/// FutureProvider to fetch all workspaces the authenticated user belongs to.
+final myWorkspacesProvider = FutureProvider<List<WorkspaceSummary>>((ref) async {
+  final client = ref.watch(clientProvider);
+  return await client.workspaceMember.getMyWorkspaces();
+});
