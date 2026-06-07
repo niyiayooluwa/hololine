@@ -166,4 +166,52 @@ class WorkspaceRepo {
     );
     return result != null;
   }
+
+  /// Permanently deletes a workspace and all of its related entities.
+  Future<void> hardDeleteWorkspace(Session session, int workspaceId) async {
+    await session.db.transaction((transaction) async {
+      // 1. Unlink child workspaces
+      final children = await Workspace.db.find(
+        session,
+        where: (w) => w.parentId.equals(workspaceId),
+        transaction: transaction,
+      );
+      for (var child in children) {
+        child.parentId = null;
+        await Workspace.db.updateRow(
+          session,
+          child,
+          transaction: transaction,
+        );
+      }
+
+      // 2. Delete invitations
+      await WorkspaceInvitation.db.deleteWhere(
+        session,
+        where: (invitation) => invitation.workspaceId.equals(workspaceId),
+        transaction: transaction,
+      );
+
+      // 3. Delete members
+      await WorkspaceMember.db.deleteWhere(
+        session,
+        where: (member) => member.workspaceId.equals(workspaceId),
+        transaction: transaction,
+      );
+
+      // 4. Delete the workspace itself
+      final workspace = await Workspace.db.findById(
+        session,
+        workspaceId,
+        transaction: transaction,
+      );
+      if (workspace != null) {
+        await Workspace.db.deleteRow(
+          session,
+          workspace,
+          transaction: transaction,
+        );
+      }
+    });
+  }
 }

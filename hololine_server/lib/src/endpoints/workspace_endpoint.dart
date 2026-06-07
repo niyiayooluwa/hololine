@@ -165,8 +165,9 @@ class WorkspaceEndpoint extends AuthenticatedEndpoint {
     int newOwnerId,
   ) async {
     return runAuthenticated(session, 'transferOwnership', (userId) async {
-      return await _workspaceService.transferOwnership(
+      await _workspaceService.transferOwnership(
           session, workspaceId, newOwnerId, userId);
+      return true;
     });
   }
 
