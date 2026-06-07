@@ -6,7 +6,6 @@ import 'package:hololine_flutter/feature/auth/presentation/screen/reset_password
 import 'package:hololine_flutter/feature/auth/presentation/screen/reset_password_screen.dart';
 import 'package:hololine_flutter/feature/auth/presentation/screen/verification_screen.dart';
 import 'package:hololine_flutter/feature/workspace/presentation/screen/routing_gate_screen.dart';
-import 'package:hololine_flutter/feature/workspace/presentation/screen/workspace_dashboard_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -20,10 +19,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/gate',
         builder: (context, state) => const RoutingGateScreen(),
-      ),
-      GoRoute(
-        path: '/workspaces',
-        builder: (context, state) => const WorkspaceDashboardScreen(),
       ),
       GoRoute(
         path: '/auth/login',
