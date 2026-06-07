@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hololine_flutter/core/errors/failures.dart';
 import 'package:hololine_flutter/core/utils/toast_helper.dart';
@@ -121,14 +122,13 @@ class LoginForm extends HookConsumerWidget {
                             }
                           }
                         : null,
-                    leading: vm.isLoading
+                    leading: isLoading
                         ? SizedBox.square(
                             dimension: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
+                            child: SpinKitRipple(
                               color: ShadTheme.of(
                                 context,
-                              ).colorScheme.primaryForeground,
+                              ).colorScheme.secondary,
                             ),
                           )
                         : null,

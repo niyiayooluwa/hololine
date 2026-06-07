@@ -262,21 +262,23 @@ class _SignInLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = ShadTheme.of(context);
 
     return Center(
       child: Wrap(
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          Text("Already have an account? ", style: theme.textTheme.bodyMedium),
+          Text("Already have an account? ", style: theme.textTheme.muted),
           GestureDetector(
             onTap: () {
               context.go('/auth/login');
             },
-            child: const Text(
+            child: Text(
               'Log in here',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: theme.textTheme.small.copyWith(
+                color: theme.colorScheme.primary,
+              ),
             ),
           ),
         ],
