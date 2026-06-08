@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class ResetPasswordState {
   final TextEditingController codeController;
@@ -9,6 +10,8 @@ class ResetPasswordState {
   final ValueNotifier<bool> isConfirmPasswordVisible;
   final ValueNotifier<int> page;
   final ValueNotifier<bool> isFormValid;
+  final GlobalKey<ShadFormState> formKey;
+
 
   ResetPasswordState({
     required this.codeController,
@@ -18,10 +21,11 @@ class ResetPasswordState {
     required this.isConfirmPasswordVisible,
     required this.isFormValid,
     required this.page,
+    required this.formKey
   });
 }
 
-ResetPasswordState useResetPasswordState() {
+ResetPasswordState useResetPasswordForm() {
   final codeController = useTextEditingController();
   final passwordController = useTextEditingController();
   final confirmPasswordController = useTextEditingController();
@@ -29,11 +33,12 @@ ResetPasswordState useResetPasswordState() {
   final isConfirmPasswordVisible = useState(false);
   final isFormValid = useState(false);
   final page = useState(1);
+  final formKey = useMemoized(() => GlobalKey<ShadFormState>());
 
   useEffect(() {
     void updateFormValidity() {
       isFormValid.value =
-          codeController.text.trim().isNotEmpty &&
+          codeController.text.replaceAll(' ', '').length == 6 &&
           passwordController.text.trim().isNotEmpty &&
           confirmPasswordController.text.trim().isNotEmpty &&
           (passwordController.text == confirmPasswordController.text);
@@ -58,5 +63,6 @@ ResetPasswordState useResetPasswordState() {
     isConfirmPasswordVisible: isConfirmPasswordVisible,
     isFormValid: isFormValid,
     page: page,
+    formKey: formKey
   );
 }

@@ -14,8 +14,8 @@ class ResetPasswordForm extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formState = useResetPasswordState();
-    final formKey = GlobalKey<ShadFormState>();
+    final formState = useResetPasswordForm();
+    final formKey = formState.formKey;
 
     ref.listen<AsyncValue<bool?>>(resetPasswordControllerProvider, (
       previous,
@@ -94,14 +94,21 @@ class ResetPasswordForm extends HookConsumerWidget {
                 // VERIFY CODE BUTTON
                 SizedBox(
                   width: double.infinity,
-                  child: ShadButton(
-                    enabled: formState.codeController.text.length == 6,
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        formState.page.value = 2;
-                      }
+                  child: ValueListenableBuilder(
+                    valueListenable: formState.codeController,
+                    builder: (context, value, child) {
+                      return ShadButton(
+                        enabled: formState.codeController.text.replaceAll(' ', '').length == 6,
+                        onPressed: formState.codeController.text.replaceAll(' ', '').length == 6
+                            ? () {
+                                if (formKey.currentState!.validate()) {
+                                  formState.page.value = 2;
+                                }
+                              }
+                            : null,
+                        child: const Text("Verify Code"),
+                      );
                     },
-                    child: const Text("Verify Code"),
                   ),
                 ),
               ] else ...[
@@ -177,9 +184,18 @@ class ResetPasswordForm extends HookConsumerWidget {
                         onPressed: formState.isFormValid.value && !isLoading
                             ? () async {
                                 if (formKey.currentState!.validate()) {
-                                  final code = formState.codeController.text.trim();
-                                  final password = formState.passwordController.text.trim();
-                                  ref.read(resetPasswordControllerProvider.notifier).resetPassword(code, password);
+                                  final code = formState.codeController.text
+                                      .trim();
+                                  final password = formState
+                                      .passwordController
+                                      .text
+                                      .trim();
+                                  ref
+                                      .read(
+                                        resetPasswordControllerProvider
+                                            .notifier,
+                                      )
+                                      .resetPassword(code, password);
                                 }
                               }
                             : null,
@@ -214,9 +230,7 @@ class ResetPasswordForm extends HookConsumerWidget {
               ],
               if (page == 1) ...[
                 const SizedBox(height: 16),
-                const Center(
-                  child: _ReturnToLoginLink(),
-                ),
+                const Center(child: _ReturnToLoginLink()),
               ],
             ],
           ),
@@ -230,10 +244,7 @@ class _Header extends StatelessWidget {
   final int page;
   final bool showLogo;
 
-  const _Header({
-    required this.page,
-    this.showLogo = false,
-  });
+  const _Header({required this.page, this.showLogo = false});
 
   @override
   Widget build(BuildContext context) {
