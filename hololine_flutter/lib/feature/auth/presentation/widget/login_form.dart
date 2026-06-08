@@ -19,7 +19,7 @@ class LoginForm extends HookConsumerWidget {
       next.when(
         data: (response) {
           if (response != null && response.success) {
-            context.go('/gate');
+            context.go('/');
           }
         },
         error: (e, _) {

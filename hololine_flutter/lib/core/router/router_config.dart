@@ -11,7 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/workspaces',
+    initialLocation: '/',
     routes: [
       GoRoute(
         path: '/',
