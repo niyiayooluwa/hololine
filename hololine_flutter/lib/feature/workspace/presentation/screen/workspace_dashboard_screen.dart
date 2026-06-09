@@ -271,12 +271,7 @@ class _WorkspaceGrid extends StatelessWidget {
               role: workspace.role,
               memberCount: workspace.memberCount,
               onClick: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Opening ${workspace.name}...'),
-                    duration: const Duration(seconds: 1),
-                  ),
-                );
+                context.go('/workspace/${workspace.id}/dashboard');
               },
             );
           }).toList(),

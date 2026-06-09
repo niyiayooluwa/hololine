@@ -8,6 +8,8 @@ import 'package:hololine_flutter/feature/workspace/presentation/screen/routing_g
 import 'package:hololine_flutter/feature/workspace/presentation/screen/workspace_dashboard_screen.dart';
 import 'package:hololine_flutter/feature/workspace/presentation/screen/account_settings_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hololine_flutter/feature/workspace/presentation/screen/workspace_shell_screen.dart';
+import 'package:hololine_flutter/feature/workspace/presentation/screen/workspace_placeholder_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -20,6 +22,45 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/workspaces',
         builder: (context, state) => const DashboardScreen(),
+      ),
+      ShellRoute(
+        builder: (context, state, child) {
+          return WorkspaceShellScreen(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: '/workspace/:id/dashboard',
+            builder: (context, state) => const WorkspacePlaceholderScreen(title: 'Dashboard View'),
+          ),
+          GoRoute(
+            path: '/workspace/:id/ledger',
+            builder: (context, state) => const WorkspacePlaceholderScreen(title: 'Ledger View'),
+          ),
+          GoRoute(
+            path: '/workspace/:id/catalog',
+            builder: (context, state) => const WorkspacePlaceholderScreen(title: 'Catalog View'),
+          ),
+          GoRoute(
+            path: '/workspace/:id/inventory',
+            builder: (context, state) => const WorkspacePlaceholderScreen(title: 'Inventory View'),
+          ),
+          GoRoute(
+            path: '/workspace/:id/analytics',
+            builder: (context, state) => const WorkspacePlaceholderScreen(title: 'Analytics View'),
+          ),
+          GoRoute(
+            path: '/workspace/:id/ai',
+            builder: (context, state) => const WorkspacePlaceholderScreen(title: 'AI Reporting View'),
+          ),
+          GoRoute(
+            path: '/workspace/:id/members',
+            builder: (context, state) => const WorkspacePlaceholderScreen(title: 'Members View'),
+          ),
+          GoRoute(
+            path: '/workspace/:id/settings',
+            builder: (context, state) => const WorkspacePlaceholderScreen(title: 'Settings View'),
+          ),
+        ],
       ),
       GoRoute(
         path: '/settings',
