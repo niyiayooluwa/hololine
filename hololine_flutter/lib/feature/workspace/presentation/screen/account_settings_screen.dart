@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hololine_flutter/core/application/providers.dart';
 //import 'package:hololine_flutter/feature/workspace/presentation/widget/global_nav_bar.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -16,10 +17,14 @@ class AccountSettingsScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
+    
+    // Fetch the real user from the session
+    final session = ref.watch(sessionProvider);
+    final user = session.signedInUser;
 
-    // Form controllers for profile settings
-    final nameController = useTextEditingController(text: 'Felix Carter');
-    final emailController = useTextEditingController(text: 'felix@hololine.com');
+    // Form controllers initialized with real user data
+    final nameController = useTextEditingController(text: user?.userName ?? '');
+    final emailController = useTextEditingController(text: user?.email ?? '');
 
     // Tab state linked to navigation bar callback
     final currentTab = activeTab == 'billing' ? 'billing' : 'profile';
@@ -91,7 +96,7 @@ class AccountSettingsScreen extends HookConsumerWidget {
                     );
 
                     final content = currentTab == 'profile'
-                        ? _buildProfileTab(context, theme, nameController, emailController)
+                        ? _buildProfileTab(context, theme, nameController, emailController, user)
                         : _buildBillingTab(context, theme);
 
                     if (isDesktop) {
@@ -129,7 +134,11 @@ class AccountSettingsScreen extends HookConsumerWidget {
     ShadThemeData theme,
     TextEditingController nameController,
     TextEditingController emailController,
+    dynamic user,
   ) {
+    // Force DiceBear avatar (Serverpod auto-generates default imageUrls that we want to override)
+    final avatarUrl = 'https://api.dicebear.com/10.x/glyphs/png?seed=${Uri.encodeComponent(user?.userName ?? 'User')}';
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -156,9 +165,10 @@ class AccountSettingsScreen extends HookConsumerWidget {
                   shape: BoxShape.circle,
                   color: theme.colorScheme.muted,
                   border: Border.all(color: theme.colorScheme.border, width: 2),
-                ),
-                child: const Center(
-                  child: Icon(LucideIcons.user, size: 28),
+                  image: DecorationImage(
+                    image: NetworkImage(avatarUrl),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const SizedBox(width: 20),

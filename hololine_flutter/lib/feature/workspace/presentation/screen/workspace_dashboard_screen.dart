@@ -1,5 +1,7 @@
 // --- MAIN SCREEN ---
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hololine_client/hololine_client.dart';
 import 'package:hololine_flutter/core/application/providers.dart';
 import 'package:hololine_flutter/feature/workspace/presentation/dialog/create_workspace_dialog.dart';
@@ -132,16 +134,25 @@ class DashboardScreen extends HookConsumerWidget {
 }
 
 // --- NAVIGATION ---
-class _DashboardNav extends StatelessWidget {
+class _DashboardNav extends HookConsumerWidget {
   const _DashboardNav();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ShadTheme.of(context);
+    final session = ref.watch(sessionProvider);
+    final user = session.signedInUser;
+    final isHovered = useState(false);
+
+    // Force DiceBear avatar (Serverpod auto-generates default imageUrls that we want to override)
+    final avatarUrl =
+        'https://api.dicebear.com/10.x/glyphs/png?seed=${Uri.encodeComponent(user?.userName ?? 'User')}';
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.background,
+        border: Border(bottom: BorderSide(color: theme.colorScheme.border)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,7 +163,42 @@ class _DashboardNav extends StatelessWidget {
             fit: BoxFit.contain,
             //alignment: Alignment.centerLeft,
           ),
-          const CircleAvatar(backgroundColor: Color(0xFFE2E8F0), radius: 18),
+          MouseRegion(
+            onEnter: (_) => isHovered.value = true,
+            onExit: (_) => isHovered.value = false,
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () => context.go('/settings'),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.all(2), // 2px space
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isHovered.value 
+                        ? theme.colorScheme.border 
+                        : theme.colorScheme.background,
+                    width: 4,
+                  ),
+                ),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: theme.colorScheme.border, 
+                      width: 1,
+                    ),
+                    image: DecorationImage(
+                      image: NetworkImage(avatarUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
