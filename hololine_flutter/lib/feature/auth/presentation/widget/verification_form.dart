@@ -108,7 +108,9 @@ class VerificationForm extends HookConsumerWidget {
                         ? () async {
                             if (formKey.currentState!.validate()) {
                               final otp = formState.otpController.text.trim();
-                              await ref.read(verificationControllerProvider.notifier).verifyOtp(email, otp);
+                              await ref
+                                  .read(verificationControllerProvider.notifier)
+                                  .verifyOtp(email, otp);
                             }
                           }
                         : null,
@@ -130,9 +132,7 @@ class VerificationForm extends HookConsumerWidget {
 
               const SizedBox(height: 16),
 
-              const Center(
-                child: _ReturnToLoginLink(),
-              ),
+              const Center(child: _ReturnToLoginLink()),
             ],
           ),
         ),
@@ -145,10 +145,7 @@ class _Header extends StatelessWidget {
   final String email;
   final bool showLogo;
 
-  const _Header({
-    required this.email,
-    this.showLogo = false,
-  });
+  const _Header({required this.email, this.showLogo = false});
 
   @override
   Widget build(BuildContext context) {

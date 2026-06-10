@@ -205,7 +205,10 @@ class WorkspaceCard extends HookWidget {
                   Expanded(
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: AvatarStack(workspaceName: name, memberCount: memberCount),
+                      child: AvatarStack(
+                        workspaceName: name,
+                        memberCount: memberCount,
+                      ),
                     ),
                   ),
                   AnimatedOpacity(
@@ -242,7 +245,11 @@ class AvatarStack extends StatelessWidget {
   final String workspaceName;
   final int memberCount;
 
-  const AvatarStack({super.key, required this.workspaceName, required this.memberCount});
+  const AvatarStack({
+    super.key,
+    required this.workspaceName,
+    required this.memberCount,
+  });
 
   @override
   Widget build(BuildContext context) {

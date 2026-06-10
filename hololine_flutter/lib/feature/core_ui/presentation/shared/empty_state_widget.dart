@@ -10,7 +10,8 @@ class EmptyWatchlistCard extends StatelessWidget {
   const EmptyWatchlistCard({
     super.key,
     this.title = 'Your watchlist is empty',
-    this.description = 'Start building your crypto watchlist by clicking the button below',
+    this.description =
+        'Start building your crypto watchlist by clicking the button below',
     this.buttonText = 'New asset',
     this.onPressed,
   });
@@ -22,7 +23,9 @@ class EmptyWatchlistCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF1F5F9)), // Very subtle border
+        border: Border.all(
+          color: const Color(0xFFF1F5F9),
+        ), // Very subtle border
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -39,9 +42,9 @@ class EmptyWatchlistCard extends StatelessWidget {
             padding: EdgeInsets.only(top: 12, left: 12, right: 12),
             child: _IllustrationGraphic(),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Text Content Area
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -52,7 +55,7 @@ class EmptyWatchlistCard extends StatelessWidget {
               onPressed: onPressed,
             ),
           ),
-          
+
           const SizedBox(height: 28),
         ],
       ),
@@ -90,7 +93,7 @@ class _IllustrationGraphic extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // The white "Mockup UI" card that sits on top of the gradient
           Positioned(
             bottom: 0,
@@ -133,7 +136,9 @@ class _MockupList extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1.5)),
+            border: Border(
+              bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1.5),
+            ),
           ),
           child: Row(
             children: [
@@ -145,13 +150,17 @@ class _MockupList extends StatelessWidget {
             ],
           ),
         ),
-        
+
         // Mockup List Item 1
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Row(
             children: [
-              const Icon(Icons.star_rounded, color: Color(0xFFE2E8F0), size: 20),
+              const Icon(
+                Icons.star_rounded,
+                color: Color(0xFFE2E8F0),
+                size: 20,
+              ),
               const SizedBox(width: 8),
               _buildCircle(size: 20),
               const SizedBox(width: 8),
@@ -159,18 +168,26 @@ class _MockupList extends StatelessWidget {
               const SizedBox(width: 6),
               _buildLine(width: 16, height: 6),
               const Spacer(),
-              const Icon(Icons.arrow_drop_down_rounded, color: Color(0xFFE2E8F0), size: 16),
+              const Icon(
+                Icons.arrow_drop_down_rounded,
+                color: Color(0xFFE2E8F0),
+                size: 16,
+              ),
               _buildLine(width: 24, height: 6),
             ],
           ),
         ),
-        
+
         // Mockup List Item 2
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           child: Row(
             children: [
-              const Icon(Icons.star_rounded, color: Color(0xFFE2E8F0), size: 20),
+              const Icon(
+                Icons.star_rounded,
+                color: Color(0xFFE2E8F0),
+                size: 20,
+              ),
               const SizedBox(width: 8),
               _buildCircle(size: 20),
               const SizedBox(width: 8),
@@ -178,7 +195,11 @@ class _MockupList extends StatelessWidget {
               const SizedBox(width: 6),
               _buildLine(width: 20, height: 6),
               const Spacer(),
-              const Icon(Icons.arrow_drop_up_rounded, color: Color(0xFFE2E8F0), size: 16),
+              const Icon(
+                Icons.arrow_drop_up_rounded,
+                color: Color(0xFFE2E8F0),
+                size: 16,
+              ),
               _buildLine(width: 24, height: 6),
             ],
           ),
@@ -209,7 +230,7 @@ class _MockupList extends StatelessWidget {
       ),
     );
   }
-  
+
   Widget _buildDot({required double size}) {
     return Container(
       width: size,
@@ -250,9 +271,9 @@ class _ContentSection extends StatelessWidget {
             letterSpacing: -0.3,
           ),
         ),
-        
+
         const SizedBox(height: 8),
-        
+
         // Subtitle
         Text(
           description,
@@ -264,9 +285,9 @@ class _ContentSection extends StatelessWidget {
             height: 1.4,
           ),
         ),
-        
+
         const SizedBox(height: 24),
-        
+
         // Shadcn CTA Button
         ShadButton(
           onPressed: onPressed ?? () {},
@@ -276,10 +297,7 @@ class _ContentSection extends StatelessWidget {
           ),
           child: Text(
             buttonText,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           ),
         ),
       ],

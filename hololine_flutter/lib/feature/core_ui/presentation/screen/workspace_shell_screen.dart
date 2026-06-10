@@ -58,10 +58,7 @@ class _Sidebar extends HookConsumerWidget {
   final int currentIndex;
   final Function(int) onNavigate;
 
-  const _Sidebar({
-    required this.currentIndex,
-    required this.onNavigate,
-  });
+  const _Sidebar({required this.currentIndex, required this.onNavigate});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,7 +69,8 @@ class _Sidebar extends HookConsumerWidget {
     final workspaceId = int.tryParse(idString ?? '');
     final workspacesAsync = ref.watch(myWorkspacesProvider);
     final activeWorkspace = workspacesAsync.maybeWhen(
-      data: (workspaces) => workspaces.where((w) => w.id == workspaceId).firstOrNull,
+      data: (workspaces) =>
+          workspaces.where((w) => w.id == workspaceId).firstOrNull,
       orElse: () => null,
     );
 
@@ -80,9 +78,7 @@ class _Sidebar extends HookConsumerWidget {
       width: 280.0,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(
-          right: BorderSide(color: theme.colorScheme.border),
-        ),
+        border: Border(right: BorderSide(color: theme.colorScheme.border)),
       ),
       child: Column(
         children: [
@@ -186,12 +182,13 @@ class _WorkspaceSelector extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
     final idString = GoRouterState.of(context).pathParameters['id'];
     final workspaceId = int.tryParse(idString ?? '');
-    
+
     final workspacesAsync = ref.watch(myWorkspacesProvider);
-    
+
     // Find the active workspace safely
     final activeWorkspace = workspacesAsync.maybeWhen(
-      data: (workspaces) => workspaces.where((w) => w.id == workspaceId).firstOrNull,
+      data: (workspaces) =>
+          workspaces.where((w) => w.id == workspaceId).firstOrNull,
       orElse: () => null,
     );
 
@@ -227,10 +224,14 @@ class _WorkspaceSelector extends HookConsumerWidget {
                           color: Colors.black12,
                           blurRadius: 2,
                           offset: Offset(0, 1),
-                        )
-                      ]
+                        ),
+                      ],
                     ),
-                    child: Icon(LucideIcons.layers, size: 16, color: theme.colorScheme.background),
+                    child: Icon(
+                      LucideIcons.layers,
+                      size: 16,
+                      color: theme.colorScheme.background,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -252,8 +253,8 @@ class _WorkspaceSelector extends HookConsumerWidget {
                     ),
                   ),
                   Icon(
-                    LucideIcons.chevronsUpDown, 
-                    size: 16, 
+                    LucideIcons.chevronsUpDown,
+                    size: 16,
                     color: theme.colorScheme.mutedForeground,
                   ),
                 ],
@@ -420,12 +421,14 @@ class _TopNavBar extends HookConsumerWidget {
     final theme = ShadTheme.of(context);
     final sessionManager = ref.watch(sessionProvider);
     final user = sessionManager.signedInUser;
-    
+
     // Extract first name safely
     final fullName = user?.userName ?? 'User';
     final firstName = fullName.split(' ').first;
-    
-    final avatarLetter = firstName.isNotEmpty ? firstName[0].toUpperCase() : 'U';
+
+    final avatarLetter = firstName.isNotEmpty
+        ? firstName[0].toUpperCase()
+        : 'U';
 
     return Container(
       height: 64,

@@ -19,7 +19,7 @@ class CreateWorkspaceDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final nameController = useTextEditingController();
     final descriptionController = useTextEditingController();
-    
+
     final createWorkspaceState = ref.watch(createWorkspaceControllerProvider);
 
     ref.listen(createWorkspaceControllerProvider, (previous, next) {

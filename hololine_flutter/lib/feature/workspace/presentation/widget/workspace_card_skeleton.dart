@@ -7,7 +7,7 @@ class WorkspaceCardSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ShadTheme.of(context);
-    
+
     return ShadCard(
       backgroundColor: theme.colorScheme.background,
       radius: BorderRadius.circular(12),
@@ -22,7 +22,7 @@ class WorkspaceCardSkeleton extends StatelessWidget {
             children: [
               // Title skeleton
               _buildSkeleton(width: 140, height: 20),
-              
+
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

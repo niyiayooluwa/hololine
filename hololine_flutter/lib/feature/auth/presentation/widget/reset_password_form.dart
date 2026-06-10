@@ -98,8 +98,16 @@ class ResetPasswordForm extends HookConsumerWidget {
                     valueListenable: formState.codeController,
                     builder: (context, value, child) {
                       return ShadButton(
-                        enabled: formState.codeController.text.replaceAll(' ', '').length == 6,
-                        onPressed: formState.codeController.text.replaceAll(' ', '').length == 6
+                        enabled:
+                            formState.codeController.text
+                                .replaceAll(' ', '')
+                                .length ==
+                            6,
+                        onPressed:
+                            formState.codeController.text
+                                    .replaceAll(' ', '')
+                                    .length ==
+                                6
                             ? () {
                                 if (formKey.currentState!.validate()) {
                                   formState.page.value = 2;

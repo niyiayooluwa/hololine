@@ -175,8 +175,8 @@ class _DashboardNav extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isHovered.value 
-                        ? theme.colorScheme.border 
+                    color: isHovered.value
+                        ? theme.colorScheme.border
                         : theme.colorScheme.background,
                     width: 4,
                   ),
@@ -187,7 +187,7 @@ class _DashboardNav extends HookConsumerWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: theme.colorScheme.border, 
+                      color: theme.colorScheme.border,
                       width: 1,
                     ),
                     image: DecorationImage(

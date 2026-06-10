@@ -12,7 +12,6 @@ class ResetPasswordState {
   final ValueNotifier<bool> isFormValid;
   final GlobalKey<ShadFormState> formKey;
 
-
   ResetPasswordState({
     required this.codeController,
     required this.passwordController,
@@ -21,7 +20,7 @@ class ResetPasswordState {
     required this.isConfirmPasswordVisible,
     required this.isFormValid,
     required this.page,
-    required this.formKey
+    required this.formKey,
   });
 }
 
@@ -63,6 +62,6 @@ ResetPasswordState useResetPasswordForm() {
     isConfirmPasswordVisible: isConfirmPasswordVisible,
     isFormValid: isFormValid,
     page: page,
-    formKey: formKey
+    formKey: formKey,
   );
 }

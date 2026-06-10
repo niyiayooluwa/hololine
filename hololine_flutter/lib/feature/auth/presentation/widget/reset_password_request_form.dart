@@ -80,7 +80,9 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
               // RESET PASSWORD BUTTON
               Consumer(
                 builder: (context, ref, child) {
-                  final state = ref.watch(resetPasswordRequestControllerProvider);
+                  final state = ref.watch(
+                    resetPasswordRequestControllerProvider,
+                  );
                   final isLoading = state.isLoading;
 
                   return ShadButton(
@@ -89,8 +91,14 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
                     onPressed: formState.isFormValid.value && !isLoading
                         ? () async {
                             if (formKey.currentState!.validate()) {
-                              final email = formState.emailController.text.trim();
-                              await ref.read(resetPasswordRequestControllerProvider.notifier).resetPasswordRequest(email);
+                              final email = formState.emailController.text
+                                  .trim();
+                              await ref
+                                  .read(
+                                    resetPasswordRequestControllerProvider
+                                        .notifier,
+                                  )
+                                  .resetPasswordRequest(email);
                             }
                           }
                         : null,
@@ -112,9 +120,7 @@ class ResetPasswordRequestForm extends HookConsumerWidget {
 
               const SizedBox(height: 16),
 
-              const Center(
-                child: _ReturnToLoginLink(),
-              ),
+              const Center(child: _ReturnToLoginLink()),
             ],
           ),
         ),

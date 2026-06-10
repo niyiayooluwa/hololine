@@ -13,7 +13,8 @@ class CreateWorkspaceController extends _$CreateWorkspaceController {
   @override
   FutureOr<Workspace?> build() => null;
 
-  WorkspaceRepository get _workspaceRepo => ref.read(workspaceRepositoryProvider);
+  WorkspaceRepository get _workspaceRepo =>
+      ref.read(workspaceRepositoryProvider);
 
   Future<void> create(String name, String description) async {
     state = const AsyncLoading();

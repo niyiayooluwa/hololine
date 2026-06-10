@@ -159,8 +159,9 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
 /// Provider for the WorkspaceRemoteDataSource.
 /// It watches [clientProvider] to get the initialized Serverpod client
 /// and injects it into the data source implementation.
-final workspaceRemoteDataSourceProvider =
-    Provider<WorkspaceRemoteDataSource>((ref) {
+final workspaceRemoteDataSourceProvider = Provider<WorkspaceRemoteDataSource>((
+  ref,
+) {
   final client = ref.watch(clientProvider);
   return WorkspaceRemoteDataSourceImpl(serverpodClient: client);
 });

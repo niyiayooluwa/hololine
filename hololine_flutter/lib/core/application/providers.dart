@@ -63,7 +63,9 @@ final currentWorkspaceRoleProvider = Provider<WorkspaceRole?>((ref) {
 });
 
 /// FutureProvider to fetch all workspaces the authenticated user belongs to.
-final myWorkspacesProvider = FutureProvider<List<WorkspaceSummary>>((ref) async {
+final myWorkspacesProvider = FutureProvider<List<WorkspaceSummary>>((
+  ref,
+) async {
   final client = ref.watch(clientProvider);
   return await client.workspaceMember.getMyWorkspaces();
 });

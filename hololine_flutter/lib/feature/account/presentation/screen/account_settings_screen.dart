@@ -9,15 +9,12 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 class AccountSettingsScreen extends HookConsumerWidget {
   final String activeTab;
 
-  const AccountSettingsScreen({
-    super.key,
-    required this.activeTab,
-  });
+  const AccountSettingsScreen({super.key, required this.activeTab});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    
+
     // Fetch the real user from the session
     final session = ref.watch(sessionProvider);
     final user = session.signedInUser;
@@ -36,7 +33,10 @@ class AccountSettingsScreen extends HookConsumerWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1024),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 32.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -67,7 +67,9 @@ class AccountSettingsScreen extends HookConsumerWidget {
                 // Screen Title
                 Text(
                   'Account Settings',
-                  style: theme.textTheme.h2.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.h2.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 32),
 
@@ -75,7 +77,7 @@ class AccountSettingsScreen extends HookConsumerWidget {
                 LayoutBuilder(
                   builder: (context, constraints) {
                     final isDesktop = constraints.maxWidth > 640;
-                    
+
                     final sidebar = Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -96,7 +98,13 @@ class AccountSettingsScreen extends HookConsumerWidget {
                     );
 
                     final content = currentTab == 'profile'
-                        ? _buildProfileTab(context, theme, nameController, emailController, user)
+                        ? _buildProfileTab(
+                            context,
+                            theme,
+                            nameController,
+                            emailController,
+                            user,
+                          )
                         : _buildBillingTab(context, theme);
 
                     if (isDesktop) {
@@ -137,7 +145,8 @@ class AccountSettingsScreen extends HookConsumerWidget {
     dynamic user,
   ) {
     // Force DiceBear avatar (Serverpod auto-generates default imageUrls that we want to override)
-    final avatarUrl = 'https://api.dicebear.com/10.x/glyphs/png?seed=${Uri.encodeComponent(user?.userName ?? 'User')}';
+    final avatarUrl =
+        'https://api.dicebear.com/10.x/glyphs/png?seed=${Uri.encodeComponent(user?.userName ?? 'User')}';
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -180,7 +189,11 @@ class AccountSettingsScreen extends HookConsumerWidget {
                       ShadButton.outline(
                         onPressed: () {
                           ShadToaster.of(context).show(
-                            const ShadToast(description: Text('Avatar uploads are disabled in development.')),
+                            const ShadToast(
+                              description: Text(
+                                'Avatar uploads are disabled in development.',
+                              ),
+                            ),
                           );
                         },
                         child: const Text('Change Avatar'),
@@ -189,7 +202,9 @@ class AccountSettingsScreen extends HookConsumerWidget {
                       GestureDetector(
                         onTap: () {
                           ShadToaster.of(context).show(
-                            const ShadToast(description: Text('Avatar removed.')),
+                            const ShadToast(
+                              description: Text('Avatar removed.'),
+                            ),
                           );
                         },
                         child: Text(
@@ -293,14 +308,19 @@ class AccountSettingsScreen extends HookConsumerWidget {
                             Flexible(
                               child: Text(
                                 'Acme Corp Ledger',
-                                style: theme.textTheme.h4.copyWith(fontWeight: FontWeight.bold),
+                                style: theme.textTheme.h4.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
                                 color: theme.colorScheme.muted,
                                 borderRadius: BorderRadius.circular(999),
@@ -357,7 +377,9 @@ class AccountSettingsScreen extends HookConsumerWidget {
                     children: [
                       Text(
                         'Seat Usage',
-                        style: theme.textTheme.small.copyWith(fontWeight: FontWeight.w500),
+                        style: theme.textTheme.small.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       Text(
                         '3 / 3 free seats reached',
@@ -402,13 +424,17 @@ class AccountSettingsScreen extends HookConsumerWidget {
                 children: [
                   Text(
                     'Pro Plan: \$15 / seat / month.',
-                    style: theme.textTheme.small.copyWith(color: theme.colorScheme.mutedForeground),
+                    style: theme.textTheme.small.copyWith(
+                      color: theme.colorScheme.mutedForeground,
+                    ),
                   ),
                   ShadButton(
                     onPressed: () {
                       ShadToaster.of(context).show(
                         const ShadToast(
-                          description: Text('Routing to Stripe Checkout for Acme Corp...'),
+                          description: Text(
+                            'Routing to Stripe Checkout for Acme Corp...',
+                          ),
                         ),
                       );
                     },
@@ -435,7 +461,10 @@ class AccountSettingsScreen extends HookConsumerWidget {
           decoration: BoxDecoration(
             color: theme.colorScheme.muted.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: theme.colorScheme.border, style: BorderStyle.solid),
+            border: Border.all(
+              color: theme.colorScheme.border,
+              style: BorderStyle.solid,
+            ),
           ),
           child: LayoutBuilder(
             builder: (context, c) {
@@ -447,7 +476,9 @@ class AccountSettingsScreen extends HookConsumerWidget {
                   children: [
                     Text(
                       'Need another independent workspace?',
-                      style: theme.textTheme.large.copyWith(fontWeight: FontWeight.w600),
+                      style: theme.textTheme.large.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -462,7 +493,11 @@ class AccountSettingsScreen extends HookConsumerWidget {
                 backgroundColor: theme.colorScheme.background,
                 onPressed: () {
                   ShadToaster.of(context).show(
-                    const ShadToast(description: Text('Upgrade required to create a new workspace.')),
+                    const ShadToast(
+                      description: Text(
+                        'Upgrade required to create a new workspace.',
+                      ),
+                    ),
                   );
                 },
                 child: const Text('Unlock Workspaces'),
@@ -470,11 +505,7 @@ class AccountSettingsScreen extends HookConsumerWidget {
 
               if (isWide) {
                 return Row(
-                  children: [
-                    textContent,
-                    const SizedBox(width: 24),
-                    actionBtn,
-                  ],
+                  children: [textContent, const SizedBox(width: 24), actionBtn],
                 );
               } else {
                 return Column(
@@ -525,14 +556,18 @@ class _SidebarButton extends StatelessWidget {
             Icon(
               icon,
               size: 16,
-              color: isActive ? theme.colorScheme.foreground : theme.colorScheme.mutedForeground,
+              color: isActive
+                  ? theme.colorScheme.foreground
+                  : theme.colorScheme.mutedForeground,
             ),
             const SizedBox(width: 12),
             Text(
               label,
               style: theme.textTheme.small.copyWith(
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                color: isActive ? theme.colorScheme.foreground : theme.colorScheme.mutedForeground,
+                color: isActive
+                    ? theme.colorScheme.foreground
+                    : theme.colorScheme.mutedForeground,
               ),
             ),
           ],
