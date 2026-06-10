@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hololine_client/hololine_client.dart';
 import 'package:hololine_flutter/core/application/providers.dart';
-import 'package:hololine_flutter/feature/workspace/presentation/dialog/create_workspace_dialog.dart';
+import 'package:hololine_flutter/feature/workspace/presentation/widget/create_workspace_dialog.dart';
 import 'package:hololine_flutter/feature/core_ui/presentation/shared/empty_state_widget.dart';
 import 'package:hololine_flutter/feature/core_ui/presentation/shared/error_state_widget.dart';
-import 'package:hololine_flutter/feature/workspace/presentation/widget/dashboard/workspace_card.dart';
-import 'package:hololine_flutter/feature/workspace/presentation/widget/dashboard/workspace_card_skeleton.dart';
+import 'package:hololine_flutter/feature/workspace/presentation/widget/workspace_card.dart';
+import 'package:hololine_flutter/feature/workspace/presentation/widget/workspace_card_skeleton.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

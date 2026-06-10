@@ -18,7 +18,7 @@ class WorkspaceCard extends HookWidget {
     required this.role,
     required this.description,
     required this.onClick,
-    this.memberCount = 4, // Default value for backward compatibility
+    required this.memberCount, // Default value for backward compatibility
   });
 
   @override
@@ -53,10 +53,7 @@ class WorkspaceCard extends HookWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    name,
-                    style: theme.textTheme.h4
-                  ),
+                  Text(name, style: theme.textTheme.h4),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -78,35 +75,69 @@ class WorkspaceCard extends HookWidget {
                           position: PopupMenuPosition.under,
                           onSelected: (value) {
                             if (value == 'settings') {
-                              ShadToaster.of(context).show(const ShadToast(description: Text('Routing to Settings...')));
+                              ShadToaster.of(context).show(
+                                const ShadToast(
+                                  description: Text('Routing to Settings...'),
+                                ),
+                              );
                             } else if (value == 'members') {
-                              ShadToaster.of(context).show(const ShadToast(description: Text('Routing to Members...')));
+                              ShadToaster.of(context).show(
+                                const ShadToast(
+                                  description: Text('Routing to Members...'),
+                                ),
+                              );
                             } else if (value == 'leave') {
-                              ShadToaster.of(context).show(const ShadToast(description: Text('Leaving Workspace...')));
+                              ShadToaster.of(context).show(
+                                const ShadToast(
+                                  description: Text('Leaving Workspace...'),
+                                ),
+                              );
                             }
                           },
                           itemBuilder: (context) => [
                             PopupMenuItem(
                               value: 'settings',
                               height: 36,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               child: Row(
                                 children: [
-                                  Icon(LucideIcons.settings, size: 16, color: theme.colorScheme.mutedForeground),
+                                  Icon(
+                                    LucideIcons.settings,
+                                    size: 16,
+                                    color: theme.colorScheme.mutedForeground,
+                                  ),
                                   const SizedBox(width: 8),
-                                  Text('Settings', style: theme.textTheme.small.copyWith(fontWeight: FontWeight.w500)),
+                                  Text(
+                                    'Settings',
+                                    style: theme.textTheme.small.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                             PopupMenuItem(
                               value: 'members',
                               height: 36,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               child: Row(
                                 children: [
-                                  Icon(LucideIcons.users, size: 16, color: theme.colorScheme.mutedForeground),
+                                  Icon(
+                                    LucideIcons.users,
+                                    size: 16,
+                                    color: theme.colorScheme.mutedForeground,
+                                  ),
                                   const SizedBox(width: 8),
-                                  Text('Members', style: theme.textTheme.small.copyWith(fontWeight: FontWeight.w500)),
+                                  Text(
+                                    'Members',
+                                    style: theme.textTheme.small.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -114,15 +145,21 @@ class WorkspaceCard extends HookWidget {
                             PopupMenuItem(
                               value: 'leave',
                               height: 36,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               child: Row(
                                 children: [
-                                  Icon(LucideIcons.logOut, size: 16, color: theme.colorScheme.destructive),
+                                  Icon(
+                                    LucideIcons.logOut,
+                                    size: 16,
+                                    color: theme.colorScheme.destructive,
+                                  ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    'Leave Workspace', 
+                                    'Leave Workspace',
                                     style: theme.textTheme.small.copyWith(
-                                      color: theme.colorScheme.destructive, 
+                                      color: theme.colorScheme.destructive,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -137,7 +174,9 @@ class WorkspaceCard extends HookWidget {
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
                                 color: isIconHovered.value
-                                    ? theme.colorScheme.border.withValues(alpha: .3)
+                                    ? theme.colorScheme.border.withValues(
+                                        alpha: .3,
+                                      )
                                     : Colors.transparent,
                                 borderRadius: BorderRadius.circular(6),
                               ),
@@ -153,7 +192,7 @@ class WorkspaceCard extends HookWidget {
               const SizedBox(height: 16),
               Expanded(
                 child: Text(
-                  description, 
+                  description,
                   style: theme.textTheme.muted,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -166,7 +205,7 @@ class WorkspaceCard extends HookWidget {
                   Expanded(
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: AvatarStack(memberCount: memberCount),
+                      child: AvatarStack(workspaceName: name, memberCount: memberCount),
                     ),
                   ),
                   AnimatedOpacity(
@@ -178,7 +217,9 @@ class WorkspaceCard extends HookWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: const Color(0xFFF8FAFC), // slate-50
-                        border: Border.all(color: const Color(0xFFE2E8F0)), // slate-200
+                        border: Border.all(
+                          color: const Color(0xFFE2E8F0),
+                        ), // slate-200
                       ),
                       child: const Icon(
                         LucideIcons.arrowRight,
@@ -198,9 +239,10 @@ class WorkspaceCard extends HookWidget {
 }
 
 class AvatarStack extends StatelessWidget {
+  final String workspaceName;
   final int memberCount;
 
-  const AvatarStack({super.key, required this.memberCount});
+  const AvatarStack({super.key, required this.workspaceName, required this.memberCount});
 
   @override
   Widget build(BuildContext context) {
@@ -230,10 +272,9 @@ class AvatarStack extends StatelessWidget {
   }
 
   Widget _buildAvatar(int index) {
-    final seeds = ['Felix', 'Sarah', 'John'];
-    final seed = seeds[index % seeds.length];
+    final seed = Uri.encodeComponent('$workspaceName-member-$index');
     final avatarUrl = 'https://api.dicebear.com/10.x/glyphs/png?seed=$seed';
-    
+
     return Container(
       width: 32,
       height: 32,

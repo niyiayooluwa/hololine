@@ -18,10 +18,6 @@ class WorkspaceShellScreen extends HookWidget {
     if (location.endsWith('/catalog')) currentIndex = 2;
     if (location.endsWith('/inventory')) currentIndex = 3;
     if (location.endsWith('/analytics')) currentIndex = 4;
-    if (location.endsWith('/ai')) currentIndex = 5;
-    if (location.endsWith('/members')) currentIndex = 6;
-    if (location.endsWith('/settings')) currentIndex = 7;
-
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFA), // From HTML body background
       body: Row(
@@ -51,21 +47,35 @@ class WorkspaceShellScreen extends HookWidget {
   }
 }
 
-class _Sidebar extends StatelessWidget {
+class _Sidebar extends HookConsumerWidget {
   final int currentIndex;
   final Function(int) onNavigate;
 
-  const _Sidebar({required this.currentIndex, required this.onNavigate});
+  const _Sidebar({
+    required this.currentIndex,
+    required this.onNavigate,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
 
+    // Get active workspace to read dynamic member count
+    final idString = GoRouterState.of(context).pathParameters['id'];
+    final workspaceId = int.tryParse(idString ?? '');
+    final workspacesAsync = ref.watch(myWorkspacesProvider);
+    final activeWorkspace = workspacesAsync.maybeWhen(
+      data: (workspaces) => workspaces.where((w) => w.id == workspaceId).firstOrNull,
+      orElse: () => null,
+    );
+
     return Container(
-      width: 260.0,
+      width: 280.0,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(right: BorderSide(color: theme.colorScheme.border)),
+        border: Border(
+          right: BorderSide(color: theme.colorScheme.border),
+        ),
       ),
       child: Column(
         children: [
@@ -94,7 +104,9 @@ class _Sidebar extends StatelessWidget {
                     onTap: () => onNavigate(1),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
+                  Divider(height: 1, color: theme.colorScheme.border),
+                  const SizedBox(height: 16),
 
                   // OPERATIONS SECTION
                   const _SectionTitle(title: 'Operations'),
@@ -111,7 +123,9 @@ class _Sidebar extends StatelessWidget {
                     onTap: () => onNavigate(3),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
+                  Divider(height: 1, color: theme.colorScheme.border),
+                  const SizedBox(height: 16),
 
                   // INSIGHTS SECTION
                   const _SectionTitle(title: 'Insights'),
@@ -128,7 +142,9 @@ class _Sidebar extends StatelessWidget {
                     onTap: () => onNavigate(5),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
+                  Divider(height: 1, color: theme.colorScheme.border),
+                  const SizedBox(height: 16),
 
                   // WORKSPACE SECTION
                   const _SectionTitle(title: 'Workspace'),
@@ -137,7 +153,7 @@ class _Sidebar extends StatelessWidget {
                     label: 'Members',
                     isActive: currentIndex == 6,
                     onTap: () => onNavigate(6),
-                    badgeCount: 4,
+                    badgeCount: activeWorkspace?.memberCount,
                   ),
                   _NavItem(
                     icon: LucideIcons.settings,
@@ -145,21 +161,10 @@ class _Sidebar extends StatelessWidget {
                     isActive: currentIndex == 7,
                     onTap: () => onNavigate(7),
                   ),
-                  _NavItem(
-                    icon: LucideIcons.logOut,
-                    label: 'Logout',
-                    isActive: false,
-                    onTap: () {
-                      // TODO: Implement logout logic via SessionManager
-                    },
-                  ),
                 ],
               ),
             ),
           ),
-
-          // Bottom PLG Hook / Promo Card
-          //const _PromoCard(),
         ],
       ),
     );
@@ -194,7 +199,6 @@ class _WorkspaceSelector extends HookConsumerWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: () {
-              // TODO: Open workspace switcher
               context.go('/workspaces');
             },
             borderRadius: BorderRadius.circular(8),
@@ -236,14 +240,6 @@ class _WorkspaceSelector extends HookConsumerWidget {
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          activeWorkspace != null ? 'Pro Plan' : '', // TODO: Connect to billing later
-                          style: theme.textTheme.small.copyWith(
-                            fontSize: 11,
-                            color: theme.colorScheme.mutedForeground,
-                            fontWeight: FontWeight.w500,
-                          ),
                         ),
                       ],
                     ),
