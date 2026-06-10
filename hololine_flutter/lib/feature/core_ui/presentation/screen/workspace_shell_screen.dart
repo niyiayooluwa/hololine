@@ -40,7 +40,14 @@ class WorkspaceShellScreen extends HookWidget {
             },
           ),
           // Main Content
-          Expanded(child: child),
+          Expanded(
+            child: Column(
+              children: [
+                const _TopNavBar(),
+                Expanded(child: child),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -405,191 +412,62 @@ class _NavItem extends HookWidget {
   }
 }
 
-/*class _PromoCard extends HookWidget {
-  const _PromoCard();
+class _TopNavBar extends HookConsumerWidget {
+  const _TopNavBar();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
-    final isHovered = useState(false);
+    final sessionManager = ref.watch(sessionProvider);
+    final user = sessionManager.signedInUser;
+    
+    // Extract first name safely
+    final fullName = user?.userName ?? 'User';
+    final firstName = fullName.split(' ').first;
+    
+    final avatarLetter = firstName.isNotEmpty ? firstName[0].toUpperCase() : 'U';
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      height: 64,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: theme.colorScheme.border)),
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: theme.colorScheme.border)),
       ),
-      child: MouseRegion(
-        onEnter: (_) => isHovered.value = true,
-        onExit: (_) => isHovered.value = false,
-        cursor: SystemMouseCursors.click,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.muted.withValues(alpha: 0.5), // slate-50
-            borderRadius: BorderRadius.circular(12), // rounded-xl
-            border: Border.all(
-              color: isHovered.value
-                  ? const Color(0xFFCBD5E1)
-                  : theme.colorScheme.border, // hover:border-slate-300
+      child: Row(
+        children: [
+          const Spacer(),
+          // Vertical Divider
+          Container(
+            height: 24,
+            width: 1,
+            color: theme.colorScheme.border,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+          ),
+          // Avatar
+          ShadAvatar(
+            user?.imageUrl ?? '',
+            placeholder: Text(
+              avatarLetter,
+              style: theme.textTheme.small.copyWith(
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.mutedForeground,
+              ),
+            ),
+            size: const Size(32, 32),
+          ),
+          const SizedBox(width: 12),
+          // First Name
+          Text(
+            firstName,
+            style: theme.textTheme.small.copyWith(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: theme.colorScheme.foreground,
             ),
           ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Decorative background flare
-              Positioned(
-                right: -16,
-                top: -16,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: isHovered.value ? 1.0 : 0.5,
-                  child: Container(
-                    width: 64,
-                    height: 64,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFFEBDFFF), // hololine-light glow
-                          blurRadius: 32,
-                          spreadRadius: 16,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Seat Limit',
-                        style: theme.textTheme.small.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.foreground,
-                        ),
-                      ),
-                      Text(
-                        '3/3',
-                        style: theme.textTheme.small.copyWith(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF8B5CF6), // hololine-dark
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  // Mock Progress Bar
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.foreground,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.foreground,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF8B5CF6),
-                            borderRadius: BorderRadius.circular(4),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x998B5CF6),
-                                blurRadius: 8,
-                                spreadRadius: 0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.border,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.border,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Unlock unlimited seats and advanced AI reporting.',
-                    style: theme.textTheme.small.copyWith(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: theme.colorScheme.mutedForeground,
-                      height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: theme.colorScheme.border),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 2,
-                          offset: Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      'Upgrade to Pro',
-                      style: theme.textTheme.small.copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF334155), // slate-700
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }
 }
-*/
