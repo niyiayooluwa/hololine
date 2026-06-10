@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hololine_flutter/core/application/providers.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class WorkspaceShellScreen extends HookWidget {
@@ -30,7 +32,7 @@ class WorkspaceShellScreen extends HookWidget {
             onNavigate: (index) {
               final id = GoRouterState.of(context).pathParameters['id'];
               if (id == null) return;
-              
+
               if (index == 0) context.go('/workspace/$id/dashboard');
               if (index == 1) context.go('/workspace/$id/ledger');
               if (index == 2) context.go('/workspace/$id/catalog');
@@ -42,9 +44,7 @@ class WorkspaceShellScreen extends HookWidget {
             },
           ),
           // Main Content
-          Expanded(
-            child: child,
-          ),
+          Expanded(child: child),
         ],
       ),
     );
@@ -55,10 +55,7 @@ class _Sidebar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onNavigate;
 
-  const _Sidebar({
-    required this.currentIndex,
-    required this.onNavigate,
-  });
+  const _Sidebar({required this.currentIndex, required this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
@@ -68,15 +65,13 @@ class _Sidebar extends StatelessWidget {
       width: 260.0,
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(
-          right: BorderSide(color: theme.colorScheme.border),
-        ),
+        border: Border(right: BorderSide(color: theme.colorScheme.border)),
       ),
       child: Column(
         children: [
           // Top Header (Workspace Selector)
           const _WorkspaceSelector(),
-          
+
           // Scrollable Navigation Menu
           Expanded(
             child: SingleChildScrollView(
@@ -98,9 +93,9 @@ class _Sidebar extends StatelessWidget {
                     isActive: currentIndex == 1,
                     onTap: () => onNavigate(1),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // OPERATIONS SECTION
                   const _SectionTitle(title: 'Operations'),
                   _NavItem(
@@ -164,19 +159,29 @@ class _Sidebar extends StatelessWidget {
           ),
 
           // Bottom PLG Hook / Promo Card
-          const _PromoCard(),
+          //const _PromoCard(),
         ],
       ),
     );
   }
 }
 
-class _WorkspaceSelector extends StatelessWidget {
+class _WorkspaceSelector extends HookConsumerWidget {
   const _WorkspaceSelector();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = ShadTheme.of(context);
+    final idString = GoRouterState.of(context).pathParameters['id'];
+    final workspaceId = int.tryParse(idString ?? '');
+    
+    final workspacesAsync = ref.watch(myWorkspacesProvider);
+    
+    // Find the active workspace safely
+    final activeWorkspace = workspacesAsync.maybeWhen(
+      data: (workspaces) => workspaces.where((w) => w.id == workspaceId).firstOrNull,
+      orElse: () => null,
+    );
 
     return Container(
       height: 64,
@@ -190,6 +195,7 @@ class _WorkspaceSelector extends StatelessWidget {
           child: InkWell(
             onTap: () {
               // TODO: Open workspace switcher
+              context.go('/workspaces');
             },
             borderRadius: BorderRadius.circular(8),
             hoverColor: theme.colorScheme.muted.withValues(alpha: 0.5),
@@ -222,7 +228,7 @@ class _WorkspaceSelector extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Acme Corp',
+                          activeWorkspace?.name ?? 'Loading...',
                           style: theme.textTheme.small.copyWith(
                             fontWeight: FontWeight.w600,
                             fontSize: 14,
@@ -232,7 +238,7 @@ class _WorkspaceSelector extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          'Pro Plan',
+                          activeWorkspace != null ? 'Pro Plan' : '', // TODO: Connect to billing later
                           style: theme.textTheme.small.copyWith(
                             fontSize: 11,
                             color: theme.colorScheme.mutedForeground,
@@ -327,7 +333,10 @@ class _NavItem extends HookWidget {
             clipBehavior: Clip.none,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 child: Row(
                   children: [
                     Icon(icon, size: 18, color: getIconColor()),
@@ -338,7 +347,9 @@ class _NavItem extends HookWidget {
                         style: theme.textTheme.small.copyWith(
                           color: getTextColor(),
                           fontSize: 14,
-                          fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                          fontWeight: isActive
+                              ? FontWeight.w600
+                              : FontWeight.w500,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -346,7 +357,10 @@ class _NavItem extends HookWidget {
                     ),
                     if (badgeCount != null)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.muted, // slate-100
                           borderRadius: BorderRadius.circular(4),
@@ -355,8 +369,8 @@ class _NavItem extends HookWidget {
                               color: Colors.black12,
                               blurRadius: 1,
                               offset: Offset(0, 1),
-                            )
-                          ]
+                            ),
+                          ],
                         ),
                         child: Text(
                           badgeCount.toString(),
@@ -372,7 +386,8 @@ class _NavItem extends HookWidget {
               ),
               if (isActive)
                 Positioned(
-                  left: -12, // Pulls it flush with the padding boundary (from HTML spec)
+                  left:
+                      -12, // Pulls it flush with the padding boundary (from HTML spec)
                   top: 0,
                   bottom: 0,
                   child: Center(
@@ -394,7 +409,7 @@ class _NavItem extends HookWidget {
   }
 }
 
-class _PromoCard extends HookWidget {
+/*class _PromoCard extends HookWidget {
   const _PromoCard();
 
   @override
@@ -418,7 +433,9 @@ class _PromoCard extends HookWidget {
             color: theme.colorScheme.muted.withValues(alpha: 0.5), // slate-50
             borderRadius: BorderRadius.circular(12), // rounded-xl
             border: Border.all(
-              color: isHovered.value ? const Color(0xFFCBD5E1) : theme.colorScheme.border, // hover:border-slate-300
+              color: isHovered.value
+                  ? const Color(0xFFCBD5E1)
+                  : theme.colorScheme.border, // hover:border-slate-300
             ),
           ),
           child: Stack(
@@ -447,7 +464,7 @@ class _PromoCard extends HookWidget {
                   ),
                 ),
               ),
-              
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -476,9 +493,25 @@ class _PromoCard extends HookWidget {
                   // Mock Progress Bar
                   Row(
                     children: [
-                      Expanded(child: Container(height: 6, decoration: BoxDecoration(color: theme.colorScheme.foreground, borderRadius: BorderRadius.circular(4)))),
+                      Expanded(
+                        child: Container(
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.foreground,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
                       const SizedBox(width: 4),
-                      Expanded(child: Container(height: 6, decoration: BoxDecoration(color: theme.colorScheme.foreground, borderRadius: BorderRadius.circular(4)))),
+                      Expanded(
+                        child: Container(
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.foreground,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Container(
@@ -487,15 +520,35 @@ class _PromoCard extends HookWidget {
                             color: const Color(0xFF8B5CF6),
                             borderRadius: BorderRadius.circular(4),
                             boxShadow: const [
-                              BoxShadow(color: Color(0x998B5CF6), blurRadius: 8, spreadRadius: 0)
+                              BoxShadow(
+                                color: Color(0x998B5CF6),
+                                blurRadius: 8,
+                                spreadRadius: 0,
+                              ),
                             ],
                           ),
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Expanded(child: Container(height: 6, decoration: BoxDecoration(color: theme.colorScheme.border, borderRadius: BorderRadius.circular(4)))),
+                      Expanded(
+                        child: Container(
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.border,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
                       const SizedBox(width: 4),
-                      Expanded(child: Container(height: 6, decoration: BoxDecoration(color: theme.colorScheme.border, borderRadius: BorderRadius.circular(4)))),
+                      Expanded(
+                        child: Container(
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.border,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -518,8 +571,12 @@ class _PromoCard extends HookWidget {
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(color: theme.colorScheme.border),
                       boxShadow: const [
-                        BoxShadow(color: Colors.black12, blurRadius: 2, offset: Offset(0, 1))
-                      ]
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 2,
+                          offset: Offset(0, 1),
+                        ),
+                      ],
                     ),
                     child: Text(
                       'Upgrade to Pro',
@@ -539,3 +596,4 @@ class _PromoCard extends HookWidget {
     );
   }
 }
+*/

@@ -4,12 +4,12 @@ import 'package:hololine_flutter/feature/auth/presentation/screen/register_scree
 import 'package:hololine_flutter/feature/auth/presentation/screen/reset_password_request_screen.dart';
 import 'package:hololine_flutter/feature/auth/presentation/screen/reset_password_screen.dart';
 import 'package:hololine_flutter/feature/auth/presentation/screen/verification_screen.dart';
-import 'package:hololine_flutter/feature/workspace/presentation/screen/routing_gate_screen.dart';
+import 'package:hololine_flutter/feature/core_ui/presentation/screen/routing_gate_screen.dart';
 import 'package:hololine_flutter/feature/workspace/presentation/screen/workspace_dashboard_screen.dart';
-import 'package:hololine_flutter/feature/workspace/presentation/screen/account_settings_screen.dart';
+import 'package:hololine_flutter/feature/account/presentation/screen/account_settings_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hololine_flutter/feature/workspace/presentation/screen/workspace_shell_screen.dart';
-import 'package:hololine_flutter/feature/workspace/presentation/screen/workspace_placeholder_screen.dart';
+import 'package:hololine_flutter/feature/core_ui/presentation/screen/workspace_shell_screen.dart';
+import 'package:hololine_flutter/feature/core_ui/presentation/screen/workspace_placeholder_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
