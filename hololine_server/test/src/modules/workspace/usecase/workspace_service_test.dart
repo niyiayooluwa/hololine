@@ -73,6 +73,16 @@ void main() {
   });
 
   group('createChild', () {
+    setUp(() {
+      when(mockWorkspaceRepo.findWorkspaceById(any, any))
+          .thenAnswer((_) async => Workspace(publicId: 'test-uuid', 
+                name: 'Parent Workspace',
+                id: 55,
+                description: 'Parent workspace description',
+                createdAt: DateTime.now().toUtc(),
+              ));
+    });
+
     // Happy Path
     test('Should return a new child workspace when called with valid data',
         () async {
@@ -100,14 +110,6 @@ void main() {
               workspaceId: parentId,
               role: WorkspaceRole.admin,
               joinedAt: DateTime.now().toUtc()));
-
-      when(mockWorkspaceRepo.findWorkspaceById(any, any))
-          .thenAnswer((_) async => Workspace(publicId: 'test-uuid', 
-                name: 'Parent Workspace',
-                id: parentId,
-                description: 'Parent workspace description',
-                createdAt: DateTime.now().toUtc(),
-              ));
 
       // ACT
       final result = await workspaceService.createChild(
@@ -354,6 +356,9 @@ void main() {
         description: workspaceDesc,
         createdAt: DateTime.now().toUtc(),
       );
+
+      when(mockWorkspaceRepo.update(any, any))
+          .thenAnswer((invocation) async => invocation.positionalArguments[1] as Workspace);
     });
 
     // Happy Path
@@ -370,18 +375,15 @@ void main() {
                 joinedAt: DateTime.now().toUtc(),
               ));
 
-      when(mockWorkspaceRepo.archiveWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => true);
-
       await workspaceService.archiveWorkspace(
         mockSession,
         workspaceId,
         actorId,
       );
 
-      verify(mockWorkspaceRepo.archiveWorkspace(
+      verify(mockWorkspaceRepo.update(
         mockSession,
-        workspaceId,
+        any,
       )).called(1);
     });
 
@@ -393,9 +395,6 @@ void main() {
       when(mockMemberRepo.findMemberByWorkspaceId(
               mockSession, actorId, workspaceId))
           .thenAnswer((_) async => null);
-
-      when(mockWorkspaceRepo.archiveWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => true);
 
       expect(
         () async => await workspaceService.archiveWorkspace(
@@ -422,9 +421,6 @@ void main() {
           joinedAt: DateTime.now().toUtc(),
         ),
       );
-
-      when(mockWorkspaceRepo.archiveWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => true);
 
       expect(
         () async => await workspaceService.archiveWorkspace(
@@ -455,6 +451,9 @@ void main() {
           description: workspaceDesc,
           createdAt: DateTime.now().toUtc(),
           archivedAt: DateTime.now().toUtc().add(Duration(milliseconds: 1)));
+
+      when(mockWorkspaceRepo.update(any, any))
+          .thenAnswer((invocation) async => invocation.positionalArguments[1] as Workspace);
     });
 
     // Happy Path
@@ -470,18 +469,15 @@ void main() {
       when(mockWorkspaceRepo.findWorkspaceById(any, any))
           .thenAnswer((_) async => expectedWorkspace);
 
-      when(mockWorkspaceRepo.restoreWorkspace(any, any))
-          .thenAnswer((_) async => true);
-
       await workspaceService.restoreWorkspace(
         mockSession,
         workspaceId,
         actorId,
       );
 
-      verify(mockWorkspaceRepo.restoreWorkspace(
+      verify(mockWorkspaceRepo.update(
         mockSession,
-        workspaceId,
+        any,
       )).called(1);
     });
 
@@ -500,9 +496,6 @@ void main() {
           joinedAt: DateTime.now().toUtc(),
         ),
       );
-
-      when(mockWorkspaceRepo.restoreWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => true);
 
       expect(
         () async => await workspaceService.restoreWorkspace(
@@ -536,9 +529,6 @@ void main() {
         ),
       );
 
-      when(mockWorkspaceRepo.restoreWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => true);
-
       expect(
         () async => await workspaceService.restoreWorkspace(
           mockSession,
@@ -557,9 +547,6 @@ void main() {
       when(mockMemberRepo.findMemberByWorkspaceId(
               mockSession, actorId, workspaceId))
           .thenAnswer((_) async => null);
-
-      when(mockWorkspaceRepo.restoreWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => true);
 
       expect(
         () async => await workspaceService.restoreWorkspace(
@@ -587,9 +574,6 @@ void main() {
           joinedAt: DateTime.now().toUtc(),
         ),
       );
-
-      when(mockWorkspaceRepo.restoreWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => true);
 
       expect(
         () async => await workspaceService.restoreWorkspace(
@@ -680,7 +664,7 @@ void main() {
       // Verify that the actor and target member were found
       verify(mockMemberRepo.findMemberByWorkspaceId(
               mockSession, actorId, workspaceId))
-          .called(1);
+          .called(2);
 
       verify(mockMemberRepo.findMemberByWorkspaceId(
               mockSession, memberId, workspaceId))
@@ -883,19 +867,19 @@ void main() {
       );
     });
 
-    test('Should handle when transferOwnership returns false', () async {
+    test('Should handle when demoted member record is not found (throws Exception)', () async {
       // ARRANGE
+      var count = 0;
       when(mockMemberRepo.findMemberByWorkspaceId(
               mockSession, actorId, workspaceId))
-          .thenAnswer((_) async => actorMember);
+          .thenAnswer((_) async {
+            count++;
+            return count == 1 ? actorMember : null;
+          });
 
       when(mockMemberRepo.findMemberByWorkspaceId(
               mockSession, memberId, workspaceId))
           .thenAnswer((_) async => targetMember);
-
-      when(mockMemberRepo.transferOwnership(
-              mockSession, workspaceId, actorId, memberId))
-          .thenAnswer((_) async => false);
 
       // ACT & ASSERT
       expect(
@@ -952,8 +936,8 @@ void main() {
         isActive: true,
       );
 
-      when(mockWorkspaceRepo.softDeleteWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => true);
+      when(mockWorkspaceRepo.update(any, any))
+          .thenAnswer((invocation) async => invocation.positionalArguments[1] as Workspace);
 
       // Stub findWorkspaceById for the initial check
       when(mockWorkspaceRepo.findWorkspaceById(mockSession, workspaceId))
@@ -984,8 +968,8 @@ void main() {
               mockSession, actorId, workspaceId))
           .called(1);
 
-      // Verify that the transaction was initiated
-      verify(mockWorkspaceRepo.softDeleteWorkspace(mockSession, workspaceId))
+      // Verify that the update was called
+      verify(mockWorkspaceRepo.update(mockSession, any))
           .called(1);
     });
 
@@ -1135,8 +1119,8 @@ void main() {
     test('Should throw exception if transaction fails', () async {
       // ARRANGE
       final transactionException = Exception('Database transaction failed');
-      // Mock the transaction to throw an exception
-      when(mockWorkspaceRepo.softDeleteWorkspace(mockSession, workspaceId))
+      // Mock the update to throw an exception
+      when(mockWorkspaceRepo.update(any, any))
           .thenThrow(transactionException);
 
       when(mockMemberRepo.findMemberByWorkspaceId(
@@ -1151,30 +1135,6 @@ void main() {
           actorId,
         ),
         throwsA(transactionException),
-      );
-    });
-
-    test('Should handle when softDeleteWorkspace returns false', () async {
-      // ARRANGE
-      when(mockMemberRepo.findMemberByWorkspaceId(
-              mockSession, actorId, workspaceId))
-          .thenAnswer((_) async => actorMember);
-
-      when(mockWorkspaceRepo.softDeleteWorkspace(mockSession, workspaceId))
-          .thenAnswer((_) async => false);
-
-      when(mockMemberRepo.transferOwnership(
-              mockSession, workspaceId, actorId, memberId))
-          .thenAnswer((_) async => false);
-
-      // ACT & ASSERT
-      expect(
-        () => workspaceService.initiateDeleteWorkspace(
-          mockSession,
-          workspaceId,
-          actorId,
-        ),
-        throwsA(isA<Exception>()),
       );
     });
   });

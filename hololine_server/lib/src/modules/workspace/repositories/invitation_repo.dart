@@ -1,5 +1,4 @@
 import 'package:hololine_server/src/generated/protocol.dart';
-import 'package:hololine_server/src/utils/exceptions.dart';
 import 'package:serverpod/database.dart';
 import 'package:serverpod/server.dart';
 
@@ -34,19 +33,11 @@ class InvitationRepo {
     return result;
   }
 
-  /// Deletes a workspace invitation identified by its [token].
+  /// Deletes a workspace invitation.
   ///
-  /// The [token] must correspond to an existing invitation. This is typically
-  /// called after an invitation has been accepted or when revoking an invitation.
-  ///
-  /// Throws an [Exception] if no invitation with the given token is found.
-  Future<void> deleteInvitation(Session session, String token,
+  /// This is typically called after an invitation has been accepted or when revoking an invitation.
+  Future<void> deleteInvitation(Session session, WorkspaceInvitation invitation,
       {Transaction? transaction}) async {
-    final invitation = await findInvitationByToken(session, token);
-
-    if (invitation == null) {
-      throw NotFoundException('Invitation not found');
-    }
     await WorkspaceInvitation.db.deleteRow(
       session,
       invitation,
@@ -59,7 +50,7 @@ class InvitationRepo {
   /// This method performs an atomic operation:
   /// 1. Creates a new [WorkspaceMember] with the role specified in the invitation.
   ///    The member is marked as active and the join date is set to the current UTC time.
-  /// 2. Deletes the corresponding [WorkspaceInvitation] using its [token].
+  /// 2. Deletes the corresponding [WorkspaceInvitation].
   ///
   /// Both operations are wrapped in a database transaction to ensure that either
   /// both succeed or both fail, maintaining data consistency.
@@ -67,16 +58,13 @@ class InvitationRepo {
   /// - [session]: The database session.
   /// - [invitation]: The [WorkspaceInvitation] object containing details like workspace ID and role.
   /// - [userId]: The ID of the user accepting the invitation.
-  /// - [token]: The unique token associated with the invitation, used for deletion.
   ///
   /// Returns the newly created [WorkspaceMember] with its assigned ID.
-  ///
-  /// Throws [NotFoundException] if the invitation token does not match an existing invitation.
   ///
   /// Note: This method assumes prior validation has occurred (e.g., checking if the
   /// user is already a member, if the invitation has expired, or if the token is valid).
   Future<WorkspaceMember> acceptInvitation(Session session,
-      WorkspaceInvitation invitation, int userId, String token) async {
+      WorkspaceInvitation invitation, int userId) async {
     // Create a new WorkspaceMember object based on the invitation details and user ID.
     var member = WorkspaceMember(
       userInfoId: userId,
@@ -93,7 +81,7 @@ class InvitationRepo {
           .insertRow(session, member, transaction: transaction);
 
       // Delete the invitation, ensuring it's part of the same transaction.
-      await deleteInvitation(session, token, transaction: transaction);
+      await deleteInvitation(session, invitation, transaction: transaction);
 
       return newMember;
     });

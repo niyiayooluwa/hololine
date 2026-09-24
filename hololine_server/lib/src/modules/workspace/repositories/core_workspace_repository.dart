@@ -167,92 +167,51 @@ class WorkspaceRepo {
     return result != null;
   }
 
-  /// Archives the workspace with the specified [workspaceId].
-  ///
-  /// Sets the `archivedAt` field to the current time in UTC.
-  /// Returns `true` on success, or `false` if the workspace was not found.
-  Future<bool> archiveWorkspace(
-    Session session,
-    int workspaceId,
-  ) async {
-    var workspace = await findWorkspaceById(session, workspaceId);
+  /// Permanently deletes a workspace and all of its related entities.
+  Future<void> hardDeleteWorkspace(Session session, int workspaceId) async {
+    await session.db.transaction((transaction) async {
+      // 1. Unlink child workspaces
+      final children = await Workspace.db.find(
+        session,
+        where: (w) => w.parentId.equals(workspaceId),
+        transaction: transaction,
+      );
+      for (var child in children) {
+        child.parentId = null;
+        await Workspace.db.updateRow(
+          session,
+          child,
+          transaction: transaction,
+        );
+      }
 
-    if (workspace == null) {
-      return false;
-    }
+      // 2. Delete invitations
+      await WorkspaceInvitation.db.deleteWhere(
+        session,
+        where: (invitation) => invitation.workspaceId.equals(workspaceId),
+        transaction: transaction,
+      );
 
-    workspace.archivedAt = DateTime.now().toUtc();
-    await Workspace.db.updateRow(session, workspace);
+      // 3. Delete members
+      await WorkspaceMember.db.deleteWhere(
+        session,
+        where: (member) => member.workspaceId.equals(workspaceId),
+        transaction: transaction,
+      );
 
-    return true;
-  }
-
-  /// Restores an archived workspace by setting its `archivedAt` timestamp to null.
-  ///
-  /// This makes the workspace active again.
-  /// Returns `true` on success, or `false` if the workspace was not found.
-  Future<bool> restoreWorkspace(
-    Session session,
-    int workspaceId,
-  ) async {
-    var workspace = await findWorkspaceById(
-      session,
-      workspaceId,
-    );
-
-    if (workspace == null) {
-      return false;
-    }
-
-    workspace.archivedAt = null;
-    await Workspace.db.updateRow(session, workspace);
-    return true;
-  }
-
-  /// Performs a "hard delete" on a workspace by setting its `deletedAt` timestamp.
-  ///
-  /// This action is intended to be permanent from the application's perspective,
-  /// marking the workspace as fully deleted. This is typically called by a cleanup
-  /// job after a soft-delete grace period has expired, or when a workspace is
-  /// immediately and permanently removed.
-  ///
-  /// - [session]: The database session.
-  /// - [workspaceId]: The ID of the workspace to permanently delete.
-  /// Returns `true` if the workspace was found and marked as deleted, `false` otherwise.
-  Future<bool> softDeleteWorkspace(
-    Session session,
-    int workspaceId,
-  ) async {
-    var workspace = await findWorkspaceById(session, workspaceId);
-
-    if (workspace == null) return false;
-
-    workspace.pendingDeletionUntil =
-        DateTime.now().toUtc().add(Duration(hours: 99));
-    await Workspace.db.updateRow(session, workspace);
-    return true;
-  }
-
-  /// Performs a "hard delete" on a workspace by setting its `deletedAt` timestamp.
-  ///
-  /// This action is intended to be permanent from the application's perspective,
-  /// marking the workspace as fully deleted. This is typically called by a cleanup
-  /// job after a soft-delete grace period has expired.
-  ///
-  /// - [session]: The database session.
-  /// - [workspaceId]: The ID of the workspace to permanently delete.
-  ///
-  /// Returns `true` if the workspace was found and marked as deleted, `false` otherwise.
-  Future<bool> hardDeleteWorkspace(
-    Session session,
-    int workspaceId,
-  ) async {
-    var workspace = await findWorkspaceById(session, workspaceId);
-
-    if (workspace == null) return false;
-
-    workspace.deletedAt = DateTime.now().toUtc();
-    await Workspace.db.updateRow(session, workspace);
-    return true;
+      // 4. Delete the workspace itself
+      final workspace = await Workspace.db.findById(
+        session,
+        workspaceId,
+        transaction: transaction,
+      );
+      if (workspace != null) {
+        await Workspace.db.deleteRow(
+          session,
+          workspace,
+          transaction: transaction,
+        );
+      }
+    });
   }
 }
