@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hololine_flutter/feature/auth/presentation/shared/image_widget.dart';
 import 'package:hololine_flutter/feature/auth/presentation/widget/reset_password_request_form.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class ResetPasswordRequestScreen extends HookConsumerWidget {
+class ResetPasswordRequestScreen extends StatelessWidget {
   const ResetPasswordRequestScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: ShadResponsiveBuilder(
         builder: (context, breakpoint) {
@@ -39,7 +38,7 @@ class _ResetPasswordRequestDesktopLayout extends StatelessWidget {
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
-              child: const Padding(
+              child: const SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 48, vertical: 64),
                 child: ResetPasswordRequestForm(showLogo: false),
               ),
@@ -56,15 +55,13 @@ class _ResetPasswordRequestMobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: const SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-              child: ResetPasswordRequestForm(),
-            ),
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: const SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+            child: ResetPasswordRequestForm(),
           ),
         ),
       ),

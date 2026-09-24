@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:hololine_flutter/core/errors/failures.dart';
-import 'package:hololine_flutter/core/utils/logging.dart';
 import 'package:hololine_flutter/core/utils/validators.dart';
 import 'package:hololine_flutter/feature/auth/data/repository/auth_repository.dart';
 import 'package:hololine_flutter/feature/auth/data/repository/auth_repository_impl.dart';
@@ -40,7 +39,6 @@ class LoginController extends _$LoginController {
       ifLeft: (failure) => AsyncError(failure, StackTrace.current),
       ifRight: (response) {
         if (response.success) {
-          logger(response.failReason!.name);
           return AsyncData(response);
         }
         return AsyncError(

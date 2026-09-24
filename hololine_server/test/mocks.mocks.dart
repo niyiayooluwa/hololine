@@ -465,7 +465,7 @@ class MockWorkspaceService extends _i1.Mock implements _i6.WorkspaceService {
       ) as _i5.Future<_i2.Workspace>);
 
   @override
-  _i5.Future<bool> transferOwnership(
+  _i5.Future<_i2.WorkspaceMember> transferOwnership(
     _i3.Session? session,
     int? workspaceId,
     int? newOwnerId,
@@ -481,8 +481,20 @@ class MockWorkspaceService extends _i1.Mock implements _i6.WorkspaceService {
             actorId,
           ],
         ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
+        returnValue:
+            _i5.Future<_i2.WorkspaceMember>.value(_FakeWorkspaceMember_1(
+          this,
+          Invocation.method(
+            #transferOwnership,
+            [
+              session,
+              workspaceId,
+              newOwnerId,
+              actorId,
+            ],
+          ),
+        )),
+      ) as _i5.Future<_i2.WorkspaceMember>);
 
   @override
   _i5.Future<_i2.Workspace> initiateDeleteWorkspace(
@@ -1193,70 +1205,6 @@ class MockWorkspaceRepo extends _i1.Mock implements _i12.WorkspaceRepo {
         ),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
-
-  @override
-  _i5.Future<bool> archiveWorkspace(
-    _i3.Session? session,
-    int? workspaceId,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #archiveWorkspace,
-          [
-            session,
-            workspaceId,
-          ],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
-
-  @override
-  _i5.Future<bool> restoreWorkspace(
-    _i3.Session? session,
-    int? workspaceId,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #restoreWorkspace,
-          [
-            session,
-            workspaceId,
-          ],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
-
-  @override
-  _i5.Future<bool> softDeleteWorkspace(
-    _i3.Session? session,
-    int? workspaceId,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #softDeleteWorkspace,
-          [
-            session,
-            workspaceId,
-          ],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
-
-  @override
-  _i5.Future<bool> hardDeleteWorkspace(
-    _i3.Session? session,
-    int? workspaceId,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #hardDeleteWorkspace,
-          [
-            session,
-            workspaceId,
-          ],
-        ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
 }
 
 /// A class which mocks [MemberRepo].
@@ -1342,7 +1290,7 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<bool> transferOwnership(
+  _i5.Future<void> transferOwnership(
     _i3.Session? session,
     int? workspaceId,
     int? actorId,
@@ -1358,8 +1306,9 @@ class MockMemberRepo extends _i1.Mock implements _i12.MemberRepo {
             newOwnerId,
           ],
         ),
-        returnValue: _i5.Future<bool>.value(false),
-      ) as _i5.Future<bool>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
   _i5.Future<_i2.WorkspaceMember> deactivateMember(
@@ -1462,7 +1411,7 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
   @override
   _i5.Future<void> deleteInvitation(
     _i3.Session? session,
-    String? token, {
+    _i2.WorkspaceInvitation? invitation, {
     _i3.Transaction? transaction,
   }) =>
       (super.noSuchMethod(
@@ -1470,7 +1419,7 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
           #deleteInvitation,
           [
             session,
-            token,
+            invitation,
           ],
           {#transaction: transaction},
         ),
@@ -1483,7 +1432,6 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
     _i3.Session? session,
     _i2.WorkspaceInvitation? invitation,
     int? userId,
-    String? token,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1492,7 +1440,6 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
             session,
             invitation,
             userId,
-            token,
           ],
         ),
         returnValue:
@@ -1504,7 +1451,6 @@ class MockInvitationRepo extends _i1.Mock implements _i12.InvitationRepo {
               session,
               invitation,
               userId,
-              token,
             ],
           ),
         )),

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hololine_flutter/feature/auth/presentation/shared/image_widget.dart';
 import 'package:hololine_flutter/feature/auth/presentation/widget/login_form.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class LoginScreen extends HookConsumerWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: ShadResponsiveBuilder(
         builder: (context, breakpoint) {
@@ -39,17 +38,14 @@ class _LoginDesktopLayout extends StatelessWidget {
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 48, vertical: 64),
-                child: const LoginForm(showLogo: false),
-              ),
-              /*child: SingleChildScrollView(
+              // Restored SingleChildScrollView to prevent vertical overflow
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 48,
                   vertical: 64,
                 ),
-                child: const LoginForm(),
-              ),*/
+                child: const LoginForm(showLogo: false),
+              ),
             ),
           ),
         ),
@@ -63,15 +59,14 @@ class _LoginMobileLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-              child: const LoginForm(),
-            ),
+    // Removed the nested Scaffold
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+            child: const LoginForm(),
           ),
         ),
       ),
